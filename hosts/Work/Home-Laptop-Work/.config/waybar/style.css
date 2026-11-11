@@ -1,0 +1,77 @@
+/* ---------- GLOBAL ---------- */
+* {
+    font-family: monospace;
+    font-size: 16px;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+/* ---------- BAR CONTAINER ---------- */
+window#waybar {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    min-height: 32px;
+}
+
+/* ---------- MODULES ---------- */
+#workspaces,
+#clock,
+#pulseaudio,
+#memory,
+#cpu,
+#battery,
+#disk,
+#tray {
+    background: transparent;
+    color: #ffffff;
+    padding: 0 10px;
+    min-height: 32px;
+}
+
+/* ---------- WORKSPACES ---------- */
+#workspaces button {
+    background: transparent;
+    color: #ffffff;
+    border: none;
+    margin: 0 2px;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+#workspaces button.focused {
+    border-bottom: 2px solid #ffffff;
+    padding-bottom: 0;
+}
+
+#workspaces button:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- ICONS / CUSTOM ---------- */
+#custom-right-arrow-dark,
+#custom-left-arrow-dark,
+#custom-right-arrow-light,
+#custom-left-arrow-light {
+    background: transparent;
+    color: #ffffff;
+}
+
+/* ---------- TRAY ---------- */
+#tray {
+    padding: 0 6px;
+}
+
+/* ---------- CLOCK VARIANTS ---------- */
+#clock.1,
+#clock.2,
+#clock.3 {
+    background: transparent;
+    color: #ffffff;
+}
+
+/* ---------- OPTIONAL: Slight spacing between modules ---------- */
+#waybar > box > * + * {
+    margin-left: 6px;
+}
