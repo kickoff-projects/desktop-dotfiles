@@ -39,8 +39,13 @@
 
       promptInit = ''
 	
-	# current custom zsh theme is stored here
-	[ -f ~/.dotfiles/system/base/shells/oh-my-zsh/custom/themes/zsh_theme ] && source ~/.dotfiles/system/base/shells/oh-my-zsh/custom/themes/zsh_theme
+	# current custom zsh theme, first one that exists wins
+	for _zsh_theme in ~/.config/oh-my-zsh/custom/themes/zsh_theme \
+			  ~/.dotfiles/system/base/shells/oh-my-zsh/custom/themes/zsh_theme \
+			  ~/desktop-dotfiles/system/base/shells/oh-my-zsh/custom/themes/zsh_theme; do
+	  [ -f "$_zsh_theme" ] && source "$_zsh_theme" && break
+	done
+	unset _zsh_theme
 
 	# NixOS aliases
 	alias hms='home-manager switch --flake .#'

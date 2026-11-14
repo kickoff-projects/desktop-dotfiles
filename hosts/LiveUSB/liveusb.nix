@@ -30,7 +30,13 @@
 
     kakoune
     kitty
+
+    fastfetch
 ];
+
+  # fastfetch config for the live environment; /etc/xdg is on fastfetch's search path
+  environment.etc."xdg/fastfetch/config.jsonc".source = ./.config/fastfetch/config.jsonc;
+  environment.etc."xdg/fastfetch/moved_chesire_cat_with_text".source = ./.config/fastfetch/moved_chesire_cat_with_text;
 
   networking = {
     hostName = hostname;

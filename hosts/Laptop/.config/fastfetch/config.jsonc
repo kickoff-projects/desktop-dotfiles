@@ -1,319 +1,269 @@
+/*don't forget to adde this to .zshrc:*/
+/*fastfetch -c ~/.dotfiles/hosts/Home-Desktop/.config/fastfetch/mystical-config.jsonc --color-separator 31*/
+
 {
-  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
-  "logo": {
-    "type": "auto",
-    "source": "",
-    "color": {
-      "1": "",
-      "2": "",
-      "3": "",
-      "4": "",
-      "5": "",
-      "6": "",
-      "7": "",
-      "8": "",
-      "9": ""
-    },
-    "width": null,
-    "height": null,
-    "padding": {
-      "top": 0,
-      "left": 0,
-      "right": 4
-    },
-    "printRemaining": true,
-    "preserveAspectRatio": false,
-    "recache": false,
-    "position": "left",
-    "chafa": {
-      "fgOnly": false,
-      "symbols": "block+border+space-wide-inverted"
-    }
+"$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+"logo": {
+    /*"source": "/home/nansus/.config/fastfetch/Mad_Hatter.txt",*/
+    "source": "/home/nansus/.config/fastfetch/moved_chesire_cat_with_text",
+    /*"source": "/home/nansus/.config/fastfetch/testing_no_room_v4",*/
+
+  "color": {
+     /*"1": "green"*/
+     "1": "magenta"
   },
-  "display": {
-    "stat": false,
-    "pipe": false,
-    "showErrors": false,
-    "disableLinewrap": true,
-    "hideCursor": false,
-    "separator": ": ",
-    "color": {
-      "keys": "",
-      "title": "",
-      "output": "",
-      "separator": ""
-    },
-    "brightColor": true,
-    "duration": {
-      "abbreviation": false,
-      "spaceBeforeUnit": "default"
-    },
-    "size": {
-      "maxPrefix": "YB",
-      "binaryPrefix": "iec",
-      "ndigits": 2,
-      "spaceBeforeUnit": "default"
-    },
-    "temp": {
-      "unit": "D",
-      "ndigits": 1,
-      "color": {
-        "green": "32",
-        "yellow": "93",
-        "red": "91"
-      },
-      "spaceBeforeUnit": "default"
-    },
-    "percent": {
-      "type": [
-        "num",
-        "num-color"
-      ],
-      "ndigits": 0,
-      "color": {
-        "green": "32",
-        "yellow": "93",
-        "red": "91"
-      },
-      "spaceBeforeUnit": "default",
-      "width": 0
-    },
+  "padding": {
+     "top": 1
+  }
+},
+
+"display": {
+	
     "bar": {
       "char": {
-        "elapsed": "■",
-        "total": "-"
+	"elapsed": "/"
       },
-      "border": {
-        "left": "[ ",
-        "right": " ]",
-        "leftElapsed": "",
-        "rightElapsed": ""
-      },
-      "color": {
-        "elapsed": "auto",
-        "total": "97",
-        "border": "97"
-      },
-      "width": 10
+      "charTotal": "/",
+      "width": 6
     },
-    "fraction": {
+
+    "percent": {
+      "type": 9,
+      "color": {
+        "green": "green",
+        "yellow": "green",
+	"red": "red"
+      },
       "ndigits": 2
-    },
-    "noBuffer": false,
-    "key": {
-      "width": 0,
-      "type": "string",
-      "paddingLeft": 0
-    },
-    "freq": {
-      "ndigits": 2,
-      "spaceBeforeUnit": "default"
-    },
-    "constants": []
-  },
-  "general": {
-    "thread": true,
-    "processingTimeout": 5000,
-    "detectVersion": true,
-    "playerName": "",
-    "dsForceDrm": false
-  },
-  "modules": [
+    },		/* 󰑃 */
+   "separator": "~> ",
+   "color": {
+     "separator": "31"
+   }
+},
+
+"modules": [
+    "break",
     {
-      "type": "title",
-      "key": " ",
-      "keyIcon": "",
-      "fqdn": false,
-      "color": {
-        "user": "",
-        "at": "",
-        "host": ""
-      }
+    "type": "os",
+    /*In case of \n use something like: \n\t\t\t\t\t\t\t to
+      move "Distro" to it place */
+    "key": " DISTRO ",
+    "keyColor": "31"
     },
     {
-      "type": "separator",
-      "string": "-",
-      "outputColor": "",
-      "times": 0
+    "type": "bios",
+    "key": "/│/ ╠ ",
+    "keyColor": "31",
+    "format": "{5}"
     },
     {
-      "type": "os",
-      "keyIcon": ""
+    "type": "kernel",
+    "key": "/│/ ╠ ",
+    "keyColor": "31"
     },
     {
-      "type": "host",
-      "keyIcon": "󰌢"
+    "type": "shell",
+    "key": "/│/ ╠ ",
+    "keyColor": "31"
     },
     {
-      "type": "kernel",
-      "keyIcon": ""
+    "type": "packages",
+    "key": "/│/ ╠ ",
+    "keyColor": "31"
     },
     {
-      "type": "uptime",
-      "keyIcon": ""
+    "type": "Processes",
+    "key": "/│/ ╠ ",
+    "keyColor": "31",
+    "format": "{1} Active processes"
     },
     {
-      "type": "packages",
-      "keyIcon": "󰏖",
-      "disabled": [
-        "winget"
-      ],
-      "combined": false
+    "type": "wm",
+    "key": " DE/WM ",
+    "keyColor": "light_yellow"
     },
     {
-      "type": "shell",
-      "keyIcon": ""
+    "type": "wmtheme",
+    "key": "/│/ ╠ ",
+    "keyColor": "light_yellow"
     },
     {
-      "type": "display",
-      "keyIcon": "󰍹",
-      "compactType": "none",
-      "preciseRefreshRate": false,
-      "order": null
+    "type": "icons",
+    "key": "/│/ ╠ ",
+    "keyColor": "light_yellow"
     },
     {
-      "type": "de",
-      "keyIcon": "",
-      "slowVersionDetection": false
+        "type": "cursor",
+        "key": "/│/ ╠ ",
+        "keyColor": "light_yellow",
     },
     {
-      "type": "wm",
-      "keyIcon": "",
-      "detectPlugin": false
+        "type": "terminalfont",
+        "key": "/│/ ╠ ",
+        "keyColor": "light_yellow",
     },
     {
-      "type": "wmtheme",
-      "keyIcon": "󰓸"
+    "type": "terminal",
+    "key": "/│/ ╠ ",
+    "keyColor": "light_yellow"
     },
     {
-      "type": "theme",
-      "keyIcon": "󰉼"
+    "type": "Board",
+    "key": "󰌢 SYSTEM ",
+    "keyColor": "blue",
+    "format": "{1} {2}"
     },
     {
-      "type": "icons",
-      "keyIcon": ""
+    "type": "cpu",
+    "key": "/│/ ╠ ",
+    "keyColor": "blue",
+    "format": "{1}:"
     },
     {
-      "type": "font",
-      "keyIcon": ""
+    "type": "cpu",
+    "showCoreCount": true,
+    "temp": true,
+    "key": "/│/ ╠    ╚ ",
+    "keyColor": "blue",
+    "format": "{3} Cores | {4} Logical Cores | {8}"
     },
     {
-      "type": "cursor",
-      "keyIcon": "󰆿"
+    "type": "cpu",
+    "showCoreCount": true,
+    "temp": true,
+    "key": "/│/ ╠    ╚ ",
+    "keyColor": "blue",
+    "format": "Max: {7} | Base: {6}"
     },
     {
-      "type": "terminal",
-      "keyIcon": ""
+    "type": "CPUUsage",
+    "percent": {
+	"type": 9,
+	"green": 83,
+	"yellow": 89,
+	"red": 94
+    },
+    "key": "/│/ ╠    ╚ ",
+    "keyColor": "blue",
+    "format": "Max: {2} | Avg: {1}"
     },
     {
-      "type": "terminalfont",
-      "keyIcon": ""
+    "type": "gpu",
+    "key": "/│/ ╠ ",
+    "format": "{1} {2}:",
+    "keyColor": "blue"
     },
     {
-      "type": "cpu",
-      "keyIcon": "",
-      "temp": false,
-      "showPeCoreCount": false
+    "type": "gpu",
+    "key": "/│/ ╠    ╚ ",
+    "format": "{3}",
+    "keyColor": "blue"
     },
     {
-      "type": "gpu",
-      "keyIcon": "󰾲",
-      "driverSpecific": false,
-      "detectionMethod": "pci",
-      "temp": false,
-      "hideType": "none",
-      "percent": {
-        "green": 50,
-        "yellow": 80,
-        "type": 0
-      }
+    "type": "display",
+    "key": "/│/ ╠ ",
+    "keyColor": "blue",
+    /*"compactType": "original-with-refresh-rate"*/
+    "format": "{1} x {2} @ {3}Hz | {6}"
     },
     {
-      "type": "memory",
-      "keyIcon": "",
-      "percent": {
-        "green": 50,
-        "yellow": 80,
-        "type": 0
-      }
+    "type": "memory",
+    "percent": {
+	"type": 3,
+	"green": 50,
+	"yellow": 80,
+	"red": 93
+    },
+    "key": "/│/ ╠ ",
+    "keyColor": "blue",
+    "format": "{1}/{2}  {4}   "
     },
     {
-      "type": "swap",
-      "percent": {
-        "green": 50,
-        "yellow": 80,
-        "type": 0
-      },
-      "keyIcon": "󰓡",
-      "separate": false
+    "type": "swap",
+    "percent": {
+	"type": 3,
+	"green": 50,
+	"yellow": 80,
+	"red": 93
+    },
+    "key": "/│/ ╠ ",
+    "keyColor": "blue",
+    "format": "{1}/{2}       {4}   "
     },
     {
-      "type": "disk",
-      "keyIcon": "",
-      "showRegular": true,
-      "showExternal": true,
-      "showHidden": false,
-      "showSubvolumes": false,
-      "showReadOnly": true,
-      "showUnknown": false,
-      "folders": "",
-      "hideFolders": "/efi:/boot:/boot/*",
-      "hideFS": "",
-      "useAvailable": false,
-      "percent": {
-        "green": 50,
-        "yellow": 80,
-        "type": 0
-      }
+    "type": "uptime",
+    "key": "/│/ ╠ ",
+    "keyColor": "blue"
     },
     {
-      "type": "localip",
-      "keyIcon": "󰩟",
-      "showIpv4": true,
-      "showIpv6": false,
-      "showMac": false,
-      "showLoop": false,
-      "showPrefixLen": true,
-      "showMtu": false,
-      "showSpeed": false,
-      "showFlags": false,
-      "compact": false,
-      "defaultRouteOnly": true,
-      "showAllIps": false,
-      "namePrefix": ""
+    "type": "TPM",
+    "key": "/│/ ╠ ",
+    "keyColor": "blue",
+    "format": "{2}"
     },
-    {
-      "type": "battery",
-      "keyIcon": "",
-      "temp": false,
-      "percent": {
-        "green": 50,
-        "yellow": 20,
-        "type": 0
-      }
-    },
+    /*{
+    "type": "localip",
+    "key": "/│/ ╠ ",
+    "keyColor": "blue"
+    },*/
     {
       "type": "poweradapter",
       "keyIcon": "󰚥"
     },
+    /*{
+    "type": "host",
+    "key": "/│/ ╠ ",
+    "keyColor": "blue",
+    "fallback": "Cool build bro! 😎",
+    "format": "{1}{2}"
+    },*/
+    /*{
+     "type": "command",
+     "key": "Host",
+     "text": "cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null || echo 'Cool build bro! 😎'"
+    },*/
     {
-      "type": "locale",
-      "keyIcon": ""
+    "type": "sound",
+    "key": " AUDIO ",
+    "format": "{2:22} {5}",
+    "keyColor": "light_green",
+    "percent": {
+	"type": 3,
+	"green": "100",
+    }
     },
+    {
+    "type": "player",
+    "key": "/│/ ╠ ",
+    "keyColor": "light_green"
+    },
+    {
+    "type": "media",
+    "key": "/│/ ╠ ",
+    "keyColor": "light_green"
+    },
+    /*{*/
+    /*"type": "weather",*/
+    /*"key": " ",*/
+    /*is a lil' snowman :holding back tears:*/   
+    /*"format": "  {1}",*/
+    /*"timeout": 2000*/
+    /*},*/
     "break",
     {
-      "type": "colors",
-      "key": " ",
-      "keyIcon": "",
-      "symbol": "block",
-      "paddingLeft": 0,
-      "block": {
-        "width": 3,
-        "range": [
-          0,
-          15
-        ]
-      }
-    }
-  ]
+    "type": "custom",
+    /*"format": "\u001b[90m  \u001b[31m  \u001b[32m  \u001b[33m  \u001b[34m  \u001b[35m  \u001b[36m  \u001b[37m  \u001b[38m  \u001b[39m  \u001b[39m    \u001b[38m  \u001b[37m  \u001b[36m  \u001b[35m  \u001b[34m  \u001b[33m  \u001b[32m  \u001b[31m  \u001b[90m "*/
+
+    /*Great pastel coloring :smile:*/
+    /*"format": "\u001b[38;5;153m  \u001b[38;5;159m  \u001b[38;5;151m  \u001b[38;5;218m  \u001b[38;5;182m  \u001b[38;5;159m  \u001b[38;5;151m  \u001b[38;5;218m  \u001b[38;5;182m  \u001b[38;5;153m  \u001b[38;5;159m  \u001b[38;5;151m  \u001b[38;5;218m  \u001b[38;5;182m  \u001b[38;5;159m  \u001b[38;5;151m  \u001b[38;5;218m  \u001b[38;5;182m  \u001b[38;5;153m  \u001b[38;5;159m  \u001b[38;5;151m  \u001b[0m"*/
+    
+    /*Slightly stronger pastel*/
+    /*"format": "\u001b[38;5;117m  \u001b[38;5;120m  \u001b[38;5;212m  \u001b[38;5;207m  \u001b[38;5;117m  \u001b[38;5;120m  \u001b[38;5;212m  \u001b[38;5;207m  \u001b[38;5;117m  \u001b[38;5;120m  \u001b[38;5;212m  \u001b[38;5;207m  \u001b[38;5;117m  \u001b[38;5;120m  \u001b[38;5;212m  \u001b[38;5;207m  \u001b[38;5;117m  \u001b[38;5;120m  \u001b[38;5;212m  \u001b[38;5;207m  \u001b[0m"*/
+    
+    /*Best color so far and here one  */
+    "format": "\u001b[38;5;99m  \u001b[38;5;117m  \u001b[38;5;120m  \u001b[38;5;164m  \u001b[38;5;213m  \u001b[38;5;219m  \u001b[38;5;159m  \u001b[38;5;123m  \u001b[38;5;99m  \u001b[38;5;117m  \u001b[38;5;120m  \u001b[38;5;164m  \u001b[38;5;213m  \u001b[38;5;219m  \u001b[38;5;159m  \u001b[38;5;123m  \u001b[38;5;99m  \u001b[38;5;117m  \u001b[38;5;120m  \u001b[0m"
+    },
+    "break",
+    ]
 }

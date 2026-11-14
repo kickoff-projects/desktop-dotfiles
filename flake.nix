@@ -116,16 +116,13 @@
           inherit system;
           modules = [
              "${self}/hosts/Home-Desktop/configuration.nix"
+
+	     # This profile owns the nvidia setup for this host. It imports
+	     # common/gpu/nvidia (videoDrivers = ["nvidia"]) and sets
+	     # hardware.nvidia.open = true, which is right for the RTX 3070.
              nixos-hardware.nixosModules.lenovo-legion-t526amr5
 	     sops-nix.nixosModules.sops
 	     #nix-index-database.nixosModules.default
-
-	     # remember to run this on host machine:
-	     # systemctl --user enable auto-fix-vscode-server.service
-	     vscode-server.nixosModules.default
-             ({ config, pkgs, ... }: {
-                services.vscode-server.enable = true;
-	     })
           ];
           specialArgs = {
             inherit inputs;
@@ -229,6 +226,10 @@
                 enable = true;
                 settings.user.name = "ViliLuosujarvi";
                 settings.user.email = "vili.luosujarvi@edu.lapinamk.fi";
+
+                # github https auth via the gh cli token
+                settings.credential."https://github.com".helper =
+                  "!gh auth git-credential";
               };
 
 	      # btop rewrites its own config when it exits, so it
@@ -257,6 +258,10 @@
                 enable = true;
                 settings.user.name = "ViliLuosujarvi";
                 settings.user.email = "vili.luosujarvi@edu.lapinamk.fi";
+
+                # github https auth via the gh cli token
+                settings.credential."https://github.com".helper =
+                  "!gh auth git-credential";
               };
 
 	      # btop rewrites its own config when it exits, so it

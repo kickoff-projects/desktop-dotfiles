@@ -5,6 +5,36 @@ Line counts are added/removed per file.
 
 ---
 
+## 2026-11-12 — Laptop's zsh prompt, tighter waybar, SUPER/ALT swapped
+
+- `hosts/Home-Desktop/.config/oh-my-zsh/custom/themes/zsh_theme` is now a copy of
+  `system/base/shells/oh-my-zsh/custom/themes/zsh_theme`, the theme the Laptop uses.
+- `system/base/shells/zsh.nix` `promptInit` tries `~/.config/oh-my-zsh/custom/themes/zsh_theme`,
+  then `~/.dotfiles/…`, then `~/desktop-dotfiles/…`. The single hardcoded `~/.dotfiles` path never
+  resolved in this clone, so the desktop had no theme at all. The Laptop still lands on
+  `~/.dotfiles/…`.
+- waybar `config.jsonc`: `"height"` 26 → 30, `"spacing"` 8 → 2.
+- waybar `style.css`: modules 15 → 17px, clock 14 → 16px, workspaces 14 → 16px, `#network`
+  `margin` `0 30px` → `0 2px`.
+- waybar `config.jsonc` `clock` format: the 3-space runs around the separator glyphs and before
+  the week number cut to one, and `#clock` `margin` `0px 3px` → `0 2px`.
+- waybar `config.jsonc` format strings: the runs of 3-4 literal spaces between a glyph and its
+  value in `cpu`, `memory`, `network`, `battery` and `custom/nvidia` cut to one or two, and the
+  trailing padding inside `format-wifi`, `format-ethernet`, `format-plugged`, `format-charging`
+  and `format-muted` dropped. That padding sat inside each module, so it widened the coloured
+  underline too; they now sit as tight as `#tray`.
+- `hosts/Home-Desktop/.config/hypr/UserConfigs/Settings.conf`:
+  `kb_options = altwin:swap_lalt_lwin, grp:ctrls_toggle`, the Laptop's line. The layout toggle
+  moves from ALT+SHIFT to both-CTRLs with it.
+- `hosts/Home-Desktop/.config/hypr/UserConfigs/Keybinds.conf`: audio on the bare F-row — F9 mute,
+  F10 volume down, F11 volume up, F12 mic mute — alongside the existing `XF86Audio*` binds. The
+  two `brightnessctl` binds on F5/F6 are deleted; there is no `/sys/class/backlight` on this host,
+  so they did nothing but swallow the keys. This file no longer matches the other four hosts.
+- Verbose comments in all four files cut down to one line each.
+
+Not applied yet: `sudo nixos-rebuild switch --flake .#Home-Desktop` for the shell and keyboard,
+`home-manager switch --flake .#nansus@Home-Desktop` for waybar and the theme file.
+
 ## 2026-11-06 (third pass) — one shared keybind file, Laptop's hypr layout everywhere
 
 Follow-ups you asked for: drop ROCm entirely, give every user Laptop's keybinds and
