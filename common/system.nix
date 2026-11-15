@@ -45,7 +45,7 @@
      pciutils
 
      # Custom cursor, used whichever account is logged in
-     inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
+     inputs.rose-pine-hyprcursor.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   # Allow unfree software
