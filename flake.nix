@@ -94,6 +94,19 @@
   	   config.allowUnfree = true;
 	};
 
+      # networking.hostName of each host's configuration.nix, duplicated here
+      # because home-manager is built standalone (homeFor below) and so has
+      # no access to the matching nixosConfiguration to read it back out of.
+      # common/home.nix asserts this against the real /etc/hostname so that
+      # switching the wrong "<user>@<host>" target on a machine fails loudly
+      # instead of silently overwriting that machine's .config with another
+      # host's files.
+      hostNames = {
+        Home-Desktop = "NanSuS-Desktop";
+        Home-Laptop = "NanSuS-Laptop";
+        Server = "NixOS-Server";
+      };
+
       # Builds "nansus@<host>" / "nansus-work@<host>" from common/home.nix +
       # users/<user>/home.nix + that host's .config overrides. host is the
       # directory name under hosts/, which is also the nixosConfigurations
@@ -107,6 +120,7 @@
           inherit pkgs;
           extraSpecialArgs = {
             inherit hostDir inputs;
+            expectedHostName = hostNames.${host};
           };
           modules = [
             ./common/home.nix

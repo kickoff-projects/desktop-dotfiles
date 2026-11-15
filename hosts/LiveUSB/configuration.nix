@@ -11,11 +11,11 @@ in
   # ISO / USB image settings
   isoImage = {
     volumeID = lib.mkForce "nixos-live";
-    isoName = lib.mkForce "nixos-live.iso";
     makeEfiBootable = true;
     makeUsbBootable = true;
     squashfsCompression = "lz4";
   };
+  image.fileName = lib.mkForce "nixos-live.iso";
 
   # Packages in live environment. foot replaces kitty - red theme below is
   # foot's, and this image has no hyprland/waybar to need kitty either.

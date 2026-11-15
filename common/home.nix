@@ -1,4 +1,4 @@
-{ config, lib, pkgs, hostDir, ... }:
+{ config, lib, pkgs, hostDir, expectedHostName, ... }:
 
 # Home-manager settings shared by every account. flake.nix's homeFor helper
 # combines this with users/<name>/home.nix (the account's own packages) and
@@ -11,6 +11,22 @@ let
 in
 {
   home.stateVersion = "24.11"; # Please read the comment before changing.
+
+  # hosts/Home-Desktop and hosts/Home-Laptop share the same usernames, so
+  # running e.g. "home-manager switch --flake .#nansus@Home-Laptop" on the
+  # desktop would otherwise silently deploy the laptop's waybar/monitor
+  # config onto this machine. The real /etc/hostname can only be read at
+  # activation time, not at eval time (that would need --impure), so this
+  # is a plain activation script, hooked before writeBoundary - the point
+  # up to which nothing has been changed yet - rather than an assertion.
+  home.activation.checkHostName =
+    lib.hm.dag.entryBefore [ "writeBoundary" ] ''
+      actualHostName=$(cat /etc/hostname 2>/dev/null || true)
+      if [ "$actualHostName" != "${expectedHostName}" ]; then
+        echo "This home-manager configuration is for \"${expectedHostName}\", but this machine's /etc/hostname is \"$actualHostName\". Switch to the matching \"<user>@<host>\" flake target for this machine instead." >&2
+        exit 1
+      fi
+    '';
 
   # The four XF86Audio media binds in the shared Keybinds.conf call
   # playerctl; it was installed nowhere before this refactor.
