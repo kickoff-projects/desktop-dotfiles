@@ -5,9 +5,9 @@
     "margin-bottom": 2,
     "margin-left": 12,
     "margin-right": 12,
-    "spacing": 2,
+    "spacing": 4,
     // Only output on this box
-    "output": "DP-2",
+    "output": "DP-3",
     "modules-left": ["clock", "hyprland/workspaces"],
     //"modules-center": ["clock", "custom/weather"],
     //"modules-right": ["network", "group/system-info", "disk", "memory", "custom/nvidia", "group/cpu_info", "battery", "tray"],
@@ -90,7 +90,7 @@
 
     "disk": {
         "interval": 5,
-        "format": "󰋊 {percentage_used}% ",
+        "format": "󰋊 {percentage_used}%",
         "path": "/",
         "tooltip": true,
         "unit": "GB",
@@ -144,7 +144,7 @@
 
     "memory": {
 	// 󰍛
-        "format": " {percentage}%   {swapPercentage}% ",
+        "format": " {percentage}%   {swapPercentage}%",
         "tooltip-format": "{used:0.1f}GB / {total:0.1f}GB  {swapUsed}GB / {swapTotal}GB",
         "interval": 1
     },
@@ -156,7 +156,7 @@
 	"input-filename": "temp1_input",
 	"interval": 10,
         "critical-threshold": 90,
-        "format": "{icon} {temperatureC}°C ",
+        "format": "{icon} {temperatureC}°C",
         "format-icons": ["󱃃", "󰔏", "󱃂"]
     },
 
@@ -191,17 +191,17 @@
         //"format-disconnected": "󰯡 Offline",
         //"format-alt": "{bandwidthUpBits} 󰁝 {bandwidthDownBits}"
 											// 󰖩 
-	"format-wifi" : " {bandwidthUpBytes:2}   {bandwidthDownBytes:2}  {signalStrength}% ",
-        "format-ethernet": " {bandwidthUpBytes:2}   {bandwidthDownBytes:2}  󰈀 ",
-	"tooltip-format": "{ifname}:{ipaddr} / {cidr} | 󰖩 {essid} ({signalStrength}%) ",
-        "format-linked": "󱘖 {ifname}:{ipaddr}   {bandwidthupbytes:2}   {bandwidthdownbytes:2}  {signalstrength}% ",
+	"format-wifi" : " {bandwidthUpBytes:2}   {bandwidthDownBytes:2}  {signalStrength}%",
+        "format-ethernet": " {bandwidthUpBytes:2}   {bandwidthDownBytes:2}  󰈀",
+	"tooltip-format": "{ifname}:{ipaddr} / {cidr} | 󰖩 {essid} ({signalStrength}%)",
+        "format-linked": "󱘖 {ifname}:{ipaddr}   {bandwidthupbytes:2}   {bandwidthdownbytes:2}  {signalstrength}%",
 	"format-disconnected" : "󰯡  no network ",
         "interval": 1,
         "tooltip": true,
     },
 
     "pulseaudio": {
-        "format": "{icon} {volume}% ",
+        "format": "{icon} {volume}%",
         "format-muted": "󰝟",
         "format-icons": {
             "headphone": "󰋋",
@@ -281,7 +281,7 @@
      //"interval": 5
 
     "custom/nvidia": {
-     "exec": "nvidia-smi --query-gpu=pstate,utilization.memory,utilization.gpu,temperature.gpu --format=csv,noheader,nounits | awk -F', ' '{printf \"GPU: \\uf0e7 %s   %s%%  \\uf2db %s%%  \\uf2c9 %s°C\", $1, $2, $3, $4} '",
+     "exec": "nvidia-smi --query-gpu=pstate,utilization.memory,utilization.gpu,temperature.gpu --format=csv,noheader,nounits | awk -F', ' '{printf \"GPU: \\uf0e7 %s   %s%%  \\uf2db %s%%  \\uf2c9 %s°C\", $1, $2, $3, $4}'",
      "interval": 1
 
 

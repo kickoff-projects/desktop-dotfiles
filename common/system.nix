@@ -23,6 +23,7 @@
     ../system/base/foot/foot.nix
     ../system/base/shells/zsh.nix
     ../system/base/users/work_user.nix
+    ../system/base/git.nix
 
     ../system/hardware/systemd.nix
     ../system/hardware/opengl.nix
