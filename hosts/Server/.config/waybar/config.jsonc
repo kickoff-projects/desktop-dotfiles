@@ -1,0 +1,97 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+    "margin-bottom": 2,
+    "margin-left": 12,
+    "margin-right": 12,
+    "spacing": 8,
+    "modules-left": ["clock", "sway/workspaces"],
+    "modules-right": ["network", "custom/nvidia", "group/cpu_info", "memory", "disk", "pulseaudio", "tray"],
+
+    "sway/workspaces": {
+        "format": "{icon}",
+        "on-click": "activate",
+        "all-outputs": true,
+        "sort-by-number": true,
+        "format-icons": {
+            "1": " 1 ",
+            "2": " 2 ",
+            "3": " 3 ",
+            "4": " 4 ",
+            "5": " 5 ",
+            "urgent": " ! ",
+            "active": "  ",
+            "default": ""
+        }
+    },
+
+    "disk": {
+        "interval": 5,
+        "format": "󰋊 {percentage_used}%",
+        "path": "/",
+        "tooltip": true,
+        "unit": "GB",
+        "tooltip-format": "Available {free} of {total}"
+    },
+
+    "tray": {
+        "icon-size": 16,
+        "spacing": 8
+    },
+
+    "clock": {
+        "interval": 1,
+        "format": "{:%H:%M:%OS         %d / %m    %U}",
+        "format-alt": "{:%Y-%m-%d}",
+        "tooltip-format": "<big>{:%A, %B %d, %Y}</big>\n<small>{calendar}</small>"
+    },
+
+    "cpu": {
+        "format": "CPU:  󰘚 {usage}%",
+        "tooltip": true,
+        "interval": 1
+    },
+
+    "memory": {
+        "format": " {percentage}%    {swapPercentage}%",
+        "tooltip-format": "{used:0.1f}GB / {total:0.1f}GB  {swapUsed}GB / {swapTotal}GB",
+        "interval": 1
+    },
+
+    "temperature": {
+        "interval": 10,
+        "critical-threshold": 90,
+        "format": "{icon} {temperatureC}°C",
+        "format-icons": ["󱃃", "󰔏", "󱃂"]
+    },
+
+    "group/cpu_info": {
+        "orientation": "horizontal",
+        "modules": ["cpu", "temperature"]
+    },
+
+    "network": {
+        "format-wifi": " {bandwidthUpBytes:2}   {bandwidthDownBytes:2}    {signalStrength}%  ",
+        "format-ethernet": " {bandwidthUpBytes:2}   {bandwidthDownBytes:2}    󰈀 ",
+        "tooltip-format": "{ifname}:{ipaddr} / {cidr}",
+        "format-disconnected": "󰯡  no network",
+        "interval": 1,
+        "tooltip": true
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "󰝟 ",
+        "format-icons": {
+            "default": ["󰕿", "󰖀", "󰕾"]
+        },
+        "on-click": "pavucontrol",
+        "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+    },
+
+    "custom/nvidia": {
+        "exec": "nvidia-smi --query-gpu=pstate,utilization.memory,utilization.gpu,temperature.gpu --format=csv,noheader,nounits | awk -F', ' '{printf \"GPU:  \\uf0e7 %s    %s%%   \\uf2db %s%%  \\uf2c9 %s°C\", $1, $2, $3, $4}'",
+        "interval": 1
+    }
+}

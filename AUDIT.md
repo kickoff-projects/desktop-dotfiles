@@ -3,11 +3,14 @@
 Repo audit, last re-checked on 2026-11-06 after the work recorded in `changes.md`. Numbering is
 kept from the first pass, so "fix 11" still points at the same thing.
 
-**What this repo does.** A NixOS flake that builds six machine configurations (desktop, laptop, an
-ML box called "Slave", two Work variants, a live USB image) and five Home Manager user
-configurations — `nansus` on the three leisure hosts, and a `nansus-work` account picked at the gdm
-login screen for the two Work ones. Each machine's `configuration.nix` picks modules out of
-`system/`, and each `home.nix` copies that host's `.config` folder into the user's home.
+**What this repo does.** A NixOS flake that builds four machine configurations (desktop, laptop, a
+headless Server, a live USB image) and five Home Manager user configurations — `nansus` on all
+three real hosts, and `nansus-work` picked at the gdm login screen on the two leisure hosts, as a
+different account rather than a different machine. As of the 2026-11-14 refactor (`changes.md`),
+each machine's `configuration.nix` imports the shared `common/system.nix` plus its own deltas, and
+each account's dotfiles are a three-layer merge of `common/.config`, that host's `.config`, and
+that user's `.config` (`common/config-files.nix`). The description below this point is the
+pre-refactor state; see `changes.md` for what moved.
 
 **Load assumed.** One person, a handful of personal machines, rebuilt by hand. No multi-user
 service, no concurrency. So "scale" findings are about rebuild cost and closure size, not races.
@@ -20,49 +23,16 @@ See the note at the end about `nix flake check`.
 
 ## Still open
 
-**11. Logging in opens two terminals** — `hosts/Home-Desktop/.config/hypr/UserConfigs/StartPrograms.conf:6-7`
+**11. Logging in opens two terminals** — `common/.config/hypr/UserConfigs/StartPrograms.conf:6-7`
 
 - What this is: the autostart list for the desktop session.
-- Problem: `exec-once = [workspace 1 silent] $terminal` appears twice in a row, so two kitty
+- Problem: `exec-once = [workspace 1 silent] $terminal` appears twice in a row, so two foot
   windows stack on workspace 1 at every login.
 - Fix: delete one of the two lines.
 - If we skip it: a window to close every login.
-
-**18. Two flake inputs are downloaded and never used** — `flake.nix:24,61`
-
-- What this is: `flake-utils` and `sops-nix`.
-- Problem: `flake-utils` is listed, named in the outputs function, and used nowhere.
-  `sops-nix.nixosModules.sops` is added to all five machines without a single `sops.*` option set
-  anywhere. Both are pinned in `flake.lock`, fetched on every `nix flake update`, and evaluated on
-  every rebuild.
-- Fix: remove `flake-utils` entirely. Leave `sops-nix` out until secrets are actually managed — the
-  comment at `flake.nix:57-60` says that has not happened yet, and re-adding it later is two lines.
-- If we skip it: two dependencies to update and audit that buy nothing.
-
-**19. SSH is on, on three machines, with no keys declared** — `system/security/sshd.nix`
-
-- What this is: incoming SSH on port 5445, imported by Home-Desktop, Laptop and Slave.
-- Problem: password login is correctly off, so this is a lockout problem rather than an exposure
-  one. The line that would install a key is commented out, so the only way in is a hand-placed
-  `~/.ssh/authorized_keys` that this repo does not track. Reinstall a machine from the flake and it
-  comes up listening with no way to log in. `openFirewall` defaults to true, so the port is open on
-  the LAN either way.
-- Fix: put the public keys in `users.users.nansus.openssh.authorizedKeys.keys` — public keys are not
-  secrets.
-- If we skip it: the headless Slave box is one reinstall away from needing a keyboard.
-
-**22. Binds in the shared keybind file point at programs some hosts lack**
-
-- What this is: `UserConfigs/Keybinds.conf` is now one shared file on all five hosts.
-- Problem: a few binds name programs that are only installed on some of them. `$mainMod, F` /
-  `CTRL SHIFT, F` (zen) and `$mainMod, V` (protonvpn-gui) work on the Laptop only; `$mainMod, C`
-  (code) works everywhere except the Laptop, whose vscode is commented out; `CTRL SHIFT, X/A/S`
-  (hyprshot) needs `screen_shot.nix`, which Slave and both Work hosts do not import; `$mainMod, D`
-  and `$mainMod, S` have no discord or steam on the Work hosts; and the four `XF86Audio` media
-  binds call `playerctl`, which is installed nowhere.
-- Fix: either install the missing programs on the hosts that should have them, or drop the binds you
-  do not want shared. Both are a preference, which is why nothing was changed.
-- If we skip it: those keys do nothing on those hosts, silently.
+- Status after the 2026-11-14 refactor (see `changes.md`): deliberately left as-is. It moved
+  from a per-host file into `common/.config`, so it now affects both leisure hosts identically,
+  but the fix itself was out of scope for that round.
 
 ---
 
@@ -110,6 +80,29 @@ Each of these was fixed on 2026-11-06; `changes.md` records exactly what changed
 - **20.** `ncgo` uses `-d`, and the git identity lives once in the shared `basics` / `workBasics`
   bindings in the current `settings.user` spelling.
 
+Fixed on 2026-11-14, as part of the shared-base/color-scheme refactor (`changes.md`):
+
+- **18.** `flake-utils` and `sops-nix` are gone from `flake.nix` entirely — neither input nor any
+  `sops-nix.nixosModules.sops` module reference remains. Re-adding `sops-nix` once secrets are
+  actually managed is two lines, same as before.
+- **19.** Closed by removing the service rather than declaring keys: `system/security/sshd.nix`
+  stays as a file, but its import is commented out on every host (`hosts/Home-Desktop`,
+  `hosts/Home-Laptop`, `hosts/Server`), matching the repo's existing "commented are usually
+  convenient to have" convention. The headless Server now has no remote access and is rebuilt at
+  the machine — a deliberate trade, not an oversight.
+- **22.** The shared `Keybinds.conf` binds stayed uniform on purpose, per instruction: "all hosts
+  should have the same binds for keys for ease of use even if they haven't gotten yet the same
+  software installed." `playerctl` is now installed via `common/home.nix`, so the four
+  `XF86Audio` binds work everywhere; the rest (zen, protonvpn-gui, code, hyprshot, discord, steam)
+  stay inert on hosts without the matching program, which is the accepted cost of uniformity.
+  The Work hosts this finding named no longer exist (see `changes.md`), and `screen_shot.nix`'s
+  hyprshot binds don't apply to the Server at all now that it runs sway — it gets its own
+  grim+slurp binds in `hosts/Server/.config/sway/config` instead.
+
+The rofi theme's hardcoded `/nix/store/...-rofi-1.7.5+wayland3/.../Arc-Dark.rasi` path (found
+during the same refactor, never a numbered finding here) is also gone — `rofi/config.rasi` now
+points at a repo-carried `account.rasi`, themed per account like everything else.
+
 ---
 
 ## Not findings
@@ -131,11 +124,8 @@ with `bash -x`, the trailing commas in `Monitors.conf:5-6`, the `allowUnfreePred
 
 ## Verdict
 
-Healthy. Nothing open can break a rebuild or take a machine down. **11** and **21** are one-line
-preference calls, **18** removes two dependencies, and **19** is worth doing before the next
-reinstall of the headless box.
-
-**Lean: about -40 lines and -2 dependencies still possible**, out of 263 files today.
+Healthy. Nothing open can break a rebuild or take a machine down. **11** is the one remaining
+one-line preference call; **18**, **19** and **22** were closed in the 2026-11-14 refactor.
 
 ## Not checked
 

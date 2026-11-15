@@ -1,0 +1,205 @@
+/* Animations (default, full rainbow). Switched out by a host layer's own
+ * effects.css - see hosts/Server/.config/waybar/effects.css for the flat,
+ * single-stop version used where animations are off entirely. */
+
+@keyframes rainbow-border {
+0% {
+    border-top-color: @color16;
+    border-left-color: @color16;
+    border-right-color: @color16;
+    border-bottom-color: @color16;
+    }
+
+16.67% {
+    border-top-color: @color13;
+    border-left-color: @color13;
+    border-right-color: @color13;
+    border-bottom-color: @color13;
+    }
+
+33.33% {
+    border-top-color: @color4;
+    border-left-color: @color4;
+    border-right-color: @color4;
+    border-bottom-color: @color4;
+    }
+
+50% {
+    border-top-color: @color6;
+    border-left-color: @color6;
+    border-right-color: @color6;
+    border-bottom-color: @color6;
+    }
+
+66.67% {
+    border-top-color: @color2;
+    border-left-color: @color2;
+    border-right-color: @color2;
+    border-bottom-color: @color2;
+    }
+
+83.33% {
+    border-top-color: @color3;
+    border-left-color: @color3;
+    border-right-color: @color3;
+    border-bottom-color: @color3;
+    }
+
+91.67% {
+    border-top-color: @color9;
+    border-left-color: @color9;
+    border-right-color: @color9;
+    border-bottom-color: @color9;
+    }
+
+100% {
+    border-top-color: @color16;
+    border-left-color: @color16;
+    border-right-color: @color16;
+    border-bottom-color: @color16;
+    }
+}
+
+/* Rainbow border for only the active workspace window so it doesn't look
+   so bright with pink outline */
+@keyframes active-kitty-rainbow-border {
+    0% {
+        border-top-color: @color13;
+        border-left-color: @color13;
+        border-right-color: @color13;
+        border-bottom-color: @color13;
+    }
+
+    20% {
+        border-top-color: @color4;
+        border-left-color: @color4;
+        border-right-color: @color4;
+        border-bottom-color: @color4;
+    }
+
+    40% {
+        border-top-color: @color6;
+        border-left-color: @color6;
+        border-right-color: @color6;
+        border-bottom-color: @color6;
+    }
+
+    60% {
+        border-top-color: @color2;
+        border-left-color: @color2;
+        border-right-color: @color2;
+        border-bottom-color: @color2;
+    }
+
+    80% {
+        border-top-color: @color9;
+        border-left-color: @color9;
+        border-right-color: @color9;
+        border-bottom-color: @color9;
+    }
+
+    100% {
+        border-top-color: @color13;
+        border-left-color: @color13;
+        border-right-color: @color13;
+        border-bottom-color: @color13;
+    }
+}
+
+@keyframes rainbow-text {
+    0% { color: alpha(@color16, 0.9); }
+    16.67% { color: @color13; }
+    33.33% { color: @color4; }
+    50% { color: @color6; }
+    66.67% { color: @color2; }
+    83.33% { color: @color9; }
+    100% { color: alpha(@color16, 0.9); }
+}
+
+/* rainbow border, static kitty color */
+@keyframes kitty_cat_rainbow {
+    0% {
+        border-top-color: alpha(@color16, 0.80);
+        border-left-color: alpha(@color16, 0.80);
+        border-right-color: alpha(@color16, 0.80);
+	border-bottom-color: alpha(@color16, 0.80);
+	color: @color4;
+    }
+
+    16.67% {
+        border-top-color: @color13;
+        border-left-color: @color13;
+        border-right-color: @color13;
+	border-bottom-color: @color13;
+	color: @color13;
+}
+
+    33.33% {
+        border-top-color: @color4;
+        border-left-color: @color4;
+        border-right-color: @color4;
+	border-bottom-color: @color4;
+        color: @color4;
+	}
+
+    50% {
+        border-top-color: @color6;
+        border-left-color: @color6;
+        border-right-color: @color6;
+	border-bottom-color: @color6;
+    	color: @color13;
+	}
+
+    66.67% {
+        border-top-color: alpha(@color2, 0.9);
+        border-left-color: alpha(@color2, 0.9);
+        border-right-color: alpha(@color2, 0.9);
+	border-bottom-color: alpha(@color2, 0.9);
+    	color: @color4;
+	}
+
+    83.33% {
+        border-top-color: alpha(@color9, 0.8);
+        border-left-color: alpha(@color9, 0.8);
+        border-right-color: alpha(@color9, 0.8);
+	border-bottom-color: alpha(@color9,0.8);
+    	color: @color13;
+	}
+
+    100% {
+        border-top-color: alpha(@color16, 0.75);
+        border-left-color: alpha(@color16, 0.75);
+        border-right-color: alpha(@color16, 0.75);
+	border-bottom-color: alpha(@color16, 0.75);
+    	color: @color4;
+	}
+}
+
+/* Clock and internet speed, slightly customized rainbow color */
+@keyframes fav-color-rainbow {
+    0% {
+	 opacity: 75;
+	 color: shade(@color13, 0.75);
+	 }
+
+    50% {
+	opacity: 75;
+	color: shade(@color4, 0.75);
+	}
+
+    100% {
+	 opacity: 75;
+	 color: shade(@color13, 0.67);
+	 }
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 4px alpha(@color13, 0.6); }
+    100% { box-shadow: 0 0 12px alpha(@color5, 0.8); }
+}
+
+@keyframes blink {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1.0; }
+}

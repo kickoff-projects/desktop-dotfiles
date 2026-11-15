@@ -17,12 +17,7 @@
 	noto-fonts-color-emoji
 
 	#nerdfonts
-	# applied as serif, sansSerif and monospace in
-	# .dotfiles/hosts/Home-Desktop/home.nix,
-	# .dotfiles/hosts/Slave/home.nix and
-	# .dotfiles/hosts/Work/Home-Laptop-Work/home.nix
-	# as "FiraCode Nerd Font", and as the kitty font in
-	# .dotfiles/hosts/Work/Home-Laptop-Work/home.nix
+	# applied as monospace below, for every account
 	nerd-fonts.fira-code
 	nerd-fonts.fira-mono
 	nerd-fonts.mononoki

@@ -1,0 +1,49 @@
+/* Red palette, matching the Server's flat theme. */
+* {
+    background:     #000000cc;
+    background-alt: #1a0303cc;
+    foreground:     #ffc8c8ff;
+    selected:       #ff2b2bff;
+    active:         #ff3b14ff;
+    urgent:         #cc0000ff;
+
+    background-color: @background;
+    text-color:        @foreground;
+}
+
+window {
+    border:        2px;
+    border-color:  @selected;
+    border-radius: 0px;
+    width:         30%;
+}
+
+mainbox {
+    children: [ inputbar, listview ];
+}
+
+inputbar {
+    children: [ prompt, entry ];
+    background-color: @background-alt;
+    border-radius: 0px;
+    padding: 8px;
+}
+
+entry, prompt {
+    text-color: @foreground;
+}
+
+listview {
+    lines: 8;
+    spacing: 4px;
+}
+
+element {
+    padding: 6px;
+    border-radius: 0px;
+}
+
+element selected {
+    background-color: @selected;
+    text-color: @background;
+}

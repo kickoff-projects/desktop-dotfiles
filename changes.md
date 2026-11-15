@@ -5,6 +5,226 @@ Line counts are added/removed per file.
 
 ---
 
+## 2026-11-15 — kakoune and foot palettes generated, not hand-copied
+
+Follow-up to the 2026-11-14 refactor. Asked directly whether the common/hosts/users layering was
+reasoned independently of `/srv/nixos-vm-config` or just copied from it — honest answer: the
+overlay *mechanism* is independently justified (same principle as a dotfile-manager symlink farm),
+but hand-copying whole palette files per theme was taken from vm-config without separately
+checking whether generation would be better. For kakoune and foot specifically — both already
+16-slot color tables — it would.
+
+### Added
+
+- **`common/palettes.nix`** — each theme's kakoune (base16-shaped) and foot color sets, as plain
+  Nix data. The two are kept independent per theme on purpose: the existing rainbow kakoune scheme
+  (mellow-purple) and the existing rainbow foot scheme ("space rainbow") were authored
+  independently for their own tool, so merging them into one hex set would have changed what
+  currently renders.
+- **`common/lib/render-kak.nix`**, **`common/lib/render-foot-colors.nix`** — the ~140-line
+  `set-face` body (identical across every theme, confirmed by diff before this landed) and the
+  foot INI shape, each written once as a template instead of three times as a file.
+- **`hosts/Server/theme.nix`** — sets the Server's kak+foot override with `lib.mkForce`.
+  `flake.nix`'s `homeFor` imports a host's `theme.nix` automatically when present, same
+  conditional-import pattern as `hostDir/.config`.
+
+### Changed
+
+- `common/home.nix` sets `kak/colors/account.kak` and `foot/colors.ini` via `lib.mkDefault
+  (renderKak …)` / `lib.mkDefault (renderFootColors …)` instead of letting the directory-scan
+  overlay pick up a plain file at those paths.
+- `users/nansus-work/home.nix` overrides only `kak/colors/account.kak` with `lib.mkForce` — foot
+  stays untouched, so it's still rainbow for that account, same as before this change.
+- `hosts/LiveUSB/configuration.nix` renders both files inline via `environment.etc."...".text`
+  instead of `.source`-ing a checked-in file; no home-manager there, so this is `mkForce`'s
+  equivalent for a host that has no home-manager layer to force it through.
+
+### Deleted
+
+The now-generated hand files: `common/.config/kak/colors/account.kak`,
+`users/nansus-work/.config/kak/colors/account.kak`, `hosts/Server/.config/kak/colors/account.kak`,
+`common/.config/foot/colors.ini`, `hosts/Server/.config/foot/colors.ini`,
+`hosts/LiveUSB/.config/foot/colors.ini`, `hosts/LiveUSB/.config/kak/colors/account.kak`. The
+13-file kakoune color *library* (`purple_best.kak` and friends, for manual switching) is
+untouched — only the file literally named `account.kak` is generated.
+
+### Verified
+
+- Rendered every theme/surface combination and diffed against the file it replaced before
+  deleting anything: rainbow kak, red kak (both copies), rainbow foot, red foot all came back
+  byte-identical except for two pre-existing things, kept rather than silently "fixed": a comment
+  in the rainbow kak file names a different hex (`3d85c6`) than the color it's commenting on
+  actually uses (`5191cc`) — a mismatch that already existed in the hand file, now captured
+  explicitly as `commentAD01` in `palettes.nix` rather than resolved; and the foot files' header
+  comments, which I'd written myself during the first pass and updated to describe generation
+  instead of hand-authorship (not data, so not a parity concern).
+- Re-ran the precedence check from the first pass, now against `.text` values instead of
+  `.source` paths: `nansus@Home-Laptop` → rainbow kak + rainbow foot; `nansus-work@Home-Laptop` →
+  red kak + **rainbow** foot (confirming the override is scoped to kak only); `nansus@Server` →
+  red kak + red foot; LiveUSB's `environment.etc` → red kak + red foot. All five matched.
+- Face-set diff re-run against the *generated* output (not just the old hand files) — still
+  identical between themes.
+- All four `nixosConfigurations` and five `homeConfigurations` still evaluate. File count: 140 → 137.
+
+---
+
+## 2026-11-14 — Shared base, per-account color schemes, Slave → Server
+
+The big one: deduplicated the five near-identical `.config` trees into `common/` + `hosts/` +
+`users/` (mirroring `/srv/nixos-vm-config`'s `common`/`users` split, extended with a host layer
+since this repo has four machines instead of one), made color scheme a per-account choice instead
+of a per-host one, renamed `Slave` to `Server` and moved it onto sway, and collapsed the two Work
+`nixosConfigurations` now that leisure/work software lives in `home.packages` rather than the
+system config. Full plan: `/home/user/.claude/plans/this-codebase-is-a-hidden-umbrella.md`.
+
+### Added
+
+- **`common/config-files.nix`** — ported from `/srv/nixos-vm-config/common/config-files.nix`,
+  turns a directory into per-file `xdg.configFile` entries, with a `pathExists` guard for a
+  missing layer.
+- **`common/home.nix`** — the shared home-manager base (git identity, `seedBtopConfig`, now
+  extended to reseed when the existing `btop.conf` names a theme path that no longer exists;
+  `programs.ssh.enable = false`; `direnv`; `playerctl` for the shared media binds) plus the
+  three-layer `xdg.configFile` merge: `common/.config` // `hostDir/.config` // `users/<name>/.config`.
+- **`common/system.nix`** — the NixOS module list and `nansus` user/group block every machine
+  takes, replacing ~30 repeated import lines per host.
+- **`common/.config/`** — everything that was byte-identical across Home-Laptop and Home-Desktop:
+  `hyprland.conf`, `hyprpaper.conf` (now pointing at `~/.config/wallpaper/...` instead of a
+  hardcoded `/home/nansus/.dotfiles` or `/home/nansus/desktop-dotfiles`, whichever didn't match
+  the host), `UserConfigs/{Animations,Decorations,Execs,StartPrograms,Vim-submap,WindowRules}.conf`,
+  `scripts/smooth_RainbowBorder.sh`, `waybar/style.css` (the superset of both hosts' selectors —
+  the two differed because of the `pulseaudio#microphone` vs `custom/microphone` module split,
+  not the palette), `foot/colors.ini`, `btop/btop.conf.in`, `rofi/config.rasi`, the kakoune
+  library and `kakrc`, `fastfetch/config.jsonc` + logos, `oh-my-zsh/custom/themes/zsh_theme`, and
+  one `nixpkgs/config.nix`.
+- **`common/.config/waybar/colors.css` + `effects.css`** — the `@define-color` block and the
+  `@keyframes` split out of `style.css`. A host or user layer replaces either to switch the
+  theme without touching the ~350 lines of selectors.
+- **`common/.config/hypr/UserConfigs/palette.conf`** — replaces `wallust/wallust-hyprland.conf`;
+  `Decorations.conf` now sources `~/.config/hypr/UserConfigs/palette.conf` instead of the
+  hardcoded `/home/nansus/.config/wallust/wallust-hyprland.conf`, which meant `nansus-work` never
+  got a palette at all.
+- **`common/.config/kak/colors/account.kak`**, **`btop/themes/account.theme`**,
+  **`rofi/account.rasi`** — the same fixed-filename-indirection pattern for kakoune, btop and
+  rofi. `rofi/config.rasi` no longer points at a nix-store path
+  (`/nix/store/...-rofi-1.7.5+wayland3/.../Arc-Dark.rasi`) that breaks on every rofi bump.
+- **`common/.config/hypr/UserConfigs/Keybinds.conf`** — one merged shared file: Home-Laptop's
+  `code` bind and brightness binds (F5/F6), plus Home-Desktop's F9-F12 audio row and SHIFT-mic
+  variants. Per instruction, uniform binds on every host even where the software isn't installed
+  yet.
+- **`users/nansus/home.nix`**, **`users/nansus-work/home.nix`** — the account-level package
+  lists (see "Moved to home.packages" below). `nansus-work` additionally carries a Rust toolchain
+  and Python/uv.
+- **`users/nansus-work/.config/kak/colors/account.kak`** — the one file the work account
+  overrides: red, copied verbatim from `/srv/nixos-vm-config/users/user/.config/kak/colors/account.kak`.
+  Everything else (waybar, borders, zsh) stays rainbow for this account, per instruction.
+- **`hosts/Server/.config/{sway,waybar,foot,kak,btop,rofi}/`** — the Server's full red palette
+  set, same reference files, plus `sway/config` and `sway/colors` (see below) and a flat
+  single-stop `waybar/effects.css` (every keyframe common's style.css animates is still defined,
+  just holding one color, so nothing references an undefined keyframe).
+
+### Moved to `home.packages`
+
+Plain packages moved off the system config and onto the account that uses them, so the two
+leisure machine configs and the Server no longer need their own copy of software that isn't
+`programs.*.enable`-shaped: discord, spotify, prismlauncher, FreeCAD, qemu, libreoffice-qt,
+dolphin, zen-browser, proton-vpn, openconnect, feh, claude-code (→ `users/nansus`); rustc/cargo
+toolchain, uv, python3, libreoffice-qt, openconnect, proton-vpn (→ `users/nansus-work`, new).
+`programs.steam.enable` and `gamemode.enable` stay system-level on the two leisure hosts — steam
+needs firewall openings and `hardware.graphics.enable32Bit`, which can't move to a home module —
+so `nansus-work` sees steam installed but unused on those two machines.
+
+This is what let the two Work `nixosConfigurations` collapse: once software is per-account, a
+leisure and a work machine config are identical, so there was nothing left to carry a separate
+`Home-Desktop-Work` / `Home-Laptop-Work` system for.
+
+### Renamed
+
+- `hosts/Laptop/` → `hosts/Home-Laptop/`; `hosts/Slave/` → `hosts/Server/`. Every host directory
+  now has `configuration.nix` + `hardware.nix` (was `Laptop-hw.nix` / `Desktop-hw.nix` /
+  `Slave-hw.nix` / `liveusb.nix`), named for role rather than host, and the directory name equals
+  the flake attribute — `hosts/Home-Laptop` builds `.#Home-Laptop`, no mapping table needed.
+- Flake attribute `Slave` → `Server`; home key `nansus@Slave` → `nansus@Server`;
+  `networking.hostName`: `"Slave"` → `"NixOS-Server"`, `"liveusb-nix"` → `"hassus"` (and the
+  `specialArgs.hostname` indirection LiveUSB alone used is gone — it's a plain line in its
+  `configuration.nix` now, like every other host).
+- `system/base/hostnames/{Laptop,Home-Desktop,Slave}.nix` (three 8-line files) collapsed into one
+  `networking.hostName` line per host.
+- `system/games/tailscale.nix` → `system/security/tailscale.nix` (it's a VPN mesh, not a game).
+
+### Server runs sway, not hyprland
+
+`base/hyprland.nix` is gone from the Server; it gets `programs.sway.enable` instead. Nothing in
+`hosts/Server/.config/hypr/` survived — sway has no blur/shadow/decoration block at all, so
+"strip the effects" needed no configuring, just not being hyprland. Binds in
+`hosts/Server/.config/sway/config` are translated from the shared `Keybinds.conf` (`bindsym`
+instead of `bind`, same mod key and letters where sway has an equivalent); layout tricks and the
+Vim submap have no sway equivalent and are dropped there. Screenshot binds keep their keys
+(`Ctrl+Shift+X/A/S`) but call `grim`+`slurp` instead of `hyprshot`, since `screen_shot.nix`'s
+tools are hyprland-only — the Server gets `grim`, `slurp`, `jq`, `wl-clipboard` in its own
+`environment.systemPackages` instead of importing that module. Waybar's workspace module is
+`"sway/workspaces"`, not `"hyprland/workspaces"`. `hosts/Server/.config/sway/colors` is the exact
+`client.focused`/`client.unfocused` file from `/srv/nixos-vm-config/users/user/.config/sway/colors`.
+
+### Deleted
+
+- `hosts/Work/` entirely (two system configs, their `.config` trees, their `home.nix`),
+  `system/base/shells/work_zsh.nix`, `system/games/ydotool.nix` (only Home-Desktop imported it,
+  nothing calls `ydotool`), `system/base/keymap.nix` (superseded duplicate of
+  `UserConfigs/Settings.conf`'s `kb_layout`, still spelled the renamed `xkbOptions`),
+  `system/base/kernel.nix` (entirely commented out, set nothing), `system/base/hostnames/`,
+  three orphaned `hosts/*/home.nix` files once their content moved to `common/home.nix` /
+  `users/*/home.nix`.
+- `testing_stuff_-beware-/` (880 lines, unreferenced, own README said to stay out), all `kitty/`
+  directories and the `kitty` package (commented out of `hyprland.nix`, never actually installed
+  on Laptop/Home-Desktop despite the configs existing; `$terminal` was already `foot`
+  everywhere), `neofetch/` on four hosts (every greeting runs `fastfetch`), `emacs/` +
+  the committed compiled `.eln` binary, waybar/fastfetch parked variants
+  (`2nd_config.jsonc`, `multi_output_config*.jsonc`, `original_style.css`,
+  `config-compact/pokemon/v2.jsonc`, `config.jsonc.bak`), duplicate logo/theme/nixpkgs-config
+  copies that were byte-identical to a file already kept.
+- The `flake-utils` and `sops-nix` flake inputs and every `sops-nix.nixosModules.sops` reference
+  (AUDIT #18) — closes it by removal, not by using them.
+
+### Not changed
+
+- Laptop and Home-Desktop's rainbow scheme: unchanged, by instruction — they're the reference.
+- `system/security/sshd.nix` stays as a file; its import is commented out on every host
+  (AUDIT #19 closed by removing the service, not declaring keys — the headless Server has no
+  remote access now and is rebuilt at the machine).
+- AUDIT #11 (double terminal on login) and AUDIT #22 (uniform-but-sometimes-inert binds) —
+  left as recorded in `AUDIT.md`.
+- Commented-out module imports (`Docker.nix`, `virt-manager.nix`, `VirtualBox.nix`,
+  `terminator.nix`, `roccat.nix`, `mitmproxy_cert.nix`) — still a deliberate keep.
+- The 13 kakoune color schemes beyond `account.kak`/`purple_best.kak` — kept as a library, one
+  shared copy instead of five. `colors/absolute_best/purple_best.kak` differed from
+  `colors/purple_best.kak`, so it's `colors/purple_best-absolute.kak` now, not discarded.
+- All six wallpaper images — moved to `common/.config/wallpaper/` (so hyprpaper's checkout-path
+  bug above is actually fixed), not deleted.
+
+### Verified
+
+- `nix flake show`: all four `nixosConfigurations` (`Home-Desktop`, `Home-Laptop`, `Server`,
+  `LiveUSB`) and `homeConfigurations` evaluate.
+- Each `nixosConfigurations.*.config.system.build.toplevel.drvPath` evaluates to a real
+  derivation, with the hostname baked into the derivation name confirming the rename:
+  `nixos-system-NanSuS-Desktop`, `nixos-system-NanSuS-Laptop`, `nixos-system-NixOS-Server`,
+  `nixos-system-hassus`.
+- Each of the five `homeConfigurations.*.activationPackage.drvPath` evaluates.
+- `environment.systemPackages` diffed per host: Home-Laptop/Home-Desktop carry hyprland, steam,
+  gamemode, screen_shot's hyprshot/grimblast/hyprpicker; Server carries sway, grim/slurp instead,
+  no steam/gamemode, no bluez. Confirms `common/system.nix` didn't leak the wrong packages onto
+  the wrong host.
+- Layer-merge precedence checked directly via `config.xdg.configFile.<path>.source`:
+  `nansus@Home-Laptop` resolves `waybar/colors.css` to `common/`; `nansus@Server` resolves the
+  same key to `hosts/Server/`; `nansus-work@Home-Laptop` resolves `kak/colors/account.kak` to
+  `users/nansus-work/` while every other key (`waybar/colors.css` included) still resolves to
+  `common/`. All five came out exactly as the account/host split intends.
+- The rainbow and red `account.kak` schemes declare the same `set-face` targets and the same
+  `declare-option` names - no face bleeds through switching between them.
+
+---
+
 ## 2026-11-12 — Laptop's zsh prompt, tighter waybar, SUPER/ALT swapped
 
 - `hosts/Home-Desktop/.config/oh-my-zsh/custom/themes/zsh_theme` is now a copy of

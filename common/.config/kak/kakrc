@@ -1,0 +1,7 @@
+# Colors: each account's own, from its users/<name>/.config - see
+# .config/kak/colors/account.kak for the default (rainbow/purple_best).
+source "~/.config/kak/colors/account.kak"
+
+
+
+map global normal ' ':exec i<space><esc>'

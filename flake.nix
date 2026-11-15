@@ -14,14 +14,11 @@
 
     # Most of my machines can be found on nixos-hardware
     # repo so I'm using them there. if you are more interested,
-    # Slave is custom built computer which doesn't have 
+    # Server is custom built computer which doesn't have
     # configuration in nixos-hardware, check:
     # .dotfiles/system/hardware/nividia_proprietary.nix or
     # https://nixos.wiki/wiki/Nvidia for more info
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-
-    # flake utils, might need.
-    flake-utils.url = "github:numtide/flake-utils";
 
     # For easier /nix/store workflow
     #nix-index-database.url = "github:nix-community/nix-index-database";
@@ -38,7 +35,7 @@
 
     # Import hyprland even tough I know in my heart that
     # this doens't do shit
-    # in my configuration because I have been so lazy to 
+    # in my configuration because I have been so lazy to
     # not change hyprland.nix file in system/base/ :(
     hyprland = {
       url = "github:hyprwm/Hyprland";
@@ -46,20 +43,13 @@
     };
 
     # not in use at the moment, could be just
-    # removed from this file entirely, 
+    # removed from this file entirely,
     # will be here just temporarily (clueless)
     #hyprlang = {
     #  url = "github:hyprwm/hyprlang";
       #inputs.system.follows = "system";
     #  inputs.nixpkgs.follows = "nixpkgs";
     #};
-
-    # sops-nix for ecrets management
-    # (still under maintanance aka I haven't had
-    # time nor motivaion to learn this yet so far 
-    # to actually implement it as safe solution)
-    sops-nix.url = "github:Mic92/sops-nix";
-    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     # VSCode server for running e.g jupyter server for
     # machine learning purposes
@@ -78,12 +68,10 @@
   outputs = {
 
       self,
-      nixpkgs, 
-      flake-utils,
+      nixpkgs,
       hyprland,
       home-manager,
       nixos-hardware,
-      sops-nix,
       vscode-server,
       rose-pine-hyprcursor,
       zen-browser
@@ -105,11 +93,35 @@
 	   # all open-source, my bad!
   	   config.allowUnfree = true;
 	};
+
+      # Builds "nansus@<host>" / "nansus-work@<host>" from common/home.nix +
+      # users/<user>/home.nix + that host's .config overrides. host is the
+      # directory name under hosts/, which is also the nixosConfigurations
+      # attribute - see hosts/<host>/configuration.nix.
+      homeFor = user: host:
+        let
+          hostDir = ./hosts + "/${host}";
+          themeFile = hostDir + "/theme.nix";
+        in
+        inputs.home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          extraSpecialArgs = {
+            inherit hostDir inputs;
+          };
+          modules = [
+            ./common/home.nix
+            ./users/${user}/home.nix
+          ] ++ lib.optional (builtins.pathExists themeFile) themeFile ++ [
+            {
+              home.username = user;
+              home.homeDirectory = "/home/${user}";
+            }
+          ];
+        };
     in {
 
-      # Nixos configuration set for Home-Desktop,
-      # Laptop and Slave. Anything else is a demo
-      # until further declared
+      # Nixos configuration set for Home-Desktop, Home-Laptop and Server.
+      # Anything else is a demo until further declared
       nixosConfigurations = {
 	# Leisure configuration for Home-Desktop
         Home-Desktop = lib.nixosSystem {
@@ -121,7 +133,6 @@
 	     # common/gpu/nvidia (videoDrivers = ["nvidia"]) and sets
 	     # hardware.nvidia.open = true, which is right for the RTX 3070.
              nixos-hardware.nixosModules.lenovo-legion-t526amr5
-	     sops-nix.nixosModules.sops
 	     #nix-index-database.nixosModules.default
           ];
           specialArgs = {
@@ -129,28 +140,12 @@
           };
         };
 
-	# Work mode for Home-Desktop
-	Home-Desktop-Work = lib.nixosSystem {
-	  inherit system;
-	  modules = [
-	     "${self}/hosts/Work/Home-Desktop-Work/configuration.nix"
-	     nixos-hardware.nixosModules.lenovo-legion-t526amr5
-	     sops-nix.nixosModules.sops
-	  ];
-	  specialArgs = {
-	    inherit inputs;
-	  };
-	};
-
 	# Leisure configuration for home Laptop
         Home-Laptop = lib.nixosSystem {
           inherit system;
           modules = [
-	    #./system/nixosConfiguration_user_modules/Laptop-modules.nix
-
-            "${self}/hosts/Laptop/configuration.nix"
+            "${self}/hosts/Home-Laptop/configuration.nix"
 	    nixos-hardware.nixosModules.lenovo-legion-16ithg6
-	    sops-nix.nixosModules.sops
 	    #nix-index-database.nixosModules.default
           ];
           specialArgs = {
@@ -158,31 +153,13 @@
           };
         };
 
-	# Work configuration for home Laptop
-        Home-Laptop-Work = lib.nixosSystem {
+	# Headless ML / dev box, runs sway rather than hyprland
+	# (see hosts/Server/configuration.nix)
+        Server = lib.nixosSystem {
           inherit system;
           modules = [
-           "${self}/hosts/Work/Home-Laptop-Work/configuration.nix"
-	   nixos-hardware.nixosModules.lenovo-legion-16ithg6
-	   sops-nix.nixosModules.sops
-	   #nix-index-database.nixosModules.default
-          ];
-          specialArgs = {
-            inherit inputs;
-          };
-        };
-	# Basic configuration for Slave machine
-	# to run ML calculations (hence the machine name xd)
-        Slave = lib.nixosSystem {
-          inherit system;
-          modules = [
-            "${self}/hosts/Slave/configuration.nix"
-	    sops-nix.nixosModules.sops
+            "${self}/hosts/Server/configuration.nix"
 	    #nix-index-database.nixosModules.default
-	    
-	    # in case you are wondering, Slave machine
-	    # is declader in it's configuration.nix as 
-	    # in .dotfiles/system/hardware/nvidia/proprietary.nix
 
 	    # remember to run this on host machine:
 	    # systemctl --user enable auto-fix-vscode-server.service
@@ -200,128 +177,26 @@
 	LiveUSB = lib.nixosSystem {
 	   inherit system;
 	   modules = [
-	      "${self}/hosts/LiveUSB/liveusb.nix"
+	      "${self}/hosts/LiveUSB/configuration.nix"
 	      "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
 	   ];
-            specialArgs = {
-               hostname = "liveusb-nix";
-               inherit inputs;
-            };
+	   specialArgs = {
+	      inherit inputs;
+	   };
 	};
-
 
       };
 
-      # Home configuration for Home-Desktop Laptop and Slave.
-      # Anything else is demo testing:
+      # Home configuration for Home-Desktop, Home-Laptop and Server.
+      # nansus-work only exists on the two leisure hosts.
+      homeConfigurations = {
+        "nansus@Home-Desktop" = homeFor "nansus" "Home-Desktop";
+        "nansus-work@Home-Desktop" = homeFor "nansus-work" "Home-Desktop";
 
-      # Basic information regarding all home configurations 
-      homeConfigurations = let basics = { lib, ... }: {
-              home.username = "nansus";
-              home.homeDirectory = "/home/nansus";
-              home.stateVersion = "24.11";
-	      
-	      # git identity, shared by every home configuration
-              programs.git = {
-                enable = true;
-                settings.user.name = "ViliLuosujarvi";
-                settings.user.email = "vili.luosujarvi@edu.lapinamk.fi";
+        "nansus@Home-Laptop" = homeFor "nansus" "Home-Laptop";
+        "nansus-work@Home-Laptop" = homeFor "nansus-work" "Home-Laptop";
 
-                # github https auth via the gh cli token
-                settings.credential."https://github.com".helper =
-                  "!gh auth git-credential";
-              };
-
-	      # btop rewrites its own config when it exits, so it
-	      # cannot live in the read only /nix/store copy of
-	      # .config. Seed it from btop.conf.in on first run.
-              home.activation.seedBtopConfig =
-                lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-                  if [ -f "$HOME/.config/btop/btop.conf.in" ] && [ ! -f "$HOME/.config/btop/btop.conf" ]; then
-                    run install -m644 "$HOME/.config/btop/btop.conf.in" "$HOME/.config/btop/btop.conf"
-                  fi
-                '';
-
-	      # Enable home manager
-              programs.home-manager.enable = true;
-              };
-	      # Same again for the work account that
-	      # gets picked from gdm, own home so both
-	      # sessions can live side by side
-              workBasics = { lib, ... }: {
-              home.username = "nansus-work";
-              home.homeDirectory = "/home/nansus-work";
-              home.stateVersion = "24.11";
-	      
-	      # git identity, shared by every home configuration
-              programs.git = {
-                enable = true;
-                settings.user.name = "ViliLuosujarvi";
-                settings.user.email = "vili.luosujarvi@edu.lapinamk.fi";
-
-                # github https auth via the gh cli token
-                settings.credential."https://github.com".helper =
-                  "!gh auth git-credential";
-              };
-
-	      # btop rewrites its own config when it exits, so it
-	      # cannot live in the read only /nix/store copy of
-	      # .config. Seed it from btop.conf.in on first run.
-              home.activation.seedBtopConfig =
-                lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-                  if [ -f "$HOME/.config/btop/btop.conf.in" ] && [ ! -f "$HOME/.config/btop/btop.conf" ]; then
-                    run install -m644 "$HOME/.config/btop/btop.conf.in" "$HOME/.config/btop/btop.conf"
-                  fi
-                '';
-
-	      # Enable home manager
-              programs.home-manager.enable = true;
-              };
-          in {
-
-	# unerneath are all different configurations
-	# for the given machines and their home.nix
-	# files can be found from each ones own hosts/
-	# section in the .dotfiles
-        "nansus@Home-Desktop" = inputs.home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [
-	      	"${self}/hosts/Home-Desktop/home.nix"
-  	      	basics
-          ];
-        };
-
-	"nansus-work@Home-Desktop-Work" = inputs.home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [
-	     	"${self}/hosts/Work/Home-Desktop-Work/home.nix"
-  	     	workBasics
-          ];
-        };
-
-        "nansus@Home-Laptop" = inputs.home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [
-    	      	"${self}/hosts/Laptop/home.nix"
-	        basics
-          ];
-        };
-
-        "nansus-work@Home-Laptop-Work" = inputs.home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [
-    	     	"${self}/hosts/Work/Home-Laptop-Work/home.nix"
-	       	workBasics
-          ];
-        };
-
-        "nansus@Slave" = inputs.home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [
-	      	"${self}/hosts/Slave/home.nix"
-		basics
-          ];
-        };
+        "nansus@Server" = homeFor "nansus" "Server";
       };
     };
 }

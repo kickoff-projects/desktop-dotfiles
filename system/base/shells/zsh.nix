@@ -90,12 +90,12 @@
 	# And here just to ease my workflow,
 	# some aliases to jump to computer configs
 	alias .home-desktop='cd ; cd .dotfiles/hosts/Home-Desktop/'
-	alias .laptop='cd ; cd .dotfiles/hosts/Laptop/'
-	alias .slave='cd ; cd .dotfiles/hosts/Slave'
+	alias .laptop='cd ; cd .dotfiles/hosts/Home-Laptop/'
+	alias .server='cd ; cd .dotfiles/hosts/Server'
 
 	alias .dc='cd ; cd .dotfiles/hosts/Home-Desktop/.config/'
-	alias .lc='cd ; cd .dotfiles/hosts/Laptop/.config/'
-	alias .sc='cd ; cd .dotfiles/hosts/Slave/.config/'
+	alias .lc='cd ; cd .dotfiles/hosts/Home-Laptop/.config/'
+	alias .sc='cd ; cd .dotfiles/hosts/Server/.config/'
 
 	# nmap aliases
 	alias nmap_open_ports="nmap --open"
