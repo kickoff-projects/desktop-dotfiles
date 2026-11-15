@@ -7,7 +7,7 @@
     "margin-right": 12,
     "spacing": 4,
     // Only output on this box
-    "output": "DP-2",
+    "output": "DP-3",
     "modules-left": ["clock", "hyprland/workspaces"],
     //"modules-center": ["clock", "custom/weather"],
     //"modules-right": ["network", "group/system-info", "disk", "memory", "custom/nvidia", "group/cpu_info", "battery", "tray"],
