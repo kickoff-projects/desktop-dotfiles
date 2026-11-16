@@ -98,8 +98,8 @@
       # because home-manager is built standalone (homeFor below) and so has
       # no access to the matching nixosConfiguration to read it back out of.
       # common/home.nix asserts this against the real /etc/hostname so that
-      # switching the wrong "<user>@<host>" target on a machine fails loudly
-      # instead of silently overwriting that machine's .config with another
+      # switching the wrong "<user>@<host>" target on a machine fails with an
+      # error. Otherwise it would overwrite that machine's .config with another
       # host's files.
       hostNames = {
         Home-Desktop = "NanSuS-Desktop";
@@ -110,7 +110,7 @@
       # Builds "nansus@<host>" / "nansus-work@<host>" from common/home.nix +
       # users/<user>/home.nix + that host's .config overrides. host is the
       # directory name under hosts/, which is also the nixosConfigurations
-      # attribute - see hosts/<host>/configuration.nix.
+      # attribute (see hosts/<host>/configuration.nix).
       homeFor = user: host:
         let
           hostDir = ./hosts + "/${host}";
@@ -167,7 +167,7 @@
           };
         };
 
-	# Headless ML / dev box, runs sway rather than hyprland
+	# Headless ML / dev box, runs sway where the other hosts run hyprland
 	# (see hosts/Server/configuration.nix)
         Server = lib.nixosSystem {
           inherit system;

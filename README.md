@@ -18,32 +18,32 @@ Also, no install scripts here, at the moment it's rsync or nothing. 🥹
 Three layers, same idea as `/srv/nixos-vm-config` but with one more layer since
 there are four machines here instead of one:
 
-- `common/` - everything every machine and every account shares: the NixOS
+- `common/`: everything every machine and every account shares: the NixOS
   module list (`common/system.nix`), the home-manager base (`common/home.nix`),
   and the default (rainbow) dotfiles under `common/.config`.
-- `hosts/<name>/` - one machine. `configuration.nix` + `hardware.nix`, plus a
-  `.config` with only what's genuinely different on that box (monitor layout,
+- `hosts/<name>/`: one machine. `configuration.nix` + `hardware.nix`, plus a
+  `.config` with only what's different on that box (monitor layout,
   waybar's module list, a palette override). The directory name is the
   `nixosConfigurations` attribute and the home-manager suffix, e.g.
   `hosts/Home-Laptop` builds `.#Home-Laptop` and `nansus@Home-Laptop`.
-- `users/<name>/` - one account's home-manager module and, if it switches the
+- `users/<name>/`: one account's home-manager module and, if it switches the
   theme, its own `.config` override.
 
 A file under `hosts/<host>/.config/foo` or `users/<name>/.config/foo` replaces
-the file of the same path from `common/.config/foo` - same mechanism as the
+the file of the same path from `common/.config/foo`. It is the same mechanism as the
 VM config's `common` vs `users` layers, extended with the host layer in the
 middle. `common/config-files.nix` does the merging; `common/home.nix` is
 where the three layers get combined for a given account.
 
-**Color schemes are per account, not per machine.** `nansus` is rainbow
-everywhere it logs in - Home-Desktop, Home-Laptop, and the Server, where it
-gets picked up by `hosts/Server`'s red override instead. `nansus-work` is
-rainbow too, except its kakoune, which is red - that's the one surface the
+Color schemes are per account. `nansus` is rainbow
+everywhere it logs in (Home-Desktop, Home-Laptop, and the Server, where it
+gets picked up by `hosts/Server`'s red override instead). `nansus-work` is
+rainbow too, except its kakoune, which is red. That's the one surface the
 work account overrides.
 
-Every themed surface works off the same idea - the shared config always
+Every themed surface works off the same idea: the shared config always
 references a fixed filename (`colors.css`, `account.kak`, `account.theme`,
-...), and whichever layer provides that filename wins - but two different
+...), and whichever layer provides that filename wins. Two different
 mechanisms provide it:
 
 - **waybar, hyprland borders, btop, rofi**: a plain file per theme
@@ -52,16 +52,16 @@ mechanisms provide it:
 - **kakoune and foot**: generated from `common/palettes.nix`. Both are
   already 16-slot color tables (kakoune's is a base16 scheme; foot's is a
   terminal palette), so a new theme is sixteen-ish hex values added to
-  `palettes.nix`, not a hand-copied file - `common/lib/render-kak.nix` and
+  `palettes.nix` and no file is copied by hand. `common/lib/render-kak.nix` and
   `render-foot-colors.nix` hold the shared template. A layer overrides
   either by setting `xdg.configFile."kak/colors/account.kak".text` (or
   `"foot/colors.ini".text`) with `lib.mkForce`, the way
-  `users/nansus-work/home.nix` and `hosts/Server/theme.nix` do -
+  `users/nansus-work/home.nix` and `hosts/Server/theme.nix` do.
   `hostDir/theme.nix` is picked up automatically if a host has one, the
   same optional-import pattern as `hostDir/.config`.
 
-**The Server runs sway, not hyprland** - see `hosts/Server/.config/sway/`.
-Everything hyprland-specific (blur, shadows, animations, `hyprctl`) simply
+The Server runs sway (see `hosts/Server/.config/sway/`), not hyprland.
+Everything hyprland-specific (blur, shadows, animations, `hyprctl`)
 doesn't exist there; the red theme uses sway's own `client.focused` colors
 file instead of a palette.conf.
 

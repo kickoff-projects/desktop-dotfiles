@@ -1,7 +1,7 @@
 # Renders a common/palettes.nix "kak" sub-palette into a full kakoune
 # colorscheme. The set-face body below is identical across every theme
 # today (verified by diffing the set-face lines between the rainbow and
-# red account.kak files before this was templated) - only the title and
+# red account.kak files before this was templated). Only the title and
 # the sixteen-ish hex values differ.
 { p }:
 ''
@@ -35,7 +35,7 @@
 #base0F = rgb:${p.base0F}   (blue accent)
 
 ## Adittional ##
-# baseAD01 = rgb:${p.commentAD01}  (bright blue) 
+# baseAD01 = rgb:${p.commentAD01}  (bright blue)
 
 # palette
 

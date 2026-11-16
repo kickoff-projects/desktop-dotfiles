@@ -1,4 +1,4 @@
-# base16-mellow-purple 
+# base16-mellow-purple
 #
 # Commentary:
 # Tinted Theming: (https://github.com/tinted-theming)

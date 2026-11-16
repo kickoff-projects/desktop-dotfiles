@@ -4,7 +4,7 @@ evaluate-commands %sh{
     # base colors
     background='rgb:0A0A20'
     foreground='rgb:DB00FE'   # (main text) soft pastel yellow FFF4B0,
-    			      # bright pumpkin F87217,  
+    			      # bright pumpkin F87217,
     			      #     
 
     # palette

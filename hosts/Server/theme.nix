@@ -1,7 +1,7 @@
 { lib, ... }:
 
-# Red kak + foot for whichever account lands on the Server - see
-# common/palettes.nix and common/home.nix's mkDefault for the mechanism.
+# Red kak + foot for whichever account lands on the Server. The mechanism
+# is common/palettes.nix and common/home.nix's mkDefault.
 # Imported conditionally by flake.nix's homeFor when a host directory has
 # a theme.nix, the same way hostDir/.config is picked up optionally.
 let

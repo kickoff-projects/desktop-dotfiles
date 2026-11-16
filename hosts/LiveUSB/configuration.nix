@@ -17,8 +17,8 @@ in
   };
   image.fileName = lib.mkForce "nixos-live.iso";
 
-  # Packages in live environment. foot replaces kitty - red theme below is
-  # foot's, and this image has no hyprland/waybar to need kitty either.
+  # Packages in live environment. foot replaces kitty: the red theme below is
+  # foot's, and this image has no hyprland/waybar that would need kitty.
   environment.systemPackages = with pkgs; [
     ripgrep
     fd
@@ -44,9 +44,9 @@ in
   environment.etc."xdg/fastfetch/config.jsonc".source = ./.config/fastfetch/config.jsonc;
   environment.etc."xdg/fastfetch/moved_chesire_cat_with_text".source = ./.config/fastfetch/moved_chesire_cat_with_text;
 
-  # Red foot + kakoune, same scheme as the Server - generated from
-  # common/palettes.nix, same mechanism as hosts/Server/theme.nix. No
-  # home-manager here, so environment.etc.text stands in for mkForce.
+  # Red foot + kakoune, same scheme as the Server. Generated from
+  # common/palettes.nix by the same mechanism as hosts/Server/theme.nix. There
+  # is no home-manager here, so environment.etc.text stands in for mkForce.
   environment.etc."xdg/foot/foot.ini".source = ./.config/foot/foot.ini;
   environment.etc."xdg/foot/colors.ini".text = renderFootColors { p = palettes.red.foot; };
   environment.etc."kak/kakrc".source = ./.config/kak/kakrc;

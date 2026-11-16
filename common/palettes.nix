@@ -1,13 +1,13 @@
 # Per-theme color data for the surfaces that are pure 16-slot palettes:
 # kakoune (base16-shaped already) and foot. Rendered into real files by
-# common/lib/render-kak.nix and common/lib/render-foot-colors.nix - see
-# common/home.nix and hosts/Server/theme.nix for where each theme is picked.
+# common/lib/render-kak.nix and common/lib/render-foot-colors.nix. Each theme
+# is picked in common/home.nix and hosts/Server/theme.nix.
 #
-# kak and foot are deliberately two separate color choices per theme, not
-# one shared set: the existing rainbow kak scheme (mellow-purple) and the
-# existing rainbow foot scheme ("space rainbow") were authored independently
-# for their own tool, and unifying them would change what currently
-# renders. These values are copied verbatim from the files they replace.
+# kak and foot have two separate color choices per theme. The existing
+# rainbow kak scheme (mellow-purple) and the existing rainbow foot scheme
+# ("space rainbow") were each authored for their own tool, and unifying
+# them would change what currently renders. These values are copied
+# verbatim from the files they replace.
 {
   rainbow = {
     kak = {
@@ -19,9 +19,8 @@
       baseAD01 = "5191cc"; baseAD02 = "fb008f"; baseAD03 = "ffd34d";
       baseAD04 = "c31684"; baseAD05 = "7eff46";
       # The original file's "## Additional ##" comment names a different
-      # blue (3d85c6) than the one baseAD01 actually declares (5191cc) -
-      # a pre-existing mismatch in the hand file, kept verbatim rather than
-      # silently fixed.
+      # blue (3d85c6) than the one baseAD01 declares (5191cc). The hand file
+      # already had that mismatch, and it is kept verbatim here.
       commentAD01 = "3d85c6";
     };
     foot = {
@@ -43,7 +42,7 @@
       base0C = "b11a1a"; base0D = "6b0f0f"; base0E = "ff6666"; base0F = "a81a1a";
       baseAD01 = "ff2b2b"; baseAD02 = "5a0f0f"; baseAD03 = "ff3b14";
       baseAD04 = "cc0000"; baseAD05 = "ff7e46";
-      # Here the comment matches baseAD01 exactly - no mismatch for this theme.
+      # Here the comment matches baseAD01 exactly.
       commentAD01 = "ff2b2b";
     };
     foot = {

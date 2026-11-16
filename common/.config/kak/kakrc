@@ -1,5 +1,5 @@
-# Colors: each account's own, from its users/<name>/.config - see
-# .config/kak/colors/account.kak for the default (rainbow/purple_best).
+# Colors: each account's own, from its users/<name>/.config. The default
+# (rainbow/purple_best) is in .config/kak/colors/account.kak.
 source "~/.config/kak/colors/account.kak"
 
 

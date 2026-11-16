@@ -31,7 +31,7 @@
 	# strug, xiong-chiamiov,
  	# //kennethreitz\\, ys.
 	# frontcube, rkj-repos,
-	# kennethreitz  
+	# kennethreitz
       	};
       
       autosuggestions.enable = true;

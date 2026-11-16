@@ -14,11 +14,11 @@ in
 
   # hosts/Home-Desktop and hosts/Home-Laptop share the same usernames, so
   # running e.g. "home-manager switch --flake .#nansus@Home-Laptop" on the
-  # desktop would otherwise silently deploy the laptop's waybar/monitor
-  # config onto this machine. The real /etc/hostname can only be read at
-  # activation time, not at eval time (that would need --impure), so this
-  # is a plain activation script, hooked before writeBoundary - the point
-  # up to which nothing has been changed yet - rather than an assertion.
+  # desktop would deploy the laptop's waybar/monitor config onto this machine
+  # without any warning. The real /etc/hostname can only be read at
+  # activation time (reading it at eval time would need --impure), so this
+  # is a plain activation script and not an assertion. It is hooked before
+  # writeBoundary, the point up to which nothing has been changed yet.
   home.activation.checkHostName =
     lib.hm.dag.entryBefore [ "writeBoundary" ] ''
       actualHostName=$(cat /etc/hostname 2>/dev/null || true)
@@ -46,8 +46,8 @@ in
   # btop rewrites its own config when it exits, so it cannot live in the
   # read only /nix/store copy of .config. Seed it from btop.conf.in on first
   # run, and reseed if the existing btop.conf names a color_theme path that
-  # no longer exists - a scheme this refactor renamed or deleted would
-  # otherwise leave btop silently on its built-in default forever.
+  # no longer exists. Without the reseed, a scheme this refactor renamed or
+  # deleted would leave btop on its built-in default for good, with no error.
   home.activation.seedBtopConfig =
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       btopConfIn="$HOME/.config/btop/btop.conf.in"
@@ -70,8 +70,8 @@ in
     // configFilesOf (hostDir + "/.config")
     // configFilesOf (../users + "/${config.home.username}/.config")
     // {
-      # Generated from common/palettes.nix rather than a plain file, so a
-      # new theme is sixteen-ish hex values instead of a hand-copied file.
+      # Generated from common/palettes.nix, so a new theme is sixteen-ish hex
+      # values and no file has to be copied by hand.
       # mkDefault so a host/user layer (nansus-work's kak, hosts/Server's
       # theme.nix) can override with mkForce.
       "kak/colors/account.kak".text = lib.mkDefault (renderKak { p = palettes.rainbow.kak; });

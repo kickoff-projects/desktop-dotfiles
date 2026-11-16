@@ -2,7 +2,7 @@
 { p }:
 ''
 # -*- conf -*-
-# Terminal colors, generated from common/palettes.nix - see
+# Terminal colors, generated from common/palettes.nix by
 # common/lib/render-foot-colors.nix. Included from common/.config/foot/foot.ini.
 
 [colors-dark]

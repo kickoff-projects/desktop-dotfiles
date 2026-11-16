@@ -150,7 +150,7 @@
     },
 
     "temperature": {
-	// k10temp Tctl, by PCI path - hwmonN numbering is not stable
+	// k10temp Tctl, by PCI path, because hwmonN numbering is not stable
 	//"thermal-zone": 2,
 	"hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
 	"input-filename": "temp1_input",
@@ -190,7 +190,7 @@
         //"format-linked": "󱘖 {ifname}",
         //"format-disconnected": "󰯡 Offline",
         //"format-alt": "{bandwidthUpBits} 󰁝 {bandwidthDownBits}"
-											// 󰖩 
+											// 󰖩
 	"format-wifi" : " {bandwidthUpBytes:2}   {bandwidthDownBytes:2}  {signalStrength}%",
         "format-ethernet": " {bandwidthUpBytes:2}   {bandwidthDownBytes:2}  󰈀",
 	"tooltip-format": "{ifname}:{ipaddr} / {cidr} | 󰖩 {essid} ({signalStrength}%)",

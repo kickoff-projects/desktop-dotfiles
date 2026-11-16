@@ -19,13 +19,13 @@
       #../../system/security/sshd.nix
      ];
 
-  # Runs sway, not hyprland - a headless/minimal box, no blur, shadows or
-  # window animations by design. See .config/sway/{config,colors}.
+  # Runs sway on a headless/minimal box, so there is no blur, shadows or
+  # window animations. See .config/sway/{config,colors}.
   programs.sway.enable = true;
 
   environment.systemPackages = with pkgs; [
-     # sway's screenshot tools - hyprshot/grimblast (system/base/screen_shot.nix)
-     # are hyprland-only, so this host gets grim+slurp directly instead
+     # sway's screenshot tools. hyprshot/grimblast (system/base/screen_shot.nix)
+     # are hyprland-only, so this host gets grim+slurp directly
      grim
      slurp
      swayimg

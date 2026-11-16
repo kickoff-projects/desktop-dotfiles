@@ -1,4 +1,4 @@
-# base16-mellow-purple 
+# base16-mellow-purple
 #
 # Commentary:
 # Tinted Theming: (https://github.com/tinted-theming)
@@ -28,7 +28,7 @@
 #base0F = rgb:4d6fff   (blue accent)
 
 ## Adittional ##
-# baseAD01 = rgb:3d85c6  (bright blue) 
+# baseAD01 = rgb:3d85c6  (bright blue)
 
 # palette
 

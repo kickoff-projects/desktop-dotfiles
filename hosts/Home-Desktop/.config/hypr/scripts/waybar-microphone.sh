@@ -3,7 +3,7 @@
 
 info=$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null)
 
-# no default source at all - wpctl still exits 0, so match on the output
+# with no default source at all wpctl still exits 0, so match on the output
 if [[ $info != Volume:* ]]; then
 	printf '{"text":"  ","class":"unavailable","tooltip":"No microphone"}\n'
 	exit 0
