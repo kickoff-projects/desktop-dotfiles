@@ -24,7 +24,7 @@ fi
 vol=$(awk '{printf "%d", $2 * 100}' <<<"$info")
 
 if [[ $info == *MUTED* ]]; then
-	printf '{"text":"  ","class":"source-muted","tooltip":"Microphone muted | %s%%"}\n' "$vol"
+	printf '{"text":"  ","class":"source-muted","tooltip":"Microphone muted | %s%%"}\n' "$vol"
 else
-	printf '{"text":"  ","class":"active","tooltip":"Microphone | %s%%"}\n' "$vol"
+	printf '{"text":"  ","class":"active","tooltip":"Microphone | %s%%"}\n' "$vol"
 fi

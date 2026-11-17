@@ -1,6 +1,6 @@
 /* nansus-work: copy of common/.config/waybar/style.css. Byte-identical to
  * the shared file except for the two microphone blocks near the bottom -
- * search "nansus-work" to find them. Forked rather than overridden because
+ * search "nansus-work:" to find them. Forked rather than overridden because
  * waybar loads exactly one stylesheet and style.css is what does the
  * @import below, so there is nowhere else for a rule to live.
  *

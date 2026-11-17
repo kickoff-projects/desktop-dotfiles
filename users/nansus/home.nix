@@ -1,14 +1,19 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
-# The leisure account: common/home.nix plus these. Its own dotfiles (if any)
-# are in ./.config, layered on top of hostDir/.config and common/.config.
+# The leisure account: common/home.nix plus these. Runs a black/rainbow
+# variant of the shared theme - every surface goes pure black and the color
+# is carried by text, borders and graphs instead of by backgrounds. The
+# per-surface files live in ./.config (waybar, hypr), layered on top of
+# hostDir/.config and common/.config. Foot keeps the rainbow sixteen ANSI
+# colors verbatim - only its background is pulled to true black, below.
+let
+  palettes = import ../../common/palettes.nix;
+  renderFootColors = import ../../common/lib/render-foot-colors.nix;
+  renderKak = import ../../common/lib/render-kak.nix;
+in
 {
   home.packages = with pkgs; [
-    gh
-    git
     ripgrep
-    btop
-    librespeed-cli
     unzip
     uv
     net-tools
@@ -20,11 +25,20 @@
     prismlauncher
     freecad
     qemu
-    libreoffice-qt
     kdePackages.dolphin
     proton-vpn
     openconnect
     feh
     claude-code
   ];
+
+  xdg.configFile."foot/colors.ini".text =
+    lib.mkForce (renderFootColors {
+      p = palettes.rainbow.foot // { background = "000000"; };
+    });
+
+  xdg.configFile."kak/colors/account.kak".text =
+    lib.mkForce (renderKak {
+      p = palettes.rainbow.kak // { base00 = "000000"; };
+    });
 }

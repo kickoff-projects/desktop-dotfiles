@@ -35,7 +35,57 @@ in
   home.packages = [
     pkgs.playerctl
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+    pkgs.git
+    pkgs.gh
+    pkgs.librespeed-cli
+    pkgs.btop
+    pkgs.libreoffice-qt
+
+    # qt.style.package below only covers the Qt5 plugin; Qt6 apps need the
+    # Qt6 build of the same style or they fall back to light Fusion.
+    pkgs.adwaita-qt6
   ];
+
+  # Dark GTK/Qt so the apps that draw their own chrome (file dialogs,
+  # libreoffice, thunar/dolphin, firefox) stay dark instead of flashing a
+  # light-themed dialog over a dark desktop.
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
+    };
+    # Apps that ask the toolkit for a preference rather than reading the
+    # theme name (most GTK3/GTK4 apps do) need this as well.
+    gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
+    gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
+    # GTK4/libadwaita apps ignore a theme *name* - they take the dark
+    # preference from the setting above and from the portal (dconf below),
+    # so there is nothing to point gtk4.theme at. Set explicitly because
+    # home-manager warns about the default changing in 26.05 otherwise.
+    gtk4.theme = null;
+  };
+
+  # Same preference over dbus, for anything that asks the xdg settings
+  # portal instead (firefox's "follow system theme", electron apps).
+  dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+
+  # platformTheme "qtct" rather than "gtk3" on purpose: the hosts' hypr
+  # ENV-Variables.conf already exports QT_QPA_PLATFORMTHEME=qt6ct for every
+  # account, and a hyprland env line wins over the one home-manager sets.
+  qt = {
+    enable = true;
+    platformTheme.name = "qtct";
+    style = {
+      name = "adwaita-dark";
+      package = pkgs.adwaita-qt;
+    };
+  };
 
   # git identity, shared by every home configuration
   programs.git = {
@@ -81,6 +131,27 @@ in
       # theme.nix) can override with mkForce.
       "kak/colors/account.kak".text = lib.mkDefault (renderKak { p = palettes.rainbow.kak; });
       "foot/colors.ini".text = lib.mkDefault (renderFootColors { p = palettes.rainbow.foot; });
+
+      # home-manager's qt module with platformTheme "qtct" installs qt5ct/qt6ct
+      # and exports the env vars, but writes no config, so Qt apps would still
+      # start on qt6ct's light default. These two files are what actually makes
+      # them dark. Declared read-only from the store rather than seeded like
+      # btop.conf: the only writer is the qt6ct settings GUI, and the point of
+      # putting the style here is that it is not hand-edited.
+      "qt5ct/qt5ct.conf".text = ''
+        [Appearance]
+        style=adwaita-dark
+        icon_theme=Papirus-Dark
+        standard_dialogs=default
+        custom_palette=false
+      '';
+      "qt6ct/qt6ct.conf".text = ''
+        [Appearance]
+        style=adwaita-dark
+        icon_theme=Papirus-Dark
+        standard_dialogs=default
+        custom_palette=false
+      '';
     };
 
   # Same idea one directory up, for claude-code: common/.claude is symlinked

@@ -25,7 +25,7 @@
       commentAD01 = "3d85c6";
     };
     foot = {
-      cursor = "fb008f 3d85c6";
+      cursor = "da0b94 0bda51";
       background = "0a0a20"; foreground = "ffffff";
       regular0 = "d32f2f"; regular1 = "ff4081"; regular2 = "4caf50"; regular3 = "ffeb3b";
       regular4 = "2196f3"; regular5 = "9c27b0"; regular6 = "00bcd4"; regular7 = "607d8b";
