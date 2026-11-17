@@ -1,0 +1,49 @@
+/* nansus-work: black/rainbow variant of common/.config/waybar/colors.css.
+ * Same slot meanings, same names - style.css and effects.css are the
+ * shared ones and are not copied here, so this file is the whole theme.
+ *
+ * The two background slots go to true black (they were solarized
+ * #002b36 / #073642) and every accent is pushed to a neon value that
+ * still reads against black. The bar itself stays transparent - see
+ * window#waybar in the shared style.css. */
+
+/* Backgrounds */
+@define-color color0 #000000;  /* bar / module background */
+@define-color color8 #050505;  /* workspace button background (alpha 0.3) */
+@define-color color10 #121212; /* hover + muted background (alpha 0.15-0.4) */
+@define-color color11 #1a1a1a; /* unused by style.css, kept for slot parity */
+@define-color color12 #3a3a46; /* shadow / faint divider gray */
+
+/* Text */
+@define-color color7 #f2f2f7;  /* general module foreground */
+@define-color color14 #7a7a8c; /* muted foreground (muted sink, dim tray) */
+@define-color color15 #ffffff;
+
+/* Rainbow accents, in spectrum order as the animations cycle them:
+ * magenta -> violet -> blue -> cyan -> green -> yellow -> orange -> red
+ *
+ * These are the slots the modules-right stack colors itself from (#cpu,
+ * #memory, #disk, #pulseaudio, #battery, #tray, #custom-microphone,
+ * #custom-nvidia in the shared style.css - none of them appear on the
+ * left), so they are set to full-saturation neon. Same hues as before,
+ * just pushed to the most luminous version of each that still has enough
+ * contrast against the black background above.
+ *
+ * The left side reads these same slots only through the keyframes, so
+ * kitty_cat_rainbow and rainbow-border in ./effects.css are pinned to the
+ * pre-neon literals - keep that in mind when touching a value here. */
+@define-color color16 #FB008F; /* vibrant magenta (workspaces, gpu) -
+                                  the shared palette's exact value, kept
+                                  so the current workspace's text color,
+                                  shade(@color16, 1.3) in style.css, reads
+                                  as it did before this theme */
+@define-color color13 #b84dff; /* neon violet (cpu, temperature) - also
+                                  shade()d to 0.75 by fav-color-rainbow */
+@define-color color5  #a06bff; /* violet, glow keyframe */
+@define-color color4  #0a9dff; /* neon blue (memory) - also shade()d by
+                                  fav-color-rainbow */
+@define-color color6  #00f5ff; /* electric cyan (disk) */
+@define-color color2  #00ff9c; /* neon green (volume, backlight, charging) */
+@define-color color3  #f6ff00; /* neon yellow (battery) */
+@define-color color9  #ff9500; /* neon orange (tray, numlock) */
+@define-color color1  #ff2447; /* neon red (urgent, critical, mic, disconnected) */

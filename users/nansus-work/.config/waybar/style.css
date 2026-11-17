@@ -1,0 +1,261 @@
+/* nansus-work: copy of common/.config/waybar/style.css. Byte-identical to
+ * the shared file except for the two microphone blocks near the bottom -
+ * search "nansus-work" to find them. Forked rather than overridden because
+ * waybar loads exactly one stylesheet and style.css is what does the
+ * @import below, so there is nowhere else for a rule to live.
+ *
+ * The microphone states are inverted relative to the shared file: muted is
+ * the quiet resting state and borrows #pulseaudio's green, while an open
+ * mic is red on both the underline and the glyph. The third state (no
+ * capture device) is not styled here at all - this account's own
+ * ../hypr/scripts/waybar-microphone.sh emits empty text for it, and waybar
+ * hides a custom module whose text is empty.
+ *
+ * Palette and animations are not here - see colors.css and effects.css,
+ * which a host or user layer replaces to switch the theme. No font-family
+ * on purpose - the default comes from system/base/fonts.nix. */
+
+@import url("colors.css");
+@import url("effects.css");
+
+window#waybar {
+    background: transparent;
+}
+
+.modules-left, /*.modules-center,*/ .modules-right {
+    /*enabling these will result to a line under both
+    sides (not meaning the really colorful lines, just
+    faded cyan line)*/
+    /*background-color: alpha(@color0, 0.85);*/
+    /*border: 2px solid alpha(@color8, 0.9);*/
+
+    /*enabling this creates faded round edge on
+    the left side and removes rounded edges on right
+    side but rainbow coloring still stays
+    (sorry, this is more of a note to self)*/
+    /*border-radius: 12px;*/
+    padding: 0px 0px;
+    margin: 0 5px;
+}
+
+/*.modules-left,*/
+.modules-right {
+    /*animation: rainbow-text 30s infinite ease-in-out;*/
+}
+
+#workspaces {
+    margin: 0 2px;
+    padding: 0px 5px;
+    font-size: 17px;
+}
+
+#workspaces button {
+    padding: 0 1px;
+    background: alpha(@color8, 0.3);
+    border-radius: 12px;
+    margin: 0px;
+    animation: kitty_cat_rainbow 210s infinite ease-in-out;
+}
+
+#workspaces button:hover {
+    background: alpha(@color10, 0.4);
+    animation: rainbow-border 30s infinite linear;
+}
+
+#workspaces button.active {
+    animation: active-kitty-rainbow-border 160s infinite ease-in-out;
+    background: alpha(@color4, 0.10);
+    opacity: 90;
+    color: shade(@color16, 1.3);
+}
+
+#workspaces button.urgent {
+    background: alpha(@color1, 0.25);
+    color: @color1;
+    box-shadow: inset 0 -2px 0 @color1;
+}
+
+#clock {
+    border-radius: 12px;
+    padding: 0 6px;
+    margin: 0 2px;
+    /* gap to the workspaces module on its right */
+    margin-right: 16px;
+    font-weight: bold;
+    font-size: 16px;
+    animation: fav-color-rainbow 210s infinite ease-in-out;
+}
+
+/* ------------- General ------------- */
+
+#battery,
+#cpu,
+#custom-nvidia,
+#memory,
+#disk,
+#backlight,
+#temperature,
+#network,
+#pulseaudio,
+#microphone,
+#custom-microphone,
+#tray {
+    background: transparent;
+    padding: 0 1px;
+    margin: 0 2px;
+    color: @color7;
+    border-bottom: 2px solid transparent;
+    font-size: 18px;
+}
+
+/* ------------- Battery ------------- */
+
+#battery {
+    border-bottom-color: @color3;
+    font-weight: bold;
+    color: @color3;
+}
+
+#battery.charging, #battery.plugged {
+    color: @color7;
+    background-color: alpha(@color2, 0.15);
+    border-radius: 10px;
+}
+
+#battery.critical:not(.charging) {
+    background-color: alpha(@color1, 0.15);
+    color: @color1;
+    border-radius: 10px;
+    animation: blink 1s ease infinite;
+}
+
+/* -------------------------------------- */
+
+#cpu,
+#temperature {
+    border-bottom-color: @color13;
+    color: @color13
+}
+
+#custom-nvidia {
+    border-bottom-color: alpha(@color16, 0.9);
+    opacity: 85;
+    color: shade(@color16, 1.3);
+}
+
+#memory {
+    border-bottom-color: @color4;
+    color: @color4;
+}
+
+#temperature.critical {
+    background-color: alpha(@color1, 0.15);
+    color: @color1;
+    border-radius: 10px;
+}
+
+/* ------------- Network ------------ */
+
+#network {
+    animation: fav-color-rainbow 210s infinite ease-in-out;
+    /* gap to the GPU module on its right */
+    margin-right: 28px;
+}
+
+#network.disconnected {
+    background-color: alpha(@color1, 0.25);
+    color: shade(@color1, 1.5);
+    border-radius: 7px;
+    margin: 3px;
+    margin-right: 28px;
+}
+
+/* -------------  Keyboard State ------------- */
+
+#keyboard-state label {
+    color: @color9;
+    border-bottom: 2px solid alpha(@color9, 0.6);
+    transition: all 0.2s ease;
+}
+
+#keyboard-state label.numlock.locked {
+    color: alpha(@color9, 0.35);
+    border-bottom: 2px solid alpha(@color9, 0.35);
+}
+
+#keyboard-state label.numlock {
+    color: @color9;
+    border-bottom: 2px solid @color9;
+}
+
+/* --------------------------------------------- */
+
+#pulseaudio,
+#backlight {
+    border-bottom-color: @color2;
+    color: @color2;
+}
+
+#pulseaudio.muted {
+    background-color: alpha(@color10, 0.15);
+    color: @color14;
+    border-radius: 10px;
+}
+
+/* nansus-work: both microphone modules below read the same two states -
+ * open mic is @color1 (red) on underline and glyph, muted is @color2, the
+ * exact green #pulseaudio above uses, so a muted mic matches the volume
+ * module sitting to its left. Neither state gets the tinted pill the
+ * shared file gave to muted: the pill is this stylesheet's "look here"
+ * marker and red already carries that job. */
+
+/* "pulseaudio#microphone" module (Home-Laptop) */
+#microphone.source {
+    border-bottom-color: @color1;
+    color: @color1;
+}
+
+#pulseaudio#microphone.source-muted {
+    border-bottom-color: @color2;
+    color: @color2;
+}
+
+/* "custom/microphone" module (Home-Desktop) */
+#custom-microphone {
+    border-bottom-color: @color1;
+    color: @color1;
+}
+
+#custom-microphone.source-muted {
+    border-bottom-color: @color2;
+    color: @color2;
+}
+
+/* No .unavailable rule on purpose - the script emits empty text for that
+ * state, so waybar never renders the widget. Kept as a comment so the
+ * missing selector does not read as an oversight next to the shared file. */
+
+#tray {
+    border-radius: 2px;
+    border-bottom-color: @color9;
+    padding: 0 1px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: alpha(@color1, 0.5);
+    border-radius: 10px;
+}
+
+#disk {
+    border-bottom-color: @color6;
+    color: @color6;
+}
+
+#system-info {
+    color: @color7;
+}

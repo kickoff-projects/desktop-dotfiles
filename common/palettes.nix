@@ -55,4 +55,23 @@
       bright4 = "009688"; bright5 = "673ab7"; bright6 = "3f51b5"; bright7 = "ffffff";
     };
   };
+
+  neon_rainbow = {
+    kak = {
+      title = "neon-rainbow: black/vibrant spectrum (nansus-work)";
+      base00 = "000000"; base01 = "0a0a0a"; base02 = "1a1a1a"; base03 = "6a6a7e";
+      base04 = "7a6a9c"; base05 = "f2f2f7"; base06 = "ffffff"; base07 = "ffffff";
+      # The eight accents now sit in base16's own hue order, so each slot
+      # lands on the face set the template was written for: red on
+      # variables/errors, orange on constants, yellow on types, green on
+      # strings, cyan on builtins, blue on functions, violet/magenta on
+      # keywords. Same eight neon values as ../waybar/colors.css, just
+      # rotated into the order the set-face body expects.
+      base08 = "ff3b30"; base09 = "ff7a00"; base0A = "ffe600"; base0B = "00ff88";
+      base0C = "00e5ff"; base0D = "52b4ff"; base0E = "c7a4ff"; base0F = "ff2fb0";
+      baseAD01 = "52b4ff"; baseAD02 = "ff2fb0"; baseAD03 = "ffe600";
+      baseAD04 = "c7a4ff"; baseAD05 = "00ff88";
+      commentAD01 = "52b4ff";
+    };
+  };
 }

@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 
 # The leisure account: common/home.nix plus these. Its own dotfiles (if any)
 # are in ./.config, layered on top of hostDir/.config and common/.config.
@@ -22,7 +22,6 @@
     qemu
     libreoffice-qt
     kdePackages.dolphin
-    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     proton-vpn
     openconnect
     feh

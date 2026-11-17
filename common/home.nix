@@ -1,10 +1,11 @@
-{ config, lib, pkgs, hostDir, expectedHostName, ... }:
+{ config, lib, pkgs, inputs, hostDir, expectedHostName, ... }:
 
 # Home-manager settings shared by every account. flake.nix's homeFor helper
 # combines this with users/<name>/home.nix (the account's own packages) and
 # sets the username/homeDirectory.
 let
   configFilesOf = import ./config-files.nix { inherit lib; };
+  claudeFilesOf = import ./claude-files.nix { inherit lib; };
   palettes = import ./palettes.nix;
   renderKak = import ./lib/render-kak.nix;
   renderFootColors = import ./lib/render-foot-colors.nix;
@@ -28,9 +29,13 @@ in
       fi
     '';
 
-  # The four XF86Audio media binds in the shared Keybinds.conf call
-  # playerctl; it was installed nowhere before this refactor.
-  home.packages = [ pkgs.playerctl ];
+  # Packages the shared Keybinds.conf shells out to, so every account that
+  # inherits those binds can actually run them: playerctl for the four
+  # XF86Audio binds, zen for $mainMod+F and CTRL+SHIFT+F.
+  home.packages = [
+    pkgs.playerctl
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+  ];
 
   # git identity, shared by every home configuration
   programs.git = {
@@ -77,6 +82,20 @@ in
       "kak/colors/account.kak".text = lib.mkDefault (renderKak { p = palettes.rainbow.kak; });
       "foot/colors.ini".text = lib.mkDefault (renderFootColors { p = palettes.rainbow.foot; });
     };
+
+  # Same idea one directory up, for claude-code: common/.claude is symlinked
+  # into every account's ~/.claude, and users/<name>/.claude overrides it.
+  # Both CLAUDE.md and the neon theme live in the common layer - every
+  # account gets them, and choosing the theme is a settings.json line rather
+  # than a layer. No host layer either: nothing here is machine-specific.
+  #
+  # ~/.claude/settings.json is deliberately absent from both layers: claude
+  # writes it itself, so it stays an ordinary file. Selecting a theme shipped
+  # here is therefore one manual line per machine, e.g.
+  #   "theme": "custom:neon-theme"
+  home.file =
+       claudeFilesOf ./.claude
+    // claudeFilesOf (../users + "/${config.home.username}/.claude");
 
   # disable ssh, home-manager doesn't manage its config
   programs.ssh.enable = false;

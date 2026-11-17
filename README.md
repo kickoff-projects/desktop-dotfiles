@@ -60,6 +60,25 @@ mechanisms provide it:
   `hostDir/theme.nix` is picked up automatically if a host has one, the
   same optional-import pattern as `hostDir/.config`.
 
+**claude-code's config is a fourth surface, under `~/.claude` rather than
+`~/.config`.** `common/claude-files.nix` is the same per-file symlink trick as
+`config-files.nix` but aimed at `home.file`, with two layers instead of three:
+`common/.claude` for everything shared - `CLAUDE.md` and
+`themes/neon-theme.json`, the black/neon palette of
+`users/nansus-work/.config` translated into claude's own 72 color tokens -
+and `users/<name>/.claude` on top of it for anything one account wants
+differently. The theme is shared on purpose even though the matching desktop
+palette is not: an account that never selects it in `settings.json` simply
+carries an unused 2.5 KB file.
+
+`~/.claude/settings.json` is deliberately **not** managed. Claude rewrites it
+itself on every `/config`, `/model` or theme change, so a read-only store
+symlink would make those silently fail. The consequence is that selecting the
+theme is one manual line per machine - add `"theme": "custom:neon-theme"` to
+`~/.claude/settings.json`, or pick it in `/config`. Because home-manager
+refuses to clobber an unmanaged file, a machine that already has a real
+`~/.claude/themes/neon-theme.json` needs it removed before the first switch.
+
 **The Server runs sway, not hyprland** - see `hosts/Server/.config/sway/`.
 Everything hyprland-specific (blur, shadows, animations, `hyprctl`) simply
 doesn't exist there; the red theme uses sway's own `client.focused` colors

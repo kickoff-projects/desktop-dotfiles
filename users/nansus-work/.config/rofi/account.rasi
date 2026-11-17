@@ -1,0 +1,81 @@
+/* nansus-work: black/rainbow variant of common/.config/rofi/account.rasi.
+ * Same structure, same file name - config.rasi's @theme "account.rasi"
+ * picks this one up because the user layer wins over common/.
+ * The shared file's backgrounds were a translucent purple (#1a0e22 /
+ * #2a1a38); here they are black and the color lives in the border, the
+ * selection and the prompt. */
+* {
+    background:     #000000e6;
+    background-alt: #0a0a0ae6;
+    foreground:     #f2f2f7ff;
+
+    /* Accents, same neon values as the waybar palette */
+    magenta:        #ff2fb0ff;
+    violet:         #c7a4ffff;
+    blue:           #52b4ffff;
+    cyan:           #00e5ffff;
+    green:          #00ff88ff;
+
+    selected:       #ff2fb0ff;
+    active:         #ffe600ff;
+    urgent:         #ff3b30ff;
+
+    background-color: @background;
+    text-color:       @foreground;
+}
+
+window {
+    border:        2px;
+    border-color:  @selected;
+    border-radius: 10px;
+    width:         30%;
+}
+
+mainbox {
+    children: [ inputbar, listview ];
+}
+
+inputbar {
+    children: [ prompt, entry ];
+    background-color: @background-alt;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+prompt {
+    text-color: @cyan;
+}
+
+entry {
+    text-color: @foreground;
+}
+
+listview {
+    lines: 8;
+    spacing: 4px;
+}
+
+element {
+    padding: 6px;
+    border-radius: 6px;
+}
+
+element normal active {
+    text-color: @violet;
+}
+
+element normal urgent {
+    text-color: @urgent;
+}
+
+/* Black text on the magenta row - the one place the accent is a fill
+ * rather than a text color, and it needs the contrast. */
+element selected {
+    background-color: @selected;
+    text-color:       @background;
+}
+
+element selected active {
+    background-color: @cyan;
+    text-color:       @background;
+}

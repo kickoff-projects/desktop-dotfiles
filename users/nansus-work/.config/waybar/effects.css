@@ -1,0 +1,227 @@
+/* nansus-work: copy of common/.config/waybar/effects.css, identical except
+ * for the three workspace keyframes below, which are hardcoded.
+ *
+ * active-kitty-rainbow-border is the ring around the *current* workspace
+ * and is used by nothing else in style.css, so its five stops are written
+ * as the literal values the shared colors.css had (violet #6c71c4, blue
+ * #3da5ff, cyan #00d4c7, green #00e676, orange #ff6d00). Hardcoded rather
+ * than pointed at palette slots on purpose: that keeps the current
+ * workspace looking exactly as it did before the black/rainbow theme, and
+ * stops a later tweak to colors.css from moving it again.
+ *
+ * kitty_cat_rainbow (every workspace button) and rainbow-border (hovered
+ * button) are hardcoded for the same reason: they are the only way the
+ * modules-left stack reads the accent slots, and ./colors.css now holds
+ * the brighter neon values the modules-right stack wants. The literals
+ * here are those slots' pre-neon values, so the workspaces keep the
+ * softer cycle while the right side burns.
+ *
+ * Still following @color<n>, and so ./colors.css: fav-color-rainbow
+ * (#clock and #network), glow, blink, rainbow-text.
+ */
+
+/* Animations (default, full rainbow). Switched out by a host layer's own
+ * effects.css - see hosts/Server/.config/waybar/effects.css for the flat,
+ * single-stop version used where animations are off entirely. */
+
+@keyframes rainbow-border {
+0% {
+    border-top-color: #FB008F;
+    border-left-color: #FB008F;
+    border-right-color: #FB008F;
+    border-bottom-color: #FB008F;
+    }
+
+16.67% {
+    border-top-color: #c7a4ff;
+    border-left-color: #c7a4ff;
+    border-right-color: #c7a4ff;
+    border-bottom-color: #c7a4ff;
+    }
+
+33.33% {
+    border-top-color: #52b4ff;
+    border-left-color: #52b4ff;
+    border-right-color: #52b4ff;
+    border-bottom-color: #52b4ff;
+    }
+
+50% {
+    border-top-color: #00e5ff;
+    border-left-color: #00e5ff;
+    border-right-color: #00e5ff;
+    border-bottom-color: #00e5ff;
+    }
+
+66.67% {
+    border-top-color: #00ff88;
+    border-left-color: #00ff88;
+    border-right-color: #00ff88;
+    border-bottom-color: #00ff88;
+    }
+
+83.33% {
+    border-top-color: #ffe600;
+    border-left-color: #ffe600;
+    border-right-color: #ffe600;
+    border-bottom-color: #ffe600;
+    }
+
+91.67% {
+    border-top-color: #ff7a00;
+    border-left-color: #ff7a00;
+    border-right-color: #ff7a00;
+    border-bottom-color: #ff7a00;
+    }
+
+100% {
+    border-top-color: #FB008F;
+    border-left-color: #FB008F;
+    border-right-color: #FB008F;
+    border-bottom-color: #FB008F;
+    }
+}
+
+/* Rainbow border for only the active workspace window so it doesn't look
+   so bright with pink outline */
+@keyframes active-kitty-rainbow-border {
+    0% {
+        border-top-color: #6c71c4;
+        border-left-color: #6c71c4;
+        border-right-color: #6c71c4;
+        border-bottom-color: #6c71c4;
+    }
+
+    20% {
+        border-top-color: #3da5ff;
+        border-left-color: #3da5ff;
+        border-right-color: #3da5ff;
+        border-bottom-color: #3da5ff;
+    }
+
+    40% {
+        border-top-color: #00d4c7;
+        border-left-color: #00d4c7;
+        border-right-color: #00d4c7;
+        border-bottom-color: #00d4c7;
+    }
+
+    60% {
+        border-top-color: #00e676;
+        border-left-color: #00e676;
+        border-right-color: #00e676;
+        border-bottom-color: #00e676;
+    }
+
+    80% {
+        border-top-color: #ff6d00;
+        border-left-color: #ff6d00;
+        border-right-color: #ff6d00;
+        border-bottom-color: #ff6d00;
+    }
+
+    100% {
+        border-top-color: #6c71c4;
+        border-left-color: #6c71c4;
+        border-right-color: #6c71c4;
+        border-bottom-color: #6c71c4;
+    }
+}
+
+@keyframes rainbow-text {
+    0% { color: alpha(@color16, 0.9); }
+    16.67% { color: @color13; }
+    33.33% { color: @color4; }
+    50% { color: @color6; }
+    66.67% { color: @color2; }
+    83.33% { color: @color9; }
+    100% { color: alpha(@color16, 0.9); }
+}
+
+/* rainbow border, static kitty color */
+@keyframes kitty_cat_rainbow {
+    0% {
+        border-top-color: alpha(#FB008F, 0.80);
+        border-left-color: alpha(#FB008F, 0.80);
+        border-right-color: alpha(#FB008F, 0.80);
+	border-bottom-color: alpha(#FB008F, 0.80);
+	color: #52b4ff;
+    }
+
+    16.67% {
+        border-top-color: #c7a4ff;
+        border-left-color: #c7a4ff;
+        border-right-color: #c7a4ff;
+	border-bottom-color: #c7a4ff;
+	color: #c7a4ff;
+}
+
+    33.33% {
+        border-top-color: #52b4ff;
+        border-left-color: #52b4ff;
+        border-right-color: #52b4ff;
+	border-bottom-color: #52b4ff;
+        color: #52b4ff;
+	}
+
+    50% {
+        border-top-color: #00e5ff;
+        border-left-color: #00e5ff;
+        border-right-color: #00e5ff;
+	border-bottom-color: #00e5ff;
+    	color: #c7a4ff;
+	}
+
+    66.67% {
+        border-top-color: alpha(#00ff88, 0.9);
+        border-left-color: alpha(#00ff88, 0.9);
+        border-right-color: alpha(#00ff88, 0.9);
+	border-bottom-color: alpha(#00ff88, 0.9);
+    	color: #52b4ff;
+	}
+
+    83.33% {
+        border-top-color: alpha(#ff7a00, 0.8);
+        border-left-color: alpha(#ff7a00, 0.8);
+        border-right-color: alpha(#ff7a00, 0.8);
+	border-bottom-color: alpha(#ff7a00,0.8);
+    	color: #c7a4ff;
+	}
+
+    100% {
+        border-top-color: alpha(#FB008F, 0.75);
+        border-left-color: alpha(#FB008F, 0.75);
+        border-right-color: alpha(#FB008F, 0.75);
+	border-bottom-color: alpha(#FB008F, 0.75);
+    	color: #52b4ff;
+	}
+}
+
+/* Clock and internet speed, slightly customized rainbow color */
+@keyframes fav-color-rainbow {
+    0% {
+	 opacity: 75;
+	 color: shade(@color13, 0.75);
+	 }
+
+    50% {
+	opacity: 75;
+	color: shade(@color4, 0.75);
+	}
+
+    100% {
+	 opacity: 75;
+	 color: shade(@color13, 0.67);
+	 }
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 4px alpha(@color13, 0.6); }
+    100% { box-shadow: 0 0 12px alpha(@color5, 0.8); }
+}
+
+@keyframes blink {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1.0; }
+}
