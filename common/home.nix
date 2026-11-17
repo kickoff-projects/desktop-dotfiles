@@ -13,8 +13,8 @@ in
 {
   home.stateVersion = "24.11"; # Please read the comment before changing.
 
-  # hosts/Home-Desktop and hosts/Home-Laptop share the same usernames, so
-  # running e.g. "home-manager switch --flake .#nansus@Home-Laptop" on the
+  # hosts/desktop and hosts/laptop share the same usernames, so
+  # running e.g. "home-manager switch --flake .#nansus@laptop" on the
   # desktop would otherwise silently deploy the laptop's waybar/monitor
   # config onto this machine. The real /etc/hostname can only be read at
   # activation time, not at eval time (that would need --impure), so this

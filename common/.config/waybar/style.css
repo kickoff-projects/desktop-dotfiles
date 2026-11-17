@@ -190,7 +190,7 @@ window#waybar {
     border-radius: 10px;
 }
 
-/* "pulseaudio#microphone" module (Home-Laptop) */
+/* "pulseaudio#microphone" module (laptop) */
 #microphone.source {
     border-bottom-color: @color1;
     color: @color1;
@@ -200,7 +200,7 @@ window#waybar {
     color: @color2;
 }
 
-/* "custom/microphone" module (Home-Desktop) */
+/* "custom/microphone" module (desktop) */
 #custom-microphone {
     border-bottom-color: @color1;
     color: @color1;

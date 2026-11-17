@@ -1,13 +1,13 @@
 { config, pkgs, lib, inputs, ... }:
 
 # The NixOS modules and settings every machine takes, verified against
-# Home-Laptop, Home-Desktop and Server's active imports (see AUDIT history
+# laptop, desktop and server's active imports (see AUDIT history
 # and the refactor plan). Each host's own configuration.nix then adds only
 # its hardware, locale, window manager and real deltas - see the comments
 # there for what those are per host.
 #
 # Deliberately NOT here even though some hosts want it: base/hyprland.nix
-# and base/screen_shot.nix (Server runs sway, which has neither hyprland nor
+# and base/screen_shot.nix (server runs sway, which has neither hyprland nor
 # hyprshot/hyprpicker), hardware/bluetooth.nix, games/steam.nix and
 # games/gamemode.nix (leisure-desktop only), security/sshd.nix (kept as a
 # file, imported commented-out per host - see AUDIT #19).

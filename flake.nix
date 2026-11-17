@@ -102,9 +102,9 @@
       # instead of silently overwriting that machine's .config with another
       # host's files.
       hostNames = {
-        Home-Desktop = "NanSuS-Desktop";
-        Home-Laptop = "NanSuS-Laptop";
-        Server = "NixOS-Server";
+        desktop = "NanSuS-Desktop";
+        laptop = "NanSuS-Laptop";
+        server = "NixOS-Server";
       };
 
       # Builds "nansus@<host>" / "nansus-work@<host>" from common/home.nix +
@@ -134,14 +134,14 @@
         };
     in {
 
-      # Nixos configuration set for Home-Desktop, Home-Laptop and Server.
+      # Nixos configuration set for desktop, laptop and server.
       # Anything else is a demo until further declared
       nixosConfigurations = {
-	# Leisure configuration for Home-Desktop
-        Home-Desktop = lib.nixosSystem {
+	# Leisure configuration for desktop
+        desktop = lib.nixosSystem {
           inherit system;
           modules = [
-             "${self}/hosts/Home-Desktop/configuration.nix"
+             "${self}/hosts/desktop/configuration.nix"
 
 	     # This profile owns the nvidia setup for this host. It imports
 	     # common/gpu/nvidia (videoDrivers = ["nvidia"]) and sets
@@ -155,10 +155,10 @@
         };
 
 	# Leisure configuration for home Laptop
-        Home-Laptop = lib.nixosSystem {
+        laptop = lib.nixosSystem {
           inherit system;
           modules = [
-            "${self}/hosts/Home-Laptop/configuration.nix"
+            "${self}/hosts/laptop/configuration.nix"
 	    nixos-hardware.nixosModules.lenovo-legion-16ithg6
 	    #nix-index-database.nixosModules.default
           ];
@@ -168,11 +168,11 @@
         };
 
 	# Headless ML / dev box, runs sway rather than hyprland
-	# (see hosts/Server/configuration.nix)
-        Server = lib.nixosSystem {
+	# (see hosts/server/configuration.nix)
+        server = lib.nixosSystem {
           inherit system;
           modules = [
-            "${self}/hosts/Server/configuration.nix"
+            "${self}/hosts/server/configuration.nix"
 	    #nix-index-database.nixosModules.default
 
 	    # remember to run this on host machine:
@@ -187,11 +187,11 @@
           };
         };
 
-	# LiveUSB boot
-	LiveUSB = lib.nixosSystem {
+	# live-usb boot
+	live-usb = lib.nixosSystem {
 	   inherit system;
 	   modules = [
-	      "${self}/hosts/LiveUSB/configuration.nix"
+	      "${self}/hosts/live-usb/configuration.nix"
 	      "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
 	   ];
 	   specialArgs = {
@@ -201,16 +201,16 @@
 
       };
 
-      # Home configuration for Home-Desktop, Home-Laptop and Server.
+      # Home configuration for desktop, laptop and server.
       # nansus-work only exists on the two leisure hosts.
       homeConfigurations = {
-        "nansus@Home-Desktop" = homeFor "nansus" "Home-Desktop";
-        "nansus-work@Home-Desktop" = homeFor "nansus-work" "Home-Desktop";
+        "nansus@desktop" = homeFor "nansus" "desktop";
+        "nansus-work@desktop" = homeFor "nansus-work" "desktop";
 
-        "nansus@Home-Laptop" = homeFor "nansus" "Home-Laptop";
-        "nansus-work@Home-Laptop" = homeFor "nansus-work" "Home-Laptop";
+        "nansus@laptop" = homeFor "nansus" "laptop";
+        "nansus-work@laptop" = homeFor "nansus-work" "laptop";
 
-        "nansus@Server" = homeFor "nansus" "Server";
+        "nansus@server" = homeFor "nansus" "server";
       };
     };
 }

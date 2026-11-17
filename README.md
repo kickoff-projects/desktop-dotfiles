@@ -25,7 +25,7 @@ there are four machines here instead of one:
   `.config` with only what's genuinely different on that box (monitor layout,
   waybar's module list, a palette override). The directory name is the
   `nixosConfigurations` attribute and the home-manager suffix, e.g.
-  `hosts/Home-Laptop` builds `.#Home-Laptop` and `nansus@Home-Laptop`.
+  `hosts/laptop` builds `.#laptop` and `nansus@laptop`.
 - `users/<name>/` - one account's home-manager module and, if it switches the
   theme, its own `.config` override.
 
@@ -36,8 +36,8 @@ middle. `common/config-files.nix` does the merging; `common/home.nix` is
 where the three layers get combined for a given account.
 
 **Color schemes are per account, not per machine.** `nansus` is rainbow
-everywhere it logs in - Home-Desktop, Home-Laptop, and the Server, where it
-gets picked up by `hosts/Server`'s red override instead. `nansus-work` is
+everywhere it logs in - desktop, laptop, and the server, where it
+gets picked up by `hosts/server`'s red override instead. `nansus-work` is
 rainbow too, except its kakoune, which is red - that's the one surface the
 work account overrides.
 
@@ -56,7 +56,7 @@ mechanisms provide it:
   `render-foot-colors.nix` hold the shared template. A layer overrides
   either by setting `xdg.configFile."kak/colors/account.kak".text` (or
   `"foot/colors.ini".text`) with `lib.mkForce`, the way
-  `users/nansus-work/home.nix` and `hosts/Server/theme.nix` do -
+  `users/nansus-work/home.nix` and `hosts/server/theme.nix` do -
   `hostDir/theme.nix` is picked up automatically if a host has one, the
   same optional-import pattern as `hostDir/.config`.
 
@@ -79,7 +79,7 @@ theme is one manual line per machine - add `"theme": "custom:neon-theme"` to
 refuses to clobber an unmanaged file, a machine that already has a real
 `~/.claude/themes/neon-theme.json` needs it removed before the first switch.
 
-**The Server runs sway, not hyprland** - see `hosts/Server/.config/sway/`.
+**The server runs sway, not hyprland** - see `hosts/server/.config/sway/`.
 Everything hyprland-specific (blur, shadows, animations, `hyprctl`) simply
 doesn't exist there; the red theme uses sway's own `client.focused` colors
 file instead of a palette.conf.
@@ -87,12 +87,12 @@ file instead of a palette.conf.
 ## Rebuilding
 
 ```sh
-sudo nixos-rebuild switch --flake .#<Home-Desktop|Home-Laptop|Server>
-home-manager switch --flake .#<nansus|nansus-work>@<host>
+sudo nixos-rebuild switch --flake ~/desktop-dotfiles#<desktop|laptop|server>
+home-manager switch --flake ~/desktop-dotfiles#<nansus|nansus-work>@<host>
 ```
 
-(the `nrs`/`hms` aliases from `system/base/shells/zsh.nix` do the same,
-taking the host as an argument so there's no risk of rebuilding the wrong
-machine.)
+(the `nrs`/`hms` functions from `system/base/shells/zsh.nix` do the same,
+taking the host as an argument - either `<host>` or `<user>@<host>` - so
+there's no risk of rebuilding the wrong machine.)
 
-LiveUSB builds straight from `nix build .#nixosConfigurations.LiveUSB.config.system.build.isoImage`.
+live-usb builds straight from `nix build .#nixosConfigurations.live-usb.config.system.build.isoImage`.

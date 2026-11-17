@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # nansus: copy of
-# hosts/Home-Desktop/.config/hypr/scripts/waybar-microphone.sh, differing
+# hosts/desktop/.config/hypr/scripts/waybar-microphone.sh, differing
 # only in the no-device branch. The shared script prints a slashed glyph
 # with class "unavailable"; this one prints empty text, because waybar
 # hides a custom module whose text is empty and this account wants no

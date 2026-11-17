@@ -2,7 +2,7 @@
 
 {
 
-# Same module set as hosts/Home-Laptop/configuration.nix, in the same order.
+# Same module set as hosts/laptop/configuration.nix, in the same order.
 # The only deliberate differences are called out in comments below, and
 # they are all hardware or location: no TLP (nothing to save battery on),
 # no Intel microcode (Ryzen 7 3700X), and the Netherlands locale this box

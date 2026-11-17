@@ -47,9 +47,20 @@
 	done
 	unset _zsh_theme
 
-	# NixOS aliases
-	alias hms='home-manager switch --flake .#'
-	alias nrs='sudo nixos-rebuild switch --flake .#'
+	# NixOS aliases. Functions rather than aliases because the target has to
+	# land inside "--flake <path>#<target>", not after it. Both accept
+	# "desktop" and "nansus@desktop": hms adds the missing user, nrs drops it.
+	hms() {
+	  local t=$1
+	  if [[ -z $t ]]; then print -u2 "usage: hms <host|user@host>"; return 1; fi
+	  [[ $t == *@* ]] || t=$USER@$t
+	  home-manager switch --flake "$HOME/desktop-dotfiles#$t"
+	}
+	nrs() {
+	  local t=$1
+	  if [[ -z $t ]]; then print -u2 "usage: nrs <host|user@host>"; return 1; fi
+	  sudo nixos-rebuild switch --flake "$HOME/desktop-dotfiles#''${t#*@}"
+	}
 	alias nfu='nix flake update'
 	alias ncg='nix-collect-garbage --delete-older-than'
 	alias ncgo='nix-collect-garbage -d'
@@ -73,8 +84,8 @@
 
 	# annoying as hell to have .dotfiles and .dotnet
 	# in a same place.
-	alias .d='cd ; cd .dotfiles'
-	alias .s='cd ; cd .dotfiles/system/'
+	alias .d='cd ; cd desktop-dotfiles'
+	alias .s='cd ; cd desktop-dotfiles/system/'
 	alias .i='cd ; cd school_stuff/Info_for_NixOS'
 	alias .htb='cd ; cd HTB_Lab'
 
@@ -89,13 +100,13 @@
 
 	# And here just to ease my workflow,
 	# some aliases to jump to computer configs
-	alias .home-desktop='cd ; cd .dotfiles/hosts/Home-Desktop/'
-	alias .laptop='cd ; cd .dotfiles/hosts/Home-Laptop/'
-	alias .server='cd ; cd .dotfiles/hosts/Server'
+	alias .desktop='cd ; cd desktop-dotfiles/hosts/desktop/'
+	alias .laptop='cd ; cd desktop-dotfiles/hosts/laptop/'
+	alias .server='cd ; cd desktop-dotfiles/hosts/server'
 
-	alias .dc='cd ; cd .dotfiles/hosts/Home-Desktop/.config/'
-	alias .lc='cd ; cd .dotfiles/hosts/Home-Laptop/.config/'
-	alias .sc='cd ; cd .dotfiles/hosts/Server/.config/'
+	alias .dc='cd ; cd desktop-dotfiles/hosts/desktop/.config/'
+	alias .lc='cd ; cd desktop-dotfiles/hosts/laptop/.config/'
+	alias .sc='cd ; cd desktop-dotfiles/hosts/server/.config/'
 
 	# nmap aliases
 	alias nmap_open_ports="nmap --open"

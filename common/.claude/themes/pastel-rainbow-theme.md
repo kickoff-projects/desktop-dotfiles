@@ -139,13 +139,13 @@ of the picker.
 `inactive` `#9a93ad` — muted lavender grey
 `inactiveShimmer` `#c2bcd1` — pale lavender grey
 `subtle` `#7d7691` — dusty violet grey
-`promptBorder` `#3a3550` — dark muted violet
-`promptBorderShimmer` `#7b6fa8` — soft violet
-`claude` `#ffb39b` — pale peach orange
-`claudeShimmer` `#ffd4c4` — pale blush peach
-`clawd_body` `#ffc2b0` — soft peach pink
+`promptBorder` `#d900ff` — bright magenta
+`promptBorderShimmer` `#00e5ff` — bright cyan
+`claude` `#ff6b00` — bright orange
+`claudeShimmer` `#ff9d4d` — pale orange
+`clawd_body` `#00ff02` — bright green
 `clawd_background` `#000000` — black
-`briefLabelClaude` `#ffb39b` — pale peach orange
+`briefLabelClaude` `#ff6b00` — bright orange
 `briefLabelYou` `#a8d4f2` — pale sky blue
 `bashBorder` `#f5b6d8` — pale pink magenta
 `autoAccept` `#c89dff` — pale purple
@@ -175,7 +175,7 @@ of the picker.
 `diffAddedDimmed` `#1d2b22` — dark muted green
 `diffAddedWord` `#2f8f5a` — medium green
 `diffRemovedWord` `#9e3047` — medium dark red
-`userMessageBackground` `#44274a` — deep magenta
+`userMessageBackground` `#b84dff` — bright purple
 `userMessageBackgroundHover` `#4d2d54` — deep magenta, lighter
 `composerSidebarBackground` `#141019` — near-black violet
 `selectionBg` `#2b2545` — deep indigo
