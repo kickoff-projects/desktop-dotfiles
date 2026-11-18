@@ -2,6 +2,15 @@
 # .config/kak/colors/account.kak for the default (rainbow/purple_best).
 source "~/.config/kak/colors/account.kak"
 
+# Let foot draw the cursor (its [cursor] style, a line) instead of kak
+# painting the cell as a block.
+set-option global ui_options terminal_cursor_native=true
+
+declare-option str kakmode
+hook global ModeChange '(?:push|pop):[^:]*:(.*)' %{ set-option global kakmode %val{hook_param_capture_1} }
+hook global ModeChange '.*:.*:insert' %{ set-face global kak_mode_info "%opt{base0B}+i" }
+hook global ModeChange '.*:.*:normal' %{ set-face global kak_mode_info "%opt{base0A}+i" }
+set-option global modelinefmt '{kak_mode_info}%opt{kakmode}  {violet}|  {{context_info}} {row_color}%val{cursor_line} / %val{buf_line_count}{violet}   |   %val{bufname}  '
 
 
-map global normal ' ':exec i<space><esc>'
+map global normal ' ' ':exec i<space><esc>'

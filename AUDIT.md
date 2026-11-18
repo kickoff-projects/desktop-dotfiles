@@ -7,7 +7,7 @@ Repo audit, last checked 2026-11-18.
 `nansus` on all three real hosts, `nansus-work` on the two leisure hosts. Dotfiles are a
 three-layer merge of `common/.config`, that host's `.config`, and that user's `.config`
 (`common/config-files.nix`); per-app packages are one home-manager module per app under
-`common/apps/`; kakoune and foot colors are generated from `common/palettes.nix`.
+`system/app/`; kakoune and foot colors are generated from `common/palettes.nix`.
 
 **Load assumed.** One person, a handful of personal machines, rebuilt by hand. No multi-user
 service, no concurrency, no untrusted input — "scale" here means rebuild cost and closure size,
@@ -58,7 +58,7 @@ derivation (`nix eval ... .drvPath`), checked against this machine's local store
 10. **Six unused NixOS app modules** (`system/app/{dolphin,discord,spotify,FreeCAD,Qemu}.nix`,
     `system/games/prismlauncher.nix`) were imported nowhere; the same packages were separately
     listed in `users/nansus/home.nix`. Converted to per-app home-manager modules under
-    `common/apps/`, imported by `common/home.nix` (dolphin, discord, spotify, freecad, qemu — now
+    `system/app/`, imported by `common/home.nix` (dolphin, discord, spotify, freecad, qemu — now
     shared by both accounts) or by `users/nansus/home.nix` (prismlauncher, kept account-specific).
 11. **Three commented-out, unwanted virtualization modules deleted** —
     `system/app/{Docker,virt-manager,VirtualBox}.nix` and their commented import lines.

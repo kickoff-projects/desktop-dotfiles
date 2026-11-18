@@ -62,6 +62,16 @@ declare-option str baseAD02 'rgb:${p.baseAD02}' # Pink (selection)
 declare-option str baseAD03 'rgb:${p.baseAD03}' # Yellow 
 declare-option str baseAD04 'rgb:${p.baseAD04}' # incert mode pink 
 declare-option str baseAD05 'rgb:${p.baseAD05}' # bright green 
+declare-option str baseAD06 'rgb:${p.baseAD06}' # bright orange
+declare-option str baseAD07 'rgb:${p.baseAD07}' # white
+declare-option str baseAD08 'rgb:${p.baseAD08}' # black
+declare-option str baseAD09 'rgb:${p.baseAD09}' # emerald
+declare-option str baseAD10 'rgb:${p.baseAD10}' # pastel red
+declare-option str baseAD11 'rgb:${p.baseAD11}' # base0C complementary pink
+declare-option str baseAD12 'rgb:${p.baseAD12}' # Brightest green
+declare-option str baseAD13 'rgb:${p.baseAD13}' # other shade of blue
+declare-option str baseAD14 'rgb:${p.baseAD14}' # complementary to orange(AD07)
+
 
 
 
@@ -103,34 +113,39 @@ set-face global list "%opt{base05}"
 
 # kakoune UI
 
-set-face global Default "%opt{base05},%opt{base00}"
-set-face global PrimarySelection "%opt{baseAD02}"
-set-face global SecondarySelection "%opt{baseAD02},%opt{base0A}"
-set-face global PrimaryCursor "%opt{baseAD02},%opt{baseAD01}"
-set-face global SecondaryCursor "%opt{baseAD02},%opt{base0C}"
-set-face global PrimaryCursorEol "%opt{baseAD01},%opt{base0A}"
-set-face global SecondaryCursorEol "%opt{baseAD01},%opt{base0D}"
-set-face global LineNumbers "%opt{base04},%opt{base00}"
-set-face global LineNumberCursor "%opt{base0A},%opt{base00}+b"
+set-face global Default "%opt{base05}"
+set-face global PrimarySelection "%opt{baseAD06}"
+set-face global SecondarySelection "%opt{baseAD06}"
+set-face global PrimaryCursor "%opt{baseAD06}"
+set-face global SecondaryCursor "%opt{baseAD06}"
+set-face global PrimaryCursorEol "%opt{baseAD08},%opt{baseAD08}"
+set-face global SecondaryCursorEol "%opt{baseAD08},%opt{baseAD08}"
+set-face global LineNumbers "%opt{base0A}"
+set-face global LineNumberCursor "%opt{base0A}"
 set-face global LineNumbersWrapped "%opt{base04},%opt{base00}+i"
-set-face global MenuForeground "%opt{base06},%opt{base01}+b"
-set-face global MenuBackground "%opt{base0D},%opt{base07}"
-set-face global MenuInfo "%opt{base0D},%opt{base07}"
-set-face global Information "%opt{base01},%opt{base07}"
-set-face global Error "%opt{base01},%opt{base08}"
-set-face global DiagnosticError "%opt{base08}"
+set-face global MenuForeground "%opt{base0A}"
+set-face global MenuBackground "%opt{baseAD13},%opt{baseAD08}"
+set-face global MenuInfo "%opt{baseAD13}"
+set-face global Information "%opt{base0A}"
+set-face global Error "%opt{baseAD07},%opt{baseAD10}"
+set-face global DiagnosticError "%opt{baseAD10}"
 set-face global DiagnosticWarning "%opt{base0A}"
-set-face global StatusLine "%opt{base04},%opt{base02}"
+set-face global StatusLine "%opt{baseAD06}"
 set-face global StatusLineMode "%opt{base0B}+i"      #%opt{base0A},%opt{baseAD03},  %opt{base01},%opt{baseAD05}
-set-face global StatusLineInfo "%opt{base06},%opt{base02}"
-set-face global StatusLineValue "%opt{base04},%opt{base02}"
-set-face global StatusCursor "%opt{base02},%opt{base05}"
-set-face global Prompt "%opt{base0A},%opt{base02}"
-set-face global MatchingChar "%opt{base0D},%opt{base00}"
+set-face global StatusLineInfo "%opt{baseAD06}"
+set-face global StatusLineValue "%opt{baseAD06}"
+set-face global StatusCursor "%opt{baseAD14}"
+set-face global Prompt "%opt{base0F}"
+set-face global MatchingChar "%opt{base06}"
 set-face global Whitespace "%opt{base01},%opt{base00}+f"
 set-face global WrapMarker Whitespace
 set-face global BufferPadding "%opt{base04},%opt{base00}"
-set-face global Search "%opt{base05},%opt{base01}"
+set-face global Search "%opt{baseAD06}"
+
+# Unique/Important info colors
+set-face global kak_mode_info "%opt{base0B}+i"
+set-face global row_color "%opt{baseAD06}"
+set-face global violet "%opt{base0A}"
 
 # LSP
 

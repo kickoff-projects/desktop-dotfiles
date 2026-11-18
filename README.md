@@ -10,7 +10,7 @@ Three layers, one more than a single-machine setup needs, since there are four m
 
 - `common/` — everything every machine and every account shares: the NixOS module list
   (`common/system.nix`), the home-manager base (`common/home.nix`), the per-app home-manager
-  modules (`common/apps/`), and the default (rainbow) dotfiles under `common/.config`.
+  modules (`system/app/`), and the default (rainbow) dotfiles under `common/.config`.
 - `hosts/<name>/` — one machine. `configuration.nix` + `hardware.nix`, plus a `.config` with
   only what's genuinely different on that box (monitor layout, waybar's module list, a palette
   override). The directory name is the `nixosConfigurations` attribute and the home-manager
@@ -43,7 +43,7 @@ filename wins — but two different mechanisms provide it:
   `hostDir/theme.nix` is picked up automatically if a host has one, the same optional-import
   pattern as `hostDir/.config` — no host currently uses it.
 
-**Per-app packages live under `common/apps/`**, one file per app (`dolphin.nix`, `discord.nix`, …),
+**Per-app packages live under `system/app/`**, one file per app (`dolphin.nix`, `discord.nix`, …),
 each a small home-manager module setting `home.packages`. `common/home.nix` imports the ones
 every account gets; an account's own `home.nix` imports anything that should stay
 account-specific (`prismlauncher`, today, under `nansus` only).

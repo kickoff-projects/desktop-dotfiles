@@ -15,9 +15,12 @@
       base00 = "1e0528"; base01 = "1a092d"; base02 = "331354"; base03 = "320f55";
       base04 = "917EBF"; base05 = "ffeeff"; base06 = "ffeeff"; base07 = "f8c0ff";
       base08 = "00d9e9"; base09 = "aa00a3"; base0A = "955ae7"; base0B = "05cb0d";
-      base0C = "b900b1"; base0D = "550068"; base0E = "8991bb"; base0F = "4d6fff";
+      base0C = "b900b1"; base0D = "00e1cd"; base0E = "8991bb"; base0F = "4d6fff";
       baseAD01 = "5191cc"; baseAD02 = "fb008f"; baseAD03 = "ffd34d";
-      baseAD04 = "c31684"; baseAD05 = "7eff46";
+      baseAD04 = "c31684"; baseAD05 = "7eff46"; baseAD06 = "ffa500";
+      baseAD07 = "ffffff"; baseAD08 = "000000"; baseAD09 = "50c878";
+      baseAD10 = "ff392e"; baseAD11 = "cb05c3"; baseAD12 = "26ff00";
+      baseAD13 = "0c85ff"; baseAD14 = "00ffa5";
       # The original file's "## Additional ##" comment names a different
       # blue (3d85c6) than the one baseAD01 actually declares (5191cc) -
       # a pre-existing mismatch in the hand file, kept verbatim rather than

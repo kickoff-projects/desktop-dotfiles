@@ -12,9 +12,9 @@ let
   renderKak = import ../../common/lib/render-kak.nix;
 in
 {
-  # prismlauncher stays per-account rather than moving to common/apps - see
-  # common/home.nix for the apps shared by every account.
-  imports = [ ../../common/apps/prismlauncher.nix ];
+  # prismlauncher stays per-account rather than moving to common/home.nix -
+  # see common/home.nix for the apps shared by every account.
+  imports = [ ../../system/app/prismlauncher.nix ];
 
   home.packages = with pkgs; [
     ripgrep
