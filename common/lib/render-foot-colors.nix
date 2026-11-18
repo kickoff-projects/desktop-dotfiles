@@ -3,7 +3,8 @@
 ''
 # -*- conf -*-
 # Terminal colors, generated from common/palettes.nix - see
-# common/lib/render-foot-colors.nix. Included from common/.config/foot/foot.ini.
+# common/lib/render-foot-colors.nix. Included from each host's own
+# .config/foot/foot.ini (hosts/desktop, hosts/laptop, hosts/server).
 
 [colors-dark]
 cursor=${p.cursor}

@@ -7,7 +7,7 @@
     "margin-right": 12,
     "spacing": 8,
     "modules-left": ["clock", "sway/workspaces"],
-    "modules-right": ["network", "custom/nvidia", "group/cpu_info", "memory", "disk", "pulseaudio", "tray"],
+    "modules-right": ["network", "custom/nvidia", "group/cpu_info", "memory", "disk", "pulseaudio", "custom/microphone", "tray"],
 
     "sway/workspaces": {
         "format": "{icon}",
@@ -90,8 +90,20 @@
         "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
     },
 
+    // mic state comes from a script so a missing device is a state of its
+    // own - same module as hosts/desktop and hosts/laptop, see
+    // common/.config/hypr/scripts/waybar-microphone.sh
+    "custom/microphone": {
+        "exec": "bash $HOME/.config/hypr/scripts/waybar-microphone.sh",
+        "return-type": "json",
+        "interval": 1,
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle",
+        "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SOURCE@ 5%+",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-"
+    },
+
     "custom/nvidia": {
-        "exec": "nvidia-smi --query-gpu=pstate,utilization.memory,utilization.gpu,temperature.gpu --format=csv,noheader,nounits | awk -F', ' '{printf \"GPU:  \\uf0e7 %s    %s%%   \\uf2db %s%%  \\uf2c9 %s°C\", $1, $2, $3, $4}'",
-        "interval": 1
+        "exec": "nvidia-smi --id=0 --query-gpu=pstate,utilization.memory,utilization.gpu,temperature.gpu --format=csv,noheader,nounits -lms 1000 | awk -F', ' '{printf \"GPU:  \\uf0e7 %s    %s%%   \\uf2db %s%%  \\uf2c9 %s°C\\n\", $1, $2, $3, $4; fflush()}'",
+        "restart-interval": 5
     }
 }

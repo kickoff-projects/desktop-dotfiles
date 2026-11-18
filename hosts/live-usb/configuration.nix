@@ -42,7 +42,7 @@ in
 
   # fastfetch config for the live environment; /etc/xdg is on fastfetch's search path
   environment.etc."xdg/fastfetch/config.jsonc".source = ./.config/fastfetch/config.jsonc;
-  environment.etc."xdg/fastfetch/moved_chesire_cat_with_text".source = ./.config/fastfetch/moved_chesire_cat_with_text;
+  environment.etc."xdg/fastfetch/moved_chesire_cat_with_text".source = ../../common/.config/fastfetch/moved_chesire_cat_with_text;
 
   # Red foot + kakoune, same scheme as the Server - generated from
   # common/palettes.nix, same mechanism as hosts/Server/theme.nix. No

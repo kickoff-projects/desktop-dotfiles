@@ -209,17 +209,6 @@ window#waybar {
  * shared file gave to muted: the pill is this stylesheet's "look here"
  * marker and red already carries that job. */
 
-/* "pulseaudio#microphone" module (laptop) */
-#microphone.source {
-    border-bottom-color: @color1;
-    color: @color1;
-}
-
-#pulseaudio#microphone.source-muted {
-    border-bottom-color: @color2;
-    color: @color2;
-}
-
 /* "custom/microphone" module (desktop) */
 #custom-microphone {
     border-bottom-color: @color1;

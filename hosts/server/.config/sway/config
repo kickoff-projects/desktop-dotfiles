@@ -11,7 +11,7 @@
 # -------- Variables -------------------------
 set $terminal foot
 set $fileManager dolphin
-set $menu rofi --show drun
+set $menu rofi -show drun -show-icons
 set $mod Mod4
 
 # -------- Look -------------------------------
@@ -89,7 +89,7 @@ bindsym XF86AudioPlay exec playerctl play-pause
 bindsym XF86AudioPrev exec playerctl previous
 
 # -------- Screenshot (grim+slurp, not hyprshot) -
-bindsym Ctrl+Shift+x exec grim -g "$(slurp)" ~/Pictures/$(date +%Y-%m-%d_%H-%m-%s).png
+bindsym Ctrl+Shift+x exec grim -g "$(slurp)" ~/Pictures/$(date +%Y-%m-%d_%H-%M-%S).png
 bindsym Ctrl+Shift+a exec grim -g "$(slurp)" - | wl-copy
 bindsym Ctrl+Shift+s exec grim -g "$(swaymsg -t get_tree | jq -j '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" - | wl-copy
 

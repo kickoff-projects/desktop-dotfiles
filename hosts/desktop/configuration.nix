@@ -47,9 +47,6 @@ imports =
 
       # proxy
       #../../system/security/mitmproxy_cert.nix
-      #../../system/app/virt-manager.nix
-      #../../system/app/VirtualBox.nix
-      #../../system/app/Docker.nix
      ];
 
   # fastfetch greeting on every new interactive shell

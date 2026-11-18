@@ -68,8 +68,6 @@
 	"wheel" # Sudo for nansus
 	"networkmanager" # ability to change internet connections
 	"video" # change display settings
-	"vboxusers" # ability to use virtual machines
-	"libvirtd" # -"-
 	"lp"
 	"input"
 	"audio"

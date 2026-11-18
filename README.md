@@ -1,88 +1,69 @@
-Nothing too fancy here, just trying to upkeep couple of my computers and at the same time trying to learn new
-things regarding servers, programming and in general just about linux and nixos in particular. But please do take a look
-of the configs if you happen to enjoy any stylistic implementations. 😎  Also don't mind me having this as my 
-artistic canvas that might be messy at times but if ever need be I'll clean it up. My goal is to have clean code that is
-easy to use but comments that might end up rambling way too extensively for no apparent reason. XD ALso worth mentioning, 
-if push is made with commit message like "yeah" or "yuh" it's most likely been removal of unnessecary # or corrrected 
-mispelling somewhere. 
+Personal NixOS flake for four machines: a desktop, a laptop, a headless server, and a live USB
+image. Rebuilt and rsynced by hand — no install scripts.
 
-Also, no install scripts here, at the moment it's rsync or nothing. 🥹
-
-( This repo has gotten heavy lift and inspiration from JaKooLit's setup but only in limited amount of the
-  full functionality he has made. Also multiple times when I have felt like a puppy left in a rain 
-  when I've been trying to get some functionality working for days or weeks, Gskartwii has given a lot of good
-  advice and explanation of what is going on, big mcthankies from mcspankies! )
+( Heavy lift and inspiration from JaKooLit's setup, in limited amount. Gskartwii has given a lot
+of good advice getting things working — big mcthankies from mcspankies. )
 
 ## Layout
 
-Three layers, same idea as `/srv/nixos-vm-config` but with one more layer since
-there are four machines here instead of one:
+Three layers, one more than a single-machine setup needs, since there are four machines here:
 
-- `common/` - everything every machine and every account shares: the NixOS
-  module list (`common/system.nix`), the home-manager base (`common/home.nix`),
-  and the default (rainbow) dotfiles under `common/.config`.
-- `hosts/<name>/` - one machine. `configuration.nix` + `hardware.nix`, plus a
-  `.config` with only what's genuinely different on that box (monitor layout,
-  waybar's module list, a palette override). The directory name is the
-  `nixosConfigurations` attribute and the home-manager suffix, e.g.
-  `hosts/laptop` builds `.#laptop` and `nansus@laptop`.
-- `users/<name>/` - one account's home-manager module and, if it switches the
-  theme, its own `.config` override.
+- `common/` — everything every machine and every account shares: the NixOS module list
+  (`common/system.nix`), the home-manager base (`common/home.nix`), the per-app home-manager
+  modules (`common/apps/`), and the default (rainbow) dotfiles under `common/.config`.
+- `hosts/<name>/` — one machine. `configuration.nix` + `hardware.nix`, plus a `.config` with
+  only what's genuinely different on that box (monitor layout, waybar's module list, a palette
+  override). The directory name is the `nixosConfigurations` attribute and the home-manager
+  suffix, e.g. `hosts/laptop` builds `.#laptop` and `nansus@laptop`.
+- `users/<name>/` — one account's home-manager module and, if it switches the theme, its own
+  `.config` override.
 
-A file under `hosts/<host>/.config/foo` or `users/<name>/.config/foo` replaces
-the file of the same path from `common/.config/foo` - same mechanism as the
-VM config's `common` vs `users` layers, extended with the host layer in the
-middle. `common/config-files.nix` does the merging; `common/home.nix` is
-where the three layers get combined for a given account.
+A file under `hosts/<host>/.config/foo` or `users/<name>/.config/foo` replaces the file of the
+same path from `common/.config/foo`. `common/config-files.nix` does the merging; `common/home.nix`
+is where the three layers get combined for a given account.
 
-**Color schemes are per account, not per machine.** `nansus` is rainbow
-everywhere it logs in - desktop, laptop, and the server, where it
-gets picked up by `hosts/server`'s red override instead. `nansus-work` is
-rainbow too, except its kakoune, which is red - that's the one surface the
+**Color schemes are per account, not per machine.** `nansus` is rainbow on every host it logs
+into — desktop, laptop, and the server. `nansus-work` is rainbow too, except its kakoune, which
+is a black/neon variant (`common/palettes.nix`'s `neon_rainbow`) — that is the one surface the
 work account overrides.
 
-Every themed surface works off the same idea - the shared config always
-references a fixed filename (`colors.css`, `account.kak`, `account.theme`,
-...), and whichever layer provides that filename wins - but two different
-mechanisms provide it:
+Every themed surface works off the same idea — the shared config always references a fixed
+filename (`colors.css`, `account.kak`, `account.theme`, ...), and whichever layer provides that
+filename wins — but two different mechanisms provide it:
 
-- **waybar, hyprland borders, btop, rofi**: a plain file per theme
-  (`colors.css`, `account.theme`, `account.rasi`, `palette.conf`). To add a
-  scheme here, write that same set of fixed-name files in a new layer.
-- **kakoune and foot**: generated from `common/palettes.nix`. Both are
-  already 16-slot color tables (kakoune's is a base16 scheme; foot's is a
-  terminal palette), so a new theme is sixteen-ish hex values added to
-  `palettes.nix`, not a hand-copied file - `common/lib/render-kak.nix` and
-  `render-foot-colors.nix` hold the shared template. A layer overrides
-  either by setting `xdg.configFile."kak/colors/account.kak".text` (or
-  `"foot/colors.ini".text`) with `lib.mkForce`, the way
-  `users/nansus-work/home.nix` and `hosts/server/theme.nix` do -
-  `hostDir/theme.nix` is picked up automatically if a host has one, the
-  same optional-import pattern as `hostDir/.config`.
+- **waybar, hyprland borders, btop, rofi**: a plain file per theme (`colors.css`,
+  `account.theme`, `account.rasi`, `palette.conf`). To add a scheme here, write that same set of
+  fixed-name files in a new layer.
+- **kakoune and foot**: generated from `common/palettes.nix`. Both are already 16-slot color
+  tables (kakoune's is a base16 scheme; foot's is a terminal palette), so a new theme is
+  sixteen-ish hex values added to `palettes.nix`, not a hand-copied file —
+  `common/lib/render-kak.nix` and `render-foot-colors.nix` hold the shared template. A layer
+  overrides either by setting `xdg.configFile."kak/colors/account.kak".text` (or
+  `"foot/colors.ini".text`) with `lib.mkForce`, the way `users/nansus-work/home.nix` does.
+  `hostDir/theme.nix` is picked up automatically if a host has one, the same optional-import
+  pattern as `hostDir/.config` — no host currently uses it.
 
-**claude-code's config is a fourth surface, under `~/.claude` rather than
-`~/.config`.** `common/claude-files.nix` is the same per-file symlink trick as
-`config-files.nix` but aimed at `home.file`, with two layers instead of three:
-`common/.claude` for everything shared - `CLAUDE.md` and
-`themes/neon-theme.json`, the black/neon palette of
-`users/nansus-work/.config` translated into claude's own 72 color tokens -
-and `users/<name>/.claude` on top of it for anything one account wants
-differently. The theme is shared on purpose even though the matching desktop
-palette is not: an account that never selects it in `settings.json` simply
-carries an unused 2.5 KB file.
+**Per-app packages live under `common/apps/`**, one file per app (`dolphin.nix`, `discord.nix`, …),
+each a small home-manager module setting `home.packages`. `common/home.nix` imports the ones
+every account gets; an account's own `home.nix` imports anything that should stay
+account-specific (`prismlauncher`, today, under `nansus` only).
 
-`~/.claude/settings.json` is deliberately **not** managed. Claude rewrites it
-itself on every `/config`, `/model` or theme change, so a read-only store
-symlink would make those silently fail. The consequence is that selecting the
-theme is one manual line per machine - add `"theme": "custom:neon-theme"` to
-`~/.claude/settings.json`, or pick it in `/config`. Because home-manager
-refuses to clobber an unmanaged file, a machine that already has a real
-`~/.claude/themes/neon-theme.json` needs it removed before the first switch.
+**claude-code's config is a fourth surface, under `~/.claude` rather than `~/.config`.**
+`common/claude-files.nix` is the same per-file symlink trick as `config-files.nix` but aimed at
+`home.file`, with two layers instead of three: `common/.claude` for everything shared —
+`CLAUDE.md` and `themes/neon-theme.json` — and `users/<name>/.claude` on top of it for anything
+one account wants differently.
 
-**The server runs sway, not hyprland** - see `hosts/server/.config/sway/`.
-Everything hyprland-specific (blur, shadows, animations, `hyprctl`) simply
-doesn't exist there; the red theme uses sway's own `client.focused` colors
-file instead of a palette.conf.
+`~/.claude/settings.json` is deliberately **not** managed. Claude rewrites it itself on every
+`/config`, `/model` or theme change, so a read-only store symlink would make those silently fail.
+Selecting the theme is therefore one manual line per machine — add
+`"theme": "custom:neon-theme"` to `~/.claude/settings.json`, or pick it in `/config`.
+
+**The server runs sway, not hyprland** — see `hosts/server/.config/sway/`. Everything
+hyprland-specific (blur, shadows, animations, `hyprctl`) simply doesn't exist there. Its window
+borders are red, set directly in `hosts/server/.config/sway/colors` rather than through
+`common/palettes.nix` — the one host-specific color override left in the repo; every other theme
+surface on the server takes the common rainbow.
 
 ## Rebuilding
 
@@ -91,8 +72,8 @@ sudo nixos-rebuild switch --flake ~/desktop-dotfiles#<desktop|laptop|server>
 home-manager switch --flake ~/desktop-dotfiles#<nansus|nansus-work>@<host>
 ```
 
-(the `nrs`/`hms` functions from `system/base/shells/zsh.nix` do the same,
-taking the host as an argument - either `<host>` or `<user>@<host>` - so
-there's no risk of rebuilding the wrong machine.)
+(the `nrs`/`hms` functions from `system/base/shells/zsh.nix` do the same, taking the host as an
+argument — either `<host>` or `<user>@<host>` — so there's no risk of rebuilding the wrong
+machine.)
 
 live-usb builds straight from `nix build .#nixosConfigurations.live-usb.config.system.build.isoImage`.

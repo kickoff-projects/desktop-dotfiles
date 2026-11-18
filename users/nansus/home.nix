@@ -12,6 +12,10 @@ let
   renderKak = import ../../common/lib/render-kak.nix;
 in
 {
+  # prismlauncher stays per-account rather than moving to common/apps - see
+  # common/home.nix for the apps shared by every account.
+  imports = [ ../../common/apps/prismlauncher.nix ];
+
   home.packages = with pkgs; [
     ripgrep
     unzip
@@ -20,12 +24,6 @@ in
     vim
     neovim
 
-    discord
-    spotify
-    prismlauncher
-    freecad
-    qemu
-    kdePackages.dolphin
     proton-vpn
     openconnect
     feh

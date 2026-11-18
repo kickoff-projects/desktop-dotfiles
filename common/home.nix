@@ -11,6 +11,17 @@ let
   renderFootColors = import ./lib/render-foot-colors.nix;
 in
 {
+  # One file per app, shared by every account - see common/apps/. Apps that
+  # should stay per-account (prismlauncher, today) are imported from that
+  # account's own home.nix instead.
+  imports = [
+    ./apps/dolphin.nix
+    ./apps/discord.nix
+    ./apps/spotify.nix
+    ./apps/freecad.nix
+    ./apps/qemu.nix
+  ];
+
   home.stateVersion = "24.11"; # Please read the comment before changing.
 
   # hosts/desktop and hosts/laptop share the same usernames, so

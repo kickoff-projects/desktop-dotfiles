@@ -190,16 +190,6 @@ window#waybar {
     border-radius: 10px;
 }
 
-/* "pulseaudio#microphone" module (laptop) */
-#microphone.source {
-    border-bottom-color: @color1;
-    color: @color1;
-}
-
-#pulseaudio#microphone.source-muted {
-    color: @color2;
-}
-
 /* "custom/microphone" module (desktop) */
 #custom-microphone {
     border-bottom-color: @color1;

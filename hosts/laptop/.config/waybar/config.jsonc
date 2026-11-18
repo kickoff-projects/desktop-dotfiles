@@ -10,7 +10,7 @@
     "modules-left": ["clock", "hyprland/workspaces"],
     //"modules-center": ["clock", "custom/weather"],
     //"modules-right": ["network", "group/system-info", "disk", "memory", "custom/nvidia", "group/cpu_info", "battery", "tray"],
-      "modules-right": ["network", "custom/nvidia", "group/cpu_info", "memory" ,"disk", "group/system-info", "pulseaudio#microphone", "battery", "tray"],
+      "modules-right": ["network", "custom/nvidia", "group/cpu_info", "memory" ,"disk", "group/system-info", "custom/microphone", "battery", "tray"],
 
 
 
@@ -211,16 +211,15 @@
           "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
       },
 
-    "pulseaudio#microphone": {
-	"format": "{format_source}",
-	"format-source": "  ",
-	"format-source-muted": "  ",
-	//"on-click": "$HOME/.config/hypr/scripts/Volume.sh --toggle-mic",
-	//"on-click-right": "pavucontrol -t 4",
-	//"on-scroll-up": "$HOME/.config/hypr/scripts/Volume.sh --mic-inc",
-	//"on-scroll-down": "$HOME/.config/hypr/scripts/Volume.sh --mic-dec",
-	"tooltip-format": "{source_desc} | {source_volume}%",
-	"scroll-step": 5,
+    // mic state comes from a script so a missing device is a state of its own
+    "custom/microphone": {
+	"exec": "bash $HOME/.config/hypr/scripts/waybar-microphone.sh",
+	"return-type": "json",
+	"interval": 1,
+	// click mutes the mic, scroll changes its volume
+	"on-click": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle",
+	"on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SOURCE@ 5%+",
+	"on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-"
     },
 
 
@@ -265,7 +264,6 @@
 	"orientation": "horizontal",
 	"modules": [
 		"pulseaudio",
-		//"pulseaudio#microphone",
 		"backlight"
 	]
     },
