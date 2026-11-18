@@ -143,7 +143,8 @@ set-face global BufferPadding "%opt{base04},%opt{base00}"
 set-face global Search "%opt{baseAD06}"
 
 # Unique/Important info colors
-set-face global kak_mode_info "%opt{base0B}+i"
+#set-face global kak_mode_info "%opt{base0B}+i"
+set-face global kak_mode_info "%opt{base0A}+i"
 set-face global row_color "%opt{baseAD06}"
 set-face global violet "%opt{base0A}"
 

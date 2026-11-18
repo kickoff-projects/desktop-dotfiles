@@ -7,6 +7,7 @@ source "~/.config/kak/colors/account.kak"
 set-option global ui_options terminal_cursor_native=true
 
 declare-option str kakmode
+set-option global kakmode "normal"
 hook global ModeChange '(?:push|pop):[^:]*:(.*)' %{ set-option global kakmode %val{hook_param_capture_1} }
 hook global ModeChange '.*:.*:insert' %{ set-face global kak_mode_info "%opt{base0B}+i" }
 hook global ModeChange '.*:.*:normal' %{ set-face global kak_mode_info "%opt{base0A}+i" }
