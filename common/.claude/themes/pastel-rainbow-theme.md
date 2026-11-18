@@ -141,8 +141,10 @@ of the picker.
 `subtle` `#7d7691` — dusty violet grey
 `promptBorder` `#d900ff` — bright magenta
 `promptBorderShimmer` `#00e5ff` — bright cyan
+# color of 'Tinkering' texts when thinking
 `claude` `#ff6b00` — bright orange
 `claudeShimmer` `#ff9d4d` — pale orange
+# calwd is the mascot
 `clawd_body` `#00ff02` — bright green
 `clawd_background` `#000000` — black
 `briefLabelClaude` `#ff6b00` — bright orange
@@ -154,8 +156,11 @@ of the picker.
 `merged` `#c3b9f2` — pale periwinkle
 `effortUltra` `#ff6bd6` — hot pink
 `remember` `#bdbdf0` — pale indigo
+# permission coontrols the selection menu background(looked for ages to find this)
 `permission` `#a8d4f2` — pale sky blue
 `permissionShimmer` `#cde8fa` — very pale sky blue
+# the options underneath 'permissions' in selection menu
+# Also controls the commands like '/model'
 `suggestion` `#9fb8d9` — muted sky blue
 `background` `#14656b` — deep teal
 `planMode` `#4ef0c8` — bright mint
