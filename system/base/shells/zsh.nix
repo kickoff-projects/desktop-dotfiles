@@ -67,6 +67,8 @@
 	alias nd='nix develop'
 	alias ns='nix-shell'
 
+	alias c='claude'
+
         # Set-up icons for files/folders in terminal using lsd
         alias ls='lsd'
         alias l='ls -l'

@@ -8,9 +8,7 @@
     "spacing": 8,
     "output": "eDP-1",
     "modules-left": ["clock", "hyprland/workspaces"],
-    //"modules-center": ["clock", "custom/weather"],
-    //"modules-right": ["network", "group/system-info", "disk", "memory", "custom/nvidia", "group/cpu_info", "battery", "tray"],
-      "modules-right": ["network", "custom/nvidia", "group/cpu_info", "memory" ,"disk", "group/system-info", "custom/microphone", "battery", "tray"],
+      "modules-right": ["network", "group/cpu_info", "custom/nvidia", "memory" ,"disk", "group/system-info", "custom/microphone", "battery", "tray"],
 
 
 
@@ -33,7 +31,7 @@
         "9": " 9 ",
         "10": " 10 ",
         "urgent": " Well Fuck \n  (⊙﹏⊙;) ",
-	"active": "  ",
+	"active": "  ",
 	"default": ""
         }
     },
@@ -67,25 +65,6 @@
 
 // -----------------------
 
-   //"hyprland/language": {
-   //  "format": "{short}",
-   //  "format-en": "🦅😎🇺🇸",
-   //  "format-fi": "🏂☃️☃️🇫🇮"
-   //},
-
-   "keyboard-state": {
-	"numlock": true,
-	//"numlock": "NUM LOCK! 🤯",
-	"capslock": false,
-	"format": "{name} {icon}",
-	"format-icons": {
-		//"locked": " ",
-		"locked": "",
-		//"unlocked": " "
-		"unlocked": ""
-	}
-    },
-
     "disk": {
         "interval": 5,
         "format": "󰋊 {percentage_used}%",
@@ -95,14 +74,6 @@
         "tooltip-format":  "Available {free} of {total}"
     },
 
-    //"custom/weather": {
-    //    "format": "{}°",
-    //    "tooltip": true,
-    //    "interval": 30,
-    //    "exec": "curl -s 'https://wttr.in/?format=%t'",
-    //    "exec-if": "ping wttr.in -c1"
-    //},
-
     "tray": {
         "icon-size": 16,
         "spacing": 8
@@ -110,10 +81,9 @@
 
     "clock": {
 	"interval": 1,
-       "format": "{:%H:%M:%OS         %d / %m    %U}",
+       "format": "{:%H:%M:%OS         %d / %m    %U}",
         "format-alt": "{:%Y-%m-%d}",
         "tooltip-format": "<big>{:%A, %B %d, %Y}</big>\n<small>{calendar}</small>",
-          /*"rotate": 180*/
 	"calendar": {
             "mode": "month",
             "weeks-pos": "right",
@@ -134,22 +104,24 @@
         }
     },
 
+    "network": {
+	"format-wifi" : " {bandwidthUpBytes:2}   {bandwidthDownBytes:2}    {signalStrength}%  ",
+        "format-ethernet": " {bandwidthUpBytes:2}   {bandwidthDownBytes:2}    󰈀 ",
+	"tooltip-format": "{ifname}:{ipaddr} / {cidr} | 󰖩 {essid} ({signalStrength}%)",
+        "format-linked": "󱘖 {ifname}:{ipaddr}    {bandwidthupbytes:2}   {bandwidthdownbytes:2}    {signalstrength}%",
+	"format-disconnected" : "󰯡  no network",
+        "interval": 1,
+        "tooltip": true,
+    },
+
     "cpu": {
         "format": "CPU:  󰘚 {usage}%",
         "tooltip": true,
         "interval": 1
     },
 
-    "memory": {
-	// 󰍛
-        "format": " {percentage}%    {swapPercentage}%",
-        "tooltip-format": "{used:0.1f}GB / {total:0.1f}GB  {swapUsed}GB / {swapTotal}GB",
-        "interval": 1
-    },
-
     "temperature": {
 	"thermal-zone": 2,
-	//"hwmon-path": "/sys/class/hwmon/hwmon0/temp1_input",
 	"interval": 10,
         "critical-threshold": 90,
         "format": "{icon} {temperatureC}°C",
@@ -165,34 +137,15 @@
 
     },
 
-    "battery": {
-        "states": {
-            "good": 95,
-            "warning": 35,
-            "critical": 20
-        },
-        "format": "{icon} {capacity}%",
-        "format-charging": " 󰂄{capacity}%  ",
-        "format-plugged": "󰚥 {capacity}% ",
-        "format-alt": "{icon} {time}",
-        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+    "custom/nvidia": {
+     "exec": "nvidia-smi --id=0 --query-gpu=pstate,utilization.memory,utilization.gpu,temperature.gpu --format=csv,noheader,nounits -lms 1000 | awk -F', ' '{printf \"GPU:  \\uf0e7 %s    %s%%   \\uf2db %s%%  \\uf2c9 %s°C\\n\", $1, $2, $3, $4; fflush()}'",
+     "restart-interval": 5
     },
 
-    "network": {
-        //"format-wifi": "󰖩 {essid}",
-        //"format-ethernet": "󰈀 {ipaddr}",
-        //"tooltip-format": "{ifname}: {ipaddr}/{cidr}\n󰖩 {essid} ({signalStrength}%)",
-        //"format-linked": "󱘖 {ifname}",
-        //"format-disconnected": "󰯡 Offline",
-        //"format-alt": "{bandwidthUpBits} 󰁝 {bandwidthDownBits}"
-											// 󰖩 
-	"format-wifi" : " {bandwidthUpBytes:2}   {bandwidthDownBytes:2}    {signalStrength}%  ",
-        "format-ethernet": " {bandwidthUpBytes:2}   {bandwidthDownBytes:2}    󰈀 ",
-	"tooltip-format": "{ifname}:{ipaddr} / {cidr} | 󰖩 {essid} ({signalStrength}%)",
-        "format-linked": "󱘖 {ifname}:{ipaddr}    {bandwidthupbytes:2}   {bandwidthdownbytes:2}    {signalstrength}%",
-	"format-disconnected" : "󰯡  no network",
-        "interval": 1,
-        "tooltip": true,
+    "memory": {
+        "format": " {percentage}%    {swapPercentage}%",
+        "tooltip-format": "{used:0.1f}GB / {total:0.1f}GB  {swapUsed}GB / {swapTotal}GB",
+        "interval": 1
     },
 
     "pulseaudio": {
@@ -211,6 +164,34 @@
           "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
       },
 
+    "backlight": {
+      "interval": 1,
+      "device": "intel_backlight",
+      "format": "{icon}{percent}%",
+      "format-icons": [
+	" ",
+	" ",
+	" ",
+	"󰃝 ",
+	"󰃞 ",
+	"󰃟 ",
+	"󰃠 "
+      ],
+      "on-scroll-down": "brightnessctl s 1%-",
+      "on-scroll-up": "brightnessctl s +1%",
+      "tooltip": true,
+      "tooltip-format": "Brightness: {percent}% ",
+      "smooth-scrolling-threshold": 1
+  },
+
+    "group/system-info": {
+	"orientation": "horizontal",
+	"modules": [
+		"pulseaudio",
+		"backlight"
+	]
+    },
+
     // mic state comes from a script so a missing device is a state of its own
     "custom/microphone": {
 	"exec": "bash $HOME/.config/hypr/scripts/waybar-microphone.sh",
@@ -222,67 +203,17 @@
 	"on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-"
     },
 
-
-    "backlight": {
-      "interval": 1,
-      "device": "intel_backlight",
-      "format": "{icon}{percent}%",
-      "format-icons": [
-	//"",
-	//"",
-	//"",
-	//"",
-	//"",
-	//"",
-	//"",
-	//"",
-	//"",
-	//"",
-	//"",
-	//"",
-	//"",
-	//"",
-	//""
-
-	" ",
-	" ",
-	" ",
-	"󰃝 ",
-	"󰃞 ",
-	"󰃟 ",
-	"󰃠 "
-      ],
-      "on-scroll-down": "brightnessctl s 1%-",
-      "on-scroll-up": "brightnessctl s +1%",
-      "tooltip": true,
-      "tooltip-format": "Brightness: {percent}% ",
-      "smooth-scrolling-threshold": 1
-  },      
-
-
-    "group/system-info": {
-	"orientation": "horizontal",
-	"modules": [
-		"pulseaudio",
-		"backlight"
-	]
-    },
-
-
-    //"custom/nvidia": {
-     //"exec": "nvidia-smi --query-gpu=pstate,utilization.gpu,temperature.gpu --format=csv,noheader,nounits | awk -F', ' '{printf \"GPU: \\uf0e7 %s  \\uf2db %s%%  \\uf2c9 %s°C\", $1, $2, $3}'",
-     //"interval": 5
-
-    "custom/nvidia": {
-     "exec": "nvidia-smi --query-gpu=pstate,utilization.memory,utilization.gpu,temperature.gpu --format=csv,noheader,nounits | awk -F', ' '{printf \"GPU:  \\uf0e7 %s    %s%%   \\uf2db %s%%  \\uf2c9 %s°C\", $1, $2, $3, $4}'",
-     "interval": 1
-
-
-	//"exec": "nvidia-smi --query-gpu=pstate,utilization.gpu,temperature.gpu --format=csv,noheader,nounits",
-	//"format":"GPU: {}",
-	//"return-type": "",
-	//"interval": 2
-	
+    "battery": {
+        "states": {
+            "good": 95,
+            "warning": 35,
+            "critical": 20
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": " 󰂄{capacity}%  ",
+        "format-plugged": "󰚥 {capacity}% ",
+        "format-alt": "{icon} {time}",
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
     }
 
 }
