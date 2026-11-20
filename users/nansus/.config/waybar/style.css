@@ -122,6 +122,17 @@ window#waybar {
     border-radius: 10px;
 }
 
+/* Both hosts' config.jsonc declare states good/warning/critical, but only
+ * .critical had a rule here, so a battery at 21% looked exactly like a full
+ * one - and upower now powers the machine off at 2%
+ * (services.upower.criticalPowerAction in system/hardware/power.nix), which
+ * makes a visible step before that worth having. @color9 is the orange
+ * slot, otherwise only used by the tray and the numlock indicator. */
+#battery.warning:not(.charging) {
+    border-bottom-color: @color9;
+    color: @color9;
+}
+
 #battery.critical:not(.charging) {
     background-color: alpha(@color1, 0.15);
     color: @color1;

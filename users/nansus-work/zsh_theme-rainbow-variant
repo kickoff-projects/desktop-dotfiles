@@ -1,11 +1,18 @@
-# nansus-work: black/rainbow variant of
-# common/.config/oh-my-zsh/custom/themes/zsh_theme. Glyphs, layout and the
-# commented-out alternatives are byte-identical to the shared file - only
+# ARCHIVE, not deployed and not sourced. Kept for its colors only.
+#
+# nansus-work: black/rainbow variant of the prompt as it was before commit
+# 9686c1f rewrote the git section. Glyphs, layout and the commented-out
+# alternatives were byte-identical to the shared file at that time - only
 # the color specs changed, from the $fg[...] eight-color names to 256-color
 # %F{n} so the prompt can sweep the full spectrum:
 # magenta -> cyan -> violet -> green -> red -> blue -> yellow -> orange.
-# Found first by zsh.nix's promptInit loop, which looks at
-# ~/.config/oh-my-zsh/custom/themes/zsh_theme before the in-repo copies.
+#
+# It used to live at users/nansus-work/.config/oh-my-zsh/custom/themes/zsh_theme,
+# where common/home.nix's user layer overrode the shared file for that account.
+# Moved out of .config so every account gets
+# common/.config/oh-my-zsh/custom/themes/zsh_theme instead. config-files.nix
+# only walks users/<name>/.config, so nothing here is built or symlinked.
+
 
 # If run as root, red. Else white
 if [ $UID -eq 0 ]; then NCOLOR="red"; else NCOLOR="white"; fi

@@ -8,7 +8,7 @@
 # hostDir/.config.
 let
   palettes = import ../../common/palettes.nix;
-  renderKak = import ../../common/lib/render-kak.nix;
+  renderKak = import ../../common/lib/render-kak-legacy.nix;
 in
 {
   home.packages = with pkgs; [
@@ -32,9 +32,9 @@ in
   xdg.configFile."kak/colors/account.kak".text =
     lib.mkForce (renderKak { p = palettes.neon_rainbow.kak; } + ''
       # Account override, appended after the rendered template. Kakoune's
-      # set-face is last-one-wins, so these seven lines replace the ones
-      # render-kak.nix emitted without the shared template (and so the
-      # rainbow and red themes) having to change.
+      # set-face is last-one-wins, so the first seven of these eleven lines
+      # replace the ones render-kak-legacy.nix emitted without that
+      # template having to change; the last four add faces it never had.
       #
       # Cursor is magenta and the selection is yellow, the reverse of the
       # template's baseAD01/baseAD02 pairing. Not done by swapping palette
@@ -54,5 +54,17 @@ in
       # told apart, and base02 is the dark one that leaves the yellow legible.
       set-face global PrimarySelection "%opt{base0A}"
       set-face global SecondarySelection "%opt{base0A},%opt{base02}"
+      # Faces the shared common/.config/kak/kakrc references in modelinefmt
+      # and in its nix highlighter hook. They postdate
+      # render-kak-legacy.nix's frozen body, so they live here rather than
+      # in that file. Slots by role, not by slot number: the live template
+      # spends base0A on violet, but this palette spends base0A on
+      # types/docstrings and on the selections above, so the real violet
+      # base0E is used; base09 and base08 are this palette's orange and
+      # red, standing in for the live template's baseAD06 and baseAD10.
+      set-face global kak_mode_info "%opt{base0E}+i"
+      set-face global violet "%opt{base0E}"
+      set-face global row_color "%opt{base09}"
+      set-face global nix_interp "%opt{base08}"
     '');
 }

@@ -1,6 +1,7 @@
 /* nansus: black/rainbow variant of common/.config/waybar/colors.css.
- * Same slot meanings, same names - style.css and effects.css are the
- * shared ones and are not copied here, so this file is the whole theme.
+ * Same slot meanings, same names. style.css and effects.css are copied
+ * into this directory too (see their own headers for what changed), so
+ * this file is only the color slots they both read.
  *
  * The two background slots go to true black (they were solarized
  * #002b36 / #073642) and every accent is pushed to a neon value that

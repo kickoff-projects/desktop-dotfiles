@@ -1,3 +1,0 @@
-source "/etc/kak/colors/account.kak"
-
-map global normal <space> 'i<space><esc>'

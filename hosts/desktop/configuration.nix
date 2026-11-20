@@ -3,12 +3,13 @@
 {
 
 # Same module set as hosts/laptop/configuration.nix, in the same order.
-# The only deliberate differences are called out in comments below, and
-# they are all hardware: no TLP (nothing to save battery on),
-# no Intel microcode (Ryzen 7 3700X). The GPU side is not handled here at all - nixos-hardware's
+# The deliberate differences are called out in comments below. All but one
+# are hardware: no TLP (nothing to save battery on), no Intel microcode
+# (Ryzen 7 3700X). The GPU side is not handled here at all - nixos-hardware's
 # lenovo-legion-t526amr5 module, wired up in flake.nix, owns the nvidia
 # driver for this host the same way lenovo-legion-16ithg6 does for the
-# Laptop.
+# Laptop. The one non-hardware difference is graceful_boot.nix, which has
+# never been enabled on the Laptop in any commit, so it stays desktop only.
 # Commented are usually convenient to have in some situations
 imports =
     [

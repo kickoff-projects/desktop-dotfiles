@@ -21,6 +21,7 @@
       baseAD07 = "ffffff"; baseAD08 = "000000"; baseAD09 = "50c878";
       baseAD10 = "ff4a2e"; baseAD11 = "cb05c3"; baseAD12 = "26ff00";
       baseAD13 = "0c85ff"; baseAD14 = "00ffa5"; baseAD15 = "f800ee";
+      baseAD16 = "e91000";
       # The original file's "## Additional ##" comment names a different
       # blue (3d85c6) than the one baseAD01 actually declares (5191cc) -
       # a pre-existing mismatch in the hand file, kept verbatim rather than

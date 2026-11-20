@@ -31,7 +31,7 @@
         "9": " 9 ",
         "10": " 10 ",
         "urgent": " Well Fuck \n  (⊙﹏⊙;) ",
-	"active": "  ",
+	"active": "  ",
 	"default": ""
         }
     },
@@ -81,7 +81,7 @@
 
     "clock": {
 	"interval": 1,
-       "format": "{:%H:%M:%OS         %d / %m    %U}",
+       "format": "{:%H:%M:%OS          %d / %m   %U}",
         "format-alt": "{:%Y-%m-%d}",
         "tooltip-format": "<big>{:%A, %B %d, %Y}</big>\n<small>{calendar}</small>",
 	"calendar": {
@@ -105,11 +105,11 @@
     },
 
     "network": {
-	"format-wifi" : "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}  󰖩 {signalStrength}%  ",
-        "format-ethernet": "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}  󰈀 ",
-	"tooltip-format": "{ifname}:{ipaddr} / {cidr} | 󰖩 {essid} ({signalStrength}%)",
-        "format-linked": "󱘖 {ifname}:{ipaddr} 󰕒 {bandwidthupbytes:2} 󰇚 {bandwidthdownbytes:2}  {signalstrength}%",
-	"format-disconnected" : "󰯡  no network",
+	"format-wifi" : "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}  󰖩 {signalStrength}%   ",
+        "format-ethernet": "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}  󰈀   ",
+	"tooltip-format": "{ifname}:{ipaddr} / {cidr} | 󰖩 {essid} ({signalStrength}%)   ",
+        "format-linked": "󱘖 {ifname}:{ipaddr} 󰕒 {bandwidthupbytes:2} 󰇚 {bandwidthdownbytes:2}  {signalstrength}%   ",
+	"format-disconnected" : "󰯡  no network ",
         "interval": 1,
         "tooltip": true,
     },
@@ -139,8 +139,23 @@
     },
 
     "custom/nvidia": {
-     "exec": "nvidia-smi --id=0 --query-gpu=pstate,utilization.memory,utilization.gpu,temperature.gpu --format=csv,noheader,nounits -lms 1000 | awk -F', ' '{t=$4+0; i=(t<50?\"󱃃\":(t<75?\"󰔏\":(t<85?\"󱃂\":\"󰸁\"))); printf \"GPU: 󰿘 󰉁 %s    󰘚 %s%%   󰓅 %s%%  %s %s°C\\n\", $1, $2, $3, i, t; fflush()}'",
-     "restart-interval": 5
+     // Gated on the dGPU's PCI runtime state: reading power/runtime_status
+     // does not touch the device, but every nvidia-smi call wakes it out of
+     // RTD3 and holds it awake, which would cancel
+     // hardware.nvidia.powerManagement.finegrained (see
+     // system/hardware/nvidia_prime_power.nix). The awake branch is the
+     // Desktop's exec byte for byte with only " -lms 1000" removed, so the
+     // line it prints is identical; the Desktop keeps the continuous poll,
+     // which costs it nothing.
+     // Bus id is the nvidiaBusId nixos-hardware sets for this host.
+     "exec": "if [ \"$(cat /sys/bus/pci/devices/0000:01:00.0/power/runtime_status 2>/dev/null)\" = active ]; then nvidia-smi --id=0 --query-gpu=pstate,utilization.memory,utilization.gpu,temperature.gpu --format=csv,noheader,nounits | awk -F', ' '{t=$4+0; i=(t<50?\"󱃃\":(t<75?\"󰔏\":(t<85?\"󱃂\":\"󰸁\"))); printf \"GPU: 󰉁 %s  󰘚 %s%%  󰓅 %s%%  %s %s°C\\n\", $1, $2, $3, i, t; fflush()}'; else echo \"GPU: 󰿘 rtd3\"; fi",
+     // 10s, not 5: a poll that lands while the device is still "active"
+     // resets its autosuspend timer, so an interval at or below the delay
+     // (power/autosuspend_delay_ms, 5000 by default) can hold the dGPU awake
+     // by itself after an offloaded app exits. Check the real delay with
+     // "cat /sys/bus/pci/devices/0000:01:00.0/power/autosuspend_delay_ms"
+     // and keep this above it.
+     "interval": 10
     },
 
     "memory": {
@@ -151,7 +166,7 @@
 
     "pulseaudio": {
         "format": "{icon} {volume}%",
-        "format-muted": "󰝟 ",
+        "format-muted": "󰝟",
         "format-icons": {
             "headphone": "󰋋",
             "hands-free": "󰋎",

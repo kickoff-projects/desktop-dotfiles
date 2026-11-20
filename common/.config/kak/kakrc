@@ -1,6 +1,9 @@
-# Colors: each account's own, from its users/<name>/.config - see
-# .config/kak/colors/account.kak for the default (rainbow/purple_best).
-source "~/.config/kak/colors/account.kak"
+# Colors: each account's own generated kak/colors/account.kak (rainbow is
+# the default, see common/home.nix). colorscheme resolves it under
+# kakoune's own config dir - ~/.config/kak for the home accounts,
+# /etc/kak on the live image via KAKOUNE_CONFIG_DIR - so this one line
+# serves every user and host.
+colorscheme account
 
 # Let foot draw the cursor (its [cursor] style, a line) instead of kak
 # painting the cell as a block.
@@ -16,6 +19,10 @@ set-option global modelinefmt '{kak_mode_info}%opt{kakmode}  {violet}|  {{contex
 hook global ModuleLoaded nix %§
     add-highlighter shared/nix/code/ regex "([a-zA-Z_][a-zA-Z0-9-_.]*)\s*=(?!=)" 1:variable
     add-highlighter shared/nix/code/ regex '\$\{[^}]*\}' 0:nix_interp
+    # ';' has no upstream highlighter in nix.kak, so it fell through to
+    # Default. The comma face is baseAD16 in render-kak.nix and was
+    # otherwise unused; both are separators.
+    add-highlighter shared/nix/code/ regex ';' 0:comma
 §
 
 map global normal <space> 'i<space><esc>'
