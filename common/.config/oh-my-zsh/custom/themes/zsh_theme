@@ -3,70 +3,145 @@ if [ $UID -eq 0 ]; then NCOLOR="red"; else NCOLOR="white"; fi
 
 # Shows exit status of latest command if not zero
 #local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
+# RPS1 below still expands ${return_code}, so it contributes nothing while
+# this stays commented out.
 
-# --- Git prompt symbols ---
+
+# ============================== git ===============================
+# Read by git_prompt_info and git_prompt_status. Both are called from
+# PROMPT below, and both must appear there verbatim or oh-my-zsh skips
+# their async handler and they render empty.
+
+ZSH_THEME_GIT_PROMPT_PREFIX="%{$reset_color%}%{$fg[yellow]%}｢"
+ZSH_THEME_GIT_PROMPT_SUFFIX="｣%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_CLEAN=""
+# parse_git_dirty bakes this into git_prompt_info's cached string, so it stays
+# a bare glyph, no color and no padding: PROMPT strips it out of the branch
+# label and git_group_open re-emits it colored, left of the wrench. Spelled as a
+# \u escape because it doubles as a match pattern, and an empty pattern would
+# mark every repo dirty.
+ZSH_GIT_DIRTY_GLYPH=$'\ue4d0'
+ZSH_THEME_GIT_PROMPT_DIRTY="$ZSH_GIT_DIRTY_GLYPH"
+
+# --- git_prompt_status symbols ---
+# Render order is the reverse of the list below: diverged, behind, ahead,
+# unmerged, stashed, deleted, renamed, modified, added, untracked.
+# Every one of the ten must be set or it renders as nothing.
+# Glyphs are Font Awesome codepoints inside the f000-f381 range that FiraCode
+# Nerd Font Mono covers. Coverage was verified with fc-query and every shape
+# below was checked in the terminal on 2026-11-20, so swap only by taste. The
+# one exception is DIRTY above at U+E4D0: outside that range, outside FiraCode,
+# drawn only because fontconfig falls back to Font Awesome 7.
+# Colors are one hue per state, so no two symbols share one: red is reserved
+# for conflict and deletion, the orange family for "dirty" and "behind", the
+# green family for "added" and "ahead". $fg names cover 0-7; %F{8}-%F{10} are
+# the bright slots of the active foot palette (common/palettes.nix), picked for
+# contrast on black: 6.6:1, 9.7:1 and 12.6:1; %F{13} and %F{14} were
+# rejected at 2.9:1 and 3.1:1. MODIFIED instead takes %F{183} from the fixed
+# 256-color block: every free palette slot was either a near-yellow or too dark,
+# and violet is the one hue band nothing else in the prompt uses. It does not
+# follow palette swaps.
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%} "
+ZSH_THEME_GIT_PROMPT_ADDED="%{$fg[green]%} "
+ZSH_THEME_GIT_PROMPT_MODIFIED="%F{183} "
+ZSH_THEME_GIT_PROMPT_RENAMED="%{$fg[blue]%} "
+ZSH_THEME_GIT_PROMPT_DELETED="%{$fg[red]%} "
+ZSH_THEME_GIT_PROMPT_UNMERGED="%{$fg[red]%} "
+ZSH_THEME_GIT_PROMPT_STASHED="%{$fg[magenta]%} "
+ZSH_THEME_GIT_PROMPT_AHEAD="%F{10} "
+ZSH_THEME_GIT_PROMPT_BEHIND="%F{8} "
+# DIVERGED needs the literal word "diverged" from "git status -b", which git
+# never emits: an ahead-and-behind branch sets AHEAD and BEHIND instead, so
+# the prompt shows both arrows. Kept set because the upstream function reads it.
+ZSH_THEME_GIT_PROMPT_DIVERGED="%F{8} "
+# Three modules on the line, left to right: "｢branch｣" from PREFIX/SUFFIX,
+# then a ｢ ... ｣ pair holding the dirty marker and the symbol run, then the
+# active virtualenv in its own ｢ ... ｣ pair. All use the halfwidth corner
+# brackets U+FF62 and U+FF63, one terminal column each, which FiraCode covers
+# directly. The symbol pair appears only inside a git repo, and only when there
+# is something to put in it, so:
+#
+#   clean repo, no venv      ｢main｣
+#   clean repo, venv         ｢main｣ ｢ myenv ｣
+#   dirty repo, no venv      ｢main｣ ｢       ｣
+#   dirty repo, venv         ｢main｣ ｢       ｣ ｢ myenv ｣
+#   outside a repo           nothing, venv module still shows if one is active
+#
+# virtualenv_prompt_info wraps its name in [ ] by default and returns nothing
+# when no venv is active, so its prefix and suffix carry that module's own
+# brackets.
+ZSH_THEME_VIRTUALENV_PREFIX=" %{$fg[yellow]%}｢ "
+ZSH_THEME_VIRTUALENV_SUFFIX=" ｣%{$reset_color%}"
+
+# $(git_prompt_status) stays in PROMPT verbatim because oh-my-zsh only
+# registers its async handler if it finds that exact text there. These helpers
+# then read the same cached string, which costs no git call. Drop the literal
+# from PROMPT and all three start running a real "git status".
+git_group_dirty() { [[ "$1" == *$ZSH_GIT_DIRTY_GLYPH* ]] }
+git_group_open() {
+  local info="$(git_prompt_info)" dirty=""
+  [[ -n "$info" ]] || return
+  git_group_dirty "$info" && dirty="%F{9}$ZSH_GIT_DIRTY_GLYPH  %{$fg[yellow]%}"
+  [[ -n "$dirty" || -n "$(git_prompt_status)" ]] && echo " %{$fg[yellow]%}｢ $dirty"
+}
+git_group_close() {
+  local info="$(git_prompt_info)"
+  [[ -n "$info" ]] || return
+  [[ -n "$(git_prompt_status)" ]] || git_group_dirty "$info" || return
+  echo "%{$fg[yellow]%}｣%{$reset_color%}"
+}
+
+# --- earlier symbol set, square brackets ---
 #ZSH_THEME_GIT_PROMPT_PREFIX="%{$reset_color%}%{$fg[yellow]%}["
 #ZSH_THEME_GIT_PROMPT_SUFFIX="]%{$reset_color%} "
 #ZSH_THEME_GIT_PROMPT_DIRTY=""
 #ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[red]%}  %{$fg[yellow]%}"
 
-# ----- in case of need -----
-# %{$fg[turquoise]%}%D{[ %X ]} = clock, h%.m%.s%
 
-# --- Left prompt ---
+# ========================= left prompt (PROMPT) ====================
 # %n = username
 # %m = short hostname
 # %~ = full folder path
 #$(git_prompt_info) = branch info
-#PROMPT='
-#%F{cyan}%n%f @ %F{blue}%m%f %f$(git_prompt_info) %F{green}%~
-#%{$fg[yellow]%}%1~%{$reset_color%} ${return_code} %{$fg[red]%}%(!..  )%{$reset_color%} '
-
-# Resets color idk
-#PROMPT2='%{$fg[red]%}\ %{$reset_color%}'
-
-# --- Right prompt ---
-# %1~ = current folder
-# RPS1='%F{yellow}%1~%f %{$reset_color%} ${return_code}'
-
-# trying to implement clock, not ready yet
-#RPS1= ' %{$fg[grey]%}%D{[ %X ]} '
-
-# ------ testing to modify zsh
-
-# Shows exit status of latest command if not zero
-#local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
-
-# Right side of the prompt
-#RPS1='%{$reset_color%} %{$fg[grey]%}%D{[ %X ]} '
 
 # Main prompt
 PROMPT='  
-  %{$fg[green]%}           
-   %F{magenta}%n%f @ %F{magenta}%m%f $(git_prompt_info) $(virtualenv_prompt_info)%{$fg[green]%}%~  %{$fg[red]%}
+  %{$fg[green]%}           
+   %F{magenta}%n%f @ %F{magenta}%m%f ${$(git_prompt_info)//$ZSH_GIT_DIRTY_GLYPH/}$(git_group_open)$(git_prompt_status)$(git_group_close)$(virtualenv_prompt_info) %{$fg[green]%}%~  %{$fg[red]%}
  %{$fg[blue]%}   %{$fg[yellow]%}%1~  %{$fg[magenta]%}%(!..$) %{$reset_color%}'
 					    #   ->
 # %{$fg[green]%}             
 # /
-# %{$fg[magenta]%}           
+# %{$fg[magenta]%}           
 # %{$fg[green]%}  
-#     
+#     
+
+# --- earlier left prompt ---
+#PROMPT='
+#%F{cyan}%n%f @ %F{blue}%m%f %f$(git_prompt_info) %F{green}%~
+#%{$fg[yellow]%}%1~%{$reset_color%} ${return_code} %{$fg[red]%}%(!..  )%{$reset_color%} '
 
 
+# ========================= right prompt (RPS1) =====================
+# %1~ = current folder
+# ----- in case of need -----
+# %{$fg[turquoise]%}%D{[ %X ]} = clock, h%.m%.s%
+
+RPS1='${return_code} %{$reset_color%} %{$fg[blue]%}%D{  %H:%M }'
+
+# --- other right prompts tried ---
+# RPS1='%F{yellow}%1~%f %{$reset_color%} ${return_code}'
+# trying to implement clock, not ready yet
+#RPS1= ' %{$fg[grey]%}%D{[ %X ]} '
+#RPS1='%{$reset_color%} %{$fg[grey]%}%D{[ %X ]} '
+#RPS1='%{$fg[blue]%}%D{[ %H:%M ]} %{$reset_color%} ${return_code}'
+#RPS1='%{$fg[cyan]%}%D{[ %H:%M ]} %{$reset_color%}'
+#RPS1='%{$fg[blue]%}%~%{$reset_color%} ${return_code} '
+
+
+# ===================== continuation prompt (PROMPT2) ===============
+# Shown on the line below while a command is still being typed.
 # Resets color idk
 PROMPT2='%{$fg[gray]%}\ %{$reset_color%}'
 
-# Right side of the prompt
-#RPS1='%{$fg[blue]%}%D{[ %H:%M ]} %{$reset_color%} ${return_code}'
-RPS1='${return_code} %{$reset_color%} %{$fg[blue]%}%D{  %H:%M }'
-#RPS1='%{$fg[cyan]%}%D{[ %H:%M ]} %{$reset_color%}'
-
-
-
-# Right side of the prompt
-#RPS1='%{$fg[blue]%}%~%{$reset_color%} ${return_code} '
-
-ZSH_THEME_GIT_PROMPT_PREFIX="%{$reset_color%}%{$fg[yellow]%}("
-ZSH_THEME_GIT_PROMPT_SUFFIX=")%{$reset_color%} "
-ZSH_THEME_GIT_PROMPT_CLEAN=""
-ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%} %{$fg[yellow]%}"
+#PROMPT2='%{$fg[red]%}\ %{$reset_color%}'

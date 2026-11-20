@@ -1,0 +1,60 @@
+Git prompt symbols, round 3. Five fresh candidates per row; no codepoint from
+round 1 or 2 repeats here. Reply with <row>.<option>, e.g. "6.1, 9.2".
+Option 0 keeps your standing pick, printed on each row's first line.
+Names are Font Awesome 4.7 recall, unverified: trust the glyph, not the name.
+Rows 1-11 lie in f000-f2ff, inside the f000-f381 block FiraCode Nerd Font Mono
+covers; row 12 pairs were checked codepoint by codepoint with fc-query.
+
+ 1 DIRTY       .0  kept, U+E4D0
+               .1  U+F0C3 flask           .2  U+F0EB lightbulb-o     .3  U+F085 cogs            .4  U+F0E3 gavel           .5  U+F12E puzzle-piece   
+
+ 2 UNTRACKED   .0  round 2.4, flag-o
+               .1  U+F016 file-o          .2  U+F15B file            .3  U+F11E flag-checkered  .4  U+F0C8 square          .5  U+F002 search         
+
+ 3 ADDED       .0  round 3.3, plus-sq-o
+               .1  U+F01C inbox           .2  U+F0C6 paperclip       .3  U+F02B tag             .4  U+F0D0 magic           .5  U+F00A th-large       
+
+ 4 MODIFIED    .0  round 4.1, wrench
+               .1  U+F15C file-text       .2  U+F02F print           .3  U+F0C2 cloud           .4  U+F075 comment         .5  U+F1D8 paper-plane    
+
+ 5 RENAMED     .0  round 5.3, angle-dbl-r
+               .1  U+F0A9 arrow-circ-r    .2  U+F04B play            .3  U+F04E forward         .4  U+F051 step-forward    .5  U+F064 share          
+
+ 6 DELETED     .0  round 6.4, trash
+               .1  U+F28D stop-circle     .2  U+F28E stop-circle-o   .3  U+F04D stop            .4  U+F0E2 undo            .5  U+F2ED trash-alt?     
+
+ 7 UNMERGED    .0  round 7.1, exclamation
+               .1  U+F0F3 bell            .2  U+F0A2 bell-o          .3  U+F21E heartbeat       .4  U+F0A1 bullhorn        .5  U+F1CD life-ring      
+
+ 8 STASHED     .0  kept, archive
+               .1  U+F07B folder          .2  U+F115 folder-open-o   .3  U+F1C0 database        .4  U+F0B1 briefcase       .5  U+F290 shopping-bag   
+
+ 9 AHEAD       .0  kept, arrow-up
+               .1  U+F148 level-up        .2  U+F0DE sort-asc        .3  U+F164 thumbs-up       .4  U+F0A6 hand-o-up       .5  U+F08E external-link  
+
+10 BEHIND      .0  kept, arrow-down
+               .1  U+F149 level-down      .2  U+F0DD sort-desc       .3  U+F165 thumbs-down     .4  U+F0A7 hand-o-down     .5  U+F090 sign-in        
+
+11 DIVERGED    .0  kept, exchange
+               .1  U+F021 refresh         .2  U+F01E repeat          .3  U+F1B8 recycle         .4  U+F1E0 share-alt       .5  U+F0C1 chain          
+
+12 BRACKETS   .0 standing pick: branch ‹›  group «»  (two kinds)
+              every option below uses ONE kind for branch and group:
+              .1  branch ❬branch❭   group ❬ …❭   angle ornament U+276C/276D
+              .2  branch ⎛branch⎞   group ⎛ …⎞   paren piece U+239B/239E
+              .3  branch ┏branch┓   group ┏ …┓   heavy box corner U+250F/2513
+              .4  branch ‖branch‖   group ‖ …‖   double vertical bar U+2016, same char both sides
+              .5  branch branch   group  …   powerline hard divider U+E0D2/E0D4
+
+Notes
+- Row 1 DIRTY still keeps U+E4D0, outside FiraCode, drawn only by fontconfig
+  fallback to Font Awesome 7 (audit finding 2 stays open while you keep it).
+- Row 11 DIVERGED never renders: git emits ahead+behind instead
+  (zsh_theme:36-38). Cosmetic pick only.
+- Font Awesome 4.7 is nearly exhausted for ADDED and MODIFIED: every plus,
+  pencil, square and circle variant it has went out in rounds 1 and 2. Rows 3
+  and 4 here are the remaining plausible shapes, not better ones.
+- 6.5 U+F2ED sits in the covered range but I could not confirm its name or
+  shape; look before you take it.
+- 12.5 is a powerline divider meant to sit between two background colors. With
+  no background set it reads as a solid wedge.

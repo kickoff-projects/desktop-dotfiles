@@ -19,7 +19,6 @@
         enable = true;
 	plugins = ["git"
 		 "gh"
-		 "git-prompt"
 		 "github"
 		 "virtualenv" 
 		 "direnv"	

@@ -8,10 +8,14 @@ set-option global ui_options terminal_cursor_native=true
 
 declare-option str kakmode
 set-option global kakmode "normal"
-hook global ModeChange '(?:push|pop):[^:]*:(.*)' %{ set-option global kakmode %val{hook_param_capture_1} }
-hook global ModeChange '.*:.*:insert' %{ set-face global kak_mode_info "%opt{base0B}+i" }
-hook global ModeChange '.*:.*:normal' %{ set-face global kak_mode_info "%opt{base0A}+i" }
+hook global ModeChange '(?:push|pop):[^:]*:(.*)' %{ set-option window kakmode %val{hook_param_capture_1} }
+hook global ModeChange '.*:.*:insert' %{ set-face window kak_mode_info "%opt{base0B}+i" }
+hook global ModeChange '.*:.*:normal' %{ set-face window kak_mode_info "%opt{base0A}+i" }
 set-option global modelinefmt '{kak_mode_info}%opt{kakmode}  {violet}|  {{context_info}} {row_color}%val{cursor_line} / %val{buf_line_count}{violet}   |   %val{bufname}  '
 
+hook global ModuleLoaded nix %§
+    add-highlighter shared/nix/code/ regex "([a-zA-Z_][a-zA-Z0-9-_.]*)\s*=(?!=)" 1:variable
+    add-highlighter shared/nix/code/ regex '\$\{[^}]*\}' 0:nix_interp
+§
 
-map global normal ' ' ':exec i<space><esc>'
+map global normal <space> 'i<space><esc>'

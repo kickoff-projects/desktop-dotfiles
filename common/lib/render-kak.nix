@@ -71,6 +71,7 @@ declare-option str baseAD11 'rgb:${p.baseAD11}' # base0C complementary pink
 declare-option str baseAD12 'rgb:${p.baseAD12}' # Brightest green
 declare-option str baseAD13 'rgb:${p.baseAD13}' # other shade of blue
 declare-option str baseAD14 'rgb:${p.baseAD14}' # complementary to orange(AD07)
+declare-option str baseAD15 'rgb:${p.baseAD15}' # more vibrant magenta
 
 
 
@@ -96,8 +97,10 @@ set-face global comment "%opt{base04}+i"
 set-face global documentation "%opt{base03}+i"
 set-face global docstring "%opt{base03}+i"
 set-face global docstring "%opt{base0A}"
-set-face global meta "%opt{base0C}"
-set-face global builtin "%opt{base0C}+b"
+set-face global meta "%opt{baseAD15}"
+set-face global builtin "%opt{baseAD15}"
+
+set-face global nix_interp "%opt{baseAD10}"
 
 # text
 
