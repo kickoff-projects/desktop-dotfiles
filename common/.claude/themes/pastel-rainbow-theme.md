@@ -130,6 +130,21 @@ There are exactly two mascot knobs in the binary, `clawd_body` and
 as possible" comes down to one body color: `clawd_body #00ff6b`, a bright
 spring green, on the magenta of the fourth surface pick above.
 
+The mascot and the frame around it belong to the startup header, which draws
+in one of two shapes. The full shape is a round frame in `claude #50c878`,
+titled ` Claude Code ` on its top edge, with the mascot inside it. The small
+shape is one line of version, model, billing and working directory, with no
+frame and no mascot. The binary picks the full shape only when
+`lastReleaseNotesSeen` in `~/.claude.json` differs from the running
+claude-code version, or when `CLAUDE_CODE_FORCE_FULL_LOGO` holds any value.
+The header writes that stored version itself on first render, so the full
+shape draws for one session after an upgrade and the small shape every
+session after it. To hold the full shape at every start, put
+`CLAUDE_CODE_FORCE_FULL_LOGO` in the `env` block of
+`~/.claude/settings.json`: one manual line per machine, for the same reason
+the `theme` line is manual. There is no inverse knob, so neither shape can
+be turned off.
+
 # The slots that stay bright on purpose
 
 These must interrupt, so they break the pastel rule by design: `error

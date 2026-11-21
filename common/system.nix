@@ -36,6 +36,7 @@
     ../system/security/firewall.nix
     ../system/security/openvpn.nix
     ../system/security/tailscale.nix
+    ../system/security/proton-VPN.nix
   ];
 
   environment.systemPackages = with pkgs; [

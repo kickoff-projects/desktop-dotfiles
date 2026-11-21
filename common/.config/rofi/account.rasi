@@ -3,12 +3,11 @@
  * switch rofi's look; config.rasi's @theme "account.rasi" is the only
  * thing that ever needs to stay the same. */
 * {
-    background:     #1a0e22cc;
-    background-alt: #2a1a38cc;
-    foreground:     #eee8d5ff;
+    background:     #1e0528cc;
+    background-alt: #331354cc;
+    foreground:     #ffeeffff;
     selected:       #00d4c7ff;
-    active:         #ffea00ff;
-    urgent:         #ff2b2bff;
+    border:         #50c878ff;
 
     background-color: @background;
     text-color:        @foreground;
@@ -16,7 +15,7 @@
 
 window {
     border:        2px;
-    border-color:  @selected;
+    border-color:  @border;
     border-radius: 10px;
     width:         30%;
 }
@@ -42,7 +41,7 @@ listview {
 }
 
 element {
-    padding: 6px;
+    padding: 4px 6px;
     border-radius: 6px;
 }
 

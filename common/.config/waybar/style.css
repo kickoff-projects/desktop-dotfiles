@@ -87,6 +87,7 @@ window#waybar {
 #pulseaudio,
 #microphone,
 #custom-microphone,
+#custom-protonvpn,
 #tray {
     background: transparent;
     padding: 0 1px;
@@ -146,8 +147,6 @@ window#waybar {
 
 #network {
     animation: fav-color-rainbow 210s infinite ease-in-out;
-    /* gap to the GPU module on its right */
-    margin-right: 28px;
 }
 
 #network.disconnected {
@@ -155,7 +154,6 @@ window#waybar {
     color: shade(@color1, 1.5);
     border-radius: 7px;
     margin: 3px;
-    margin-right: 28px;
 }
 
 /* -------------  Keyboard State ------------- */
@@ -198,6 +196,25 @@ window#waybar {
 
 #custom-microphone.source-muted,
 #custom-microphone.unavailable {
+    background-color: alpha(@color10, 0.15);
+    color: @color14;
+    border-radius: 10px;
+}
+
+/* "custom/protonvpn" module - sits directly right of #network, so it
+ * carries the gap to the CPU group that #network used to hold.
+ * Cyan while the tunnel is up, dimmed when there is no ProtonVPN
+ * wireguard connection. */
+#custom-protonvpn {
+    margin-right: 28px;
+}
+
+#custom-protonvpn.connected {
+    border-bottom-color: @color6;
+    color: @color6;
+}
+
+#custom-protonvpn.disconnected {
     background-color: alpha(@color10, 0.15);
     color: @color14;
     border-radius: 10px;

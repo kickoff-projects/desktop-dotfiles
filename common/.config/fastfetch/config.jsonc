@@ -1,5 +1,5 @@
-/*don't forget to adde this to .zshrc:*/
-/*fastfetch -c ~/.dotfiles/hosts/Home-Desktop/.config/fastfetch/mystical-config.jsonc --color-separator 31*/
+/*Verbose fastfetch config. The default config path, so plain `fastfetch`*/
+/*reads it, including the greeting on every new interactive shell.*/
 
 {
 "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
@@ -21,17 +21,17 @@
 	
     "bar": {
       "char": {
-	"elapsed": "/"
+	"elapsed": "/",
+	"total": "-"
       },
-      "charTotal": "/",
-      "width": 6
+      "width": 15
     },
 
     "percent": {
       "type": 9,
       "color": {
         "green": "green",
-        "yellow": "green",
+        "yellow": "yellow",
 	"red": "red"
       },
       "ndigits": 2
@@ -45,11 +45,10 @@
 "modules": [
     "break",
     {
-    "type": "os",
-    /*In case of \n use something like: \n\t\t\t\t\t\t\t to
-      move "Distro" to it place */
-    "key": " DISTRO ",
-    "keyColor": "31"
+    "type": "command",
+    "key": " DISTRO ",
+    "keyColor": "31",
+    "text": ". /etc/os-release; printf '%s %s' \"$PRETTY_NAME\" \"$(fastfetch -c none -l none -s cpu --format json | tr -d ' ,\"' | sed -n 's/^march://p')\""
     },
     {
     "type": "bios",
@@ -68,15 +67,10 @@
     "keyColor": "31"
     },
     {
-    "type": "packages",
-    "key": "/│/ ╠ ",
-    "keyColor": "31"
-    },
-    {
-    "type": "Processes",
+    "type": "command",
     "key": "/│/ ╠ ",
     "keyColor": "31",
-    "format": "{1} Active processes"
+    "text": "fastfetch -c none -l none -s packages:processes --format json | tr -d ' ,\"' | awk -F: '/^nixSystem/{s=$2} /^nixUser/{u=$2} /^result:[0-9]/{p=$2} END{printf \"%s (system), %s (user) - %s Active\", s, u, p}'"
     },
     {
     "type": "wm",
@@ -122,7 +116,6 @@
     },
     {
     "type": "cpu",
-    "showCoreCount": true,
     "temp": true,
     "key": "/│/ ╠    ╚ ",
     "keyColor": "blue",
@@ -130,11 +123,16 @@
     },
     {
     "type": "cpu",
-    "showCoreCount": true,
     "temp": true,
     "key": "/│/ ╠    ╚ ",
     "keyColor": "blue",
     "format": "Max: {7} | Base: {6}"
+    },
+    {
+    "type": "loadavg",
+    "key": "/│/ ╠    ╚ ",
+    "keyColor": "blue",
+    "format": "{1} (1m) | {2} (5m) | {3} (15m)"
     },
     {
     "type": "CPUUsage",
@@ -161,11 +159,25 @@
     "keyColor": "blue"
     },
     {
+    "type": "opencl",
+    "key": "/│/ ╠    ╚ ",
+    "keyColor": "blue"
+    },
+    {
     "type": "display",
     "key": "/│/ ╠ ",
     "keyColor": "blue",
     /*"compactType": "original-with-refresh-rate"*/
     "format": "{1} x {2} @ {3}Hz | {6}"
+    },
+    {
+    "type": "brightness",
+    "percent": {
+	"type": 3
+    },
+    "key": "/│/ ╠    ╚ ",
+    "keyColor": "blue",
+    "format": "{2}: {1} {6} {#1;34}󰃠{#}"
     },
     {
     "type": "memory",
@@ -177,7 +189,7 @@
     },
     "key": "/│/ ╠ ",
     "keyColor": "blue",
-    "format": "{1}/{2}  {4}   "
+    "format": "{1}/{2} ({3}) {4} {#1;34}󰘚{#}"
     },
     {
     "type": "swap",
@@ -189,7 +201,24 @@
     },
     "key": "/│/ ╠ ",
     "keyColor": "blue",
-    "format": "{1}/{2}       {4}   "
+    "format": "{1}/{2} ({3}) {4} {#1;34}{#}"
+    },
+    {
+    "type": "disk",
+    "percent": {
+	"type": 3,
+	"green": 70,
+	"yellow": 85
+    },
+    "key": "/│/ ╠ ",
+    "keyColor": "blue",
+    "format": "{size-used}/{size-total} ({size-percentage}) {size-percentage-bar} {mountpoint} - {#1;34}{filesystem} 󰋊{#}"
+    },
+    {
+    "type": "TPM",
+    "key": "/│/ ╠ ",
+    "keyColor": "blue",
+    "format": "{2}"
     },
     {
     "type": "uptime",
@@ -197,10 +226,20 @@
     "keyColor": "blue"
     },
     {
-    "type": "TPM",
+    "type": "users",
     "key": "/│/ ╠ ",
     "keyColor": "blue",
-    "format": "{2}"
+    "format": "{1}@{2} - {5:16}"
+    },
+    {
+    "type": "mouse",
+    "key": " ACCESSORIES ",
+    "keyColor": "light_green"
+    },
+    {
+    "type": "keyboard",
+    "key": "/│/ ╠    ╚ ",
+    "keyColor": "light_green"
     },
     /*{
     "type": "localip",
@@ -226,8 +265,8 @@
     {
     "type": "sound",
     "key": " AUDIO ",
-    "format": "{2:22} {5}",
-    "keyColor": "light_green",
+    "format": "{3:22} ({4}) {6} {#38;5;99}󰕾{#}",
+    "keyColor": "38;5;99",
     "percent": {
 	"type": 3,
 	"green": "100",
@@ -236,12 +275,12 @@
     {
     "type": "player",
     "key": "/│/ ╠ ",
-    "keyColor": "light_green"
+    "keyColor": "38;5;99"
     },
     {
     "type": "media",
     "key": "/│/ ╠ ",
-    "keyColor": "light_green"
+    "keyColor": "38;5;99"
     },
     /*{*/
     /*"type": "weather",*/

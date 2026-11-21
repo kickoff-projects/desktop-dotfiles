@@ -7,7 +7,7 @@
     "margin-right": 12,
     "spacing": 7,
     "modules-left": ["clock", "sway/workspaces"],
-    "modules-right": ["network", "group/cpu_info", "custom/nvidia", "memory", "disk", "group/system-info", "custom/microphone", "tray"],
+    "modules-right": ["network", "custom/protonvpn", "group/cpu_info", "custom/nvidia", "memory", "disk", "group/system-info", "custom/microphone", "tray"],
 
     "sway/workspaces": {
         "format": "{icon}",
@@ -126,6 +126,14 @@
         "modules": [
             "pulseaudio"
         ]
+    },
+
+    // vpn state is event-driven from NetworkManager: the script sleeps on
+    // `nmcli monitor`, so there is no interval and no polling cost
+    "custom/protonvpn": {
+        "exec": "bash $HOME/.config/hypr/scripts/waybar-protonvpn.sh",
+        "return-type": "json",
+        "restart-interval": 5
     },
 
     // mic state comes from a script so a missing device is a state of its own

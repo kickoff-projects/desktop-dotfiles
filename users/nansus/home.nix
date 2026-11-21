@@ -24,7 +24,6 @@ in
     vim
     neovim
 
-    proton-vpn
     openconnect
     feh
     claude-code
