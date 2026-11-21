@@ -36,6 +36,9 @@ imports =
       # The AX200 card in this box brings bluetooth (hci0) just like the
       # Laptop's, so blueman from StartPrograms.conf has something to talk to
       ../../system/hardware/bluetooth.nix
+      # DDC/CI brightness over DP-3, see the comment in the module. Desktop only:
+      # the Laptop drives its panel through /sys/class/backlight instead.
+      ../../system/hardware/ddc.nix
 
       # ---- games ----
       ../../system/games/steam.nix

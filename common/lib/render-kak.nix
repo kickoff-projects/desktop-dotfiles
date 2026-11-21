@@ -21,7 +21,7 @@
 #base03 = rgb:${p.base03}   (comments / subtle text)
 
 #base04 = rgb:${p.base04}   (muted foreground)
-#base05 = rgb:${p.base05}   (main text - near white)
+#base05 = rgb:${p.base05}   (main text)
 #base06 = rgb:${p.base06}   (lighter text)
 #base07 = rgb:${p.base07}   (highlighted text)
 

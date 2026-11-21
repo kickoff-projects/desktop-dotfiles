@@ -2,7 +2,7 @@
   "name": "pastel rainbow",
   "base": "dark",
   "overrides": {
-    "text": "#ffeeff",
+    "text": "#9e9ed6",
     "inverseText": "#ffffff",
     "inactive": "#9a93ad",
     "inactiveShimmer": "#c2bcd1",

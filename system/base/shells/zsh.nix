@@ -86,6 +86,7 @@
 	# annoying as hell to have .dotfiles and .dotnet
 	# in a same place.
 	alias .d='cd ; cd desktop-dotfiles'
+        alias .c='cd ; cd desktop-dotfiles/common/.config'
 	alias .s='cd ; cd desktop-dotfiles/system/'
 	alias .i='cd ; cd school_stuff/Info_for_NixOS'
 	alias .htb='cd ; cd HTB_Lab'

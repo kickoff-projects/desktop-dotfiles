@@ -32,11 +32,11 @@ in
 
   xdg.configFile."foot/colors.ini".text =
     lib.mkForce (renderFootColors {
-      p = palettes.rainbow.foot // { background = "000000"; };
+      p = palettes.rainbow.foot // { background = "000000"; foreground = "9e9ed6"; bright7 = "9ed6b4"; };
     });
 
   xdg.configFile."kak/colors/account.kak".text =
     lib.mkForce (renderKak {
-      p = palettes.rainbow.kak // { base00 = "000000"; };
+      p = palettes.rainbow.kak // { base00 = "000000"; base05 = "9e9ed6"; base06 = "9ed6b4"; };
     });
 }
