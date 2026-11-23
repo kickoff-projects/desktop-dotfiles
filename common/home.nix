@@ -9,6 +9,16 @@ let
   palettes = import ./palettes.nix;
   renderKak = import ./lib/render-kak.nix;
   renderFootColors = import ./lib/render-foot-colors.nix;
+
+  # Written to both qt5ct.conf and qt6ct.conf below, so Qt5 and Qt6 apps
+  # always get the same style.
+  qtctConf = ''
+    [Appearance]
+    style=adwaita-dark
+    icon_theme=Papirus-Dark
+    standard_dialogs=default
+    custom_palette=false
+  '';
 in
 {
   # One file per app, shared by every account - see system/app/. Apps that
@@ -47,10 +57,12 @@ in
     pkgs.playerctl
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 
-    pkgs.git
     pkgs.gh
     pkgs.librespeed-cli
-    pkgs.btop
+    # cudaSupport only adds nixpkgs' autoAddDriverRunpath hook, no CUDA
+    # package: it puts /run/opengl-driver/lib on btop's runpath so btop can
+    # dlopen libnvidia-ml.so.1 and fill the gpu0 box.
+    (pkgs.btop.override { cudaSupport = true; })
     pkgs.libreoffice-qt
 
     # qt.style.package below only covers the Qt5 plugin; Qt6 apps need the
@@ -111,9 +123,13 @@ in
 
   # btop rewrites its own config when it exits, so it cannot live in the
   # read only /nix/store copy of .config. Seed it from btop.conf.in on first
-  # run, and reseed if the existing btop.conf names a color_theme path that
-  # no longer exists - a scheme this refactor renamed or deleted would
+  # run, and reseed if the existing btop.conf names a color_theme that no
+  # longer exists - a scheme this refactor renamed or deleted would
   # otherwise leave btop silently on its built-in default forever.
+  # A bare theme name is the name btop itself resolves in
+  # ~/.config/btop/themes, so the check looks for it there.
+  # shortcut: only the theme triggers a reseed, upgrade if btop.conf.in gains
+  # settings that must reach accounts which already have a btop.conf.
   home.activation.seedBtopConfig =
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       btopConfIn="$HOME/.config/btop/btop.conf.in"
@@ -121,21 +137,25 @@ in
       if [ -f "$btopConfIn" ]; then
         existingTheme=$(sed -n 's/^color_theme[[:space:]]*=[[:space:]]*"\(.*\)"/\1/p' "$btopConf" 2>/dev/null)
         expandedTheme="''${existingTheme/#\~/$HOME}"
+        case "$expandedTheme" in
+          /*) ;;
+          Default|TTY) expandedTheme="$btopConfIn" ;;
+          *) expandedTheme="$HOME/.config/btop/themes/$expandedTheme" ;;
+        esac
         if [ ! -f "$btopConf" ] || { [ -n "$existingTheme" ] && [ ! -f "$expandedTheme" ]; }; then
           run install -m644 "$btopConfIn" "$btopConf"
         fi
       fi
     '';
 
-  # Everything under common/.config is symlinked into every account's
-  # ~/.config; hostDir/.config overrides it per-machine (waybar's
+  # The generated files below come first, then the three file layers:
+  # everything under common/.config is symlinked into every account's
+  # ~/.config, hostDir/.config overrides it per-machine (waybar's
   # config.jsonc, monitor lines, ...), and users/<name>/.config overrides
-  # both (palette files). Same-path wins right-to-left.
+  # both (palette files). Same-path wins right-to-left, so a real file in
+  # any layer also replaces a generated entry of the same name.
   xdg.configFile =
-       configFilesOf ./.config
-    // configFilesOf (hostDir + "/.config")
-    // configFilesOf (../users + "/${config.home.username}/.config")
-    // {
+    {
       # Generated from common/palettes.nix rather than a plain file, so a
       # new theme is sixteen-ish hex values instead of a hand-copied file.
       # mkDefault so a host/user layer (nansus-work's kak, hosts/Server's
@@ -146,24 +166,16 @@ in
       # home-manager's qt module with platformTheme "qtct" installs qt5ct/qt6ct
       # and exports the env vars, but writes no config, so Qt apps would still
       # start on qt6ct's light default. These two files are what actually makes
-      # them dark. Declared read-only from the store rather than seeded like
-      # btop.conf: the only writer is the qt6ct settings GUI, and the point of
-      # putting the style here is that it is not hand-edited.
-      "qt5ct/qt5ct.conf".text = ''
-        [Appearance]
-        style=adwaita-dark
-        icon_theme=Papirus-Dark
-        standard_dialogs=default
-        custom_palette=false
-      '';
-      "qt6ct/qt6ct.conf".text = ''
-        [Appearance]
-        style=adwaita-dark
-        icon_theme=Papirus-Dark
-        standard_dialogs=default
-        custom_palette=false
-      '';
-    };
+      # them dark, and both hold the same qtctConf text so Qt5 and Qt6 apps
+      # cannot drift apart. Declared read-only from the store rather than
+      # seeded like btop.conf: the only writer is the qt6ct settings GUI, and
+      # the point of putting the style here is that it is not hand-edited.
+      "qt5ct/qt5ct.conf".text = qtctConf;
+      "qt6ct/qt6ct.conf".text = qtctConf;
+    }
+    // configFilesOf ./.config
+    // configFilesOf (hostDir + "/.config")
+    // configFilesOf (../users + "/${config.home.username}/.config");
 
   # Same idea one directory up, for claude-code: common/.claude is symlinked
   # into every account's ~/.claude, and users/<name>/.claude overrides it.
@@ -178,9 +190,6 @@ in
   home.file =
        claudeFilesOf ./.claude
     // claudeFilesOf (../users + "/${config.home.username}/.claude");
-
-  # disable ssh, home-manager doesn't manage its config
-  programs.ssh.enable = false;
 
   programs.direnv = {
     enable = true;

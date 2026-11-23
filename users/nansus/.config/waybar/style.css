@@ -94,6 +94,7 @@ window#waybar {
 #memory,
 #disk,
 #backlight,
+#custom-backlight,
 #temperature,
 #network,
 #pulseaudio,
@@ -200,7 +201,8 @@ window#waybar {
 /* --------------------------------------------- */
 
 #pulseaudio,
-#backlight {
+#backlight,
+#custom-backlight {
     border-bottom-color: @color2;
     color: @color2;
 }
@@ -233,23 +235,14 @@ window#waybar {
  * state, so waybar never renders the widget. Kept as a comment so the
  * missing selector does not read as an oversight next to the shared file. */
 
-/* "custom/protonvpn" module - sits directly right of #network, so it
+/* "custom/protonvpn" module - sits right of the #network modules, so it
  * carries the gap to the CPU group that #network used to hold.
- * Cyan while the tunnel is up, dimmed when there is no ProtonVPN
- * wireguard connection. */
+ * No per-state colors: the module runs the same animation as #clock and
+ * #network, so it keeps that color scheme whether the tunnel is up or
+ * down. */
 #custom-protonvpn {
     margin-right: 28px;
-}
-
-#custom-protonvpn.connected {
-    border-bottom-color: @color6;
-    color: @color6;
-}
-
-#custom-protonvpn.disconnected {
-    background-color: alpha(@color10, 0.15);
-    color: @color14;
-    border-radius: 10px;
+    animation: fav-color-rainbow 210s infinite ease-in-out;
 }
 
 #tray {

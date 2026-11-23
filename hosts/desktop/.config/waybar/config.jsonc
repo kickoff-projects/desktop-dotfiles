@@ -106,11 +106,16 @@
         }
     },
 
+    // pinned to the physical link: the Proton kill switch adds an IPv6 default
+    // route on the dummy device ipv6leakintrf0 with metric 95, which beats the
+    // metric 100 route on enp5s0, so route-based interface choice can track the
+    // dummy device instead of the real one.
     "network": {
-	"format-wifi" : "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}  󰖩 {signalStrength}%   ",
-        "format-ethernet": "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}  󰈀   ",
-	"tooltip-format": "{ifname}:{ipaddr} / {cidr} | 󰖩 {essid} ({signalStrength}%)   ",
-        "format-linked": "󱘖 {ifname}:{ipaddr} 󰕒 {bandwidthupbytes:2} 󰇚 {bandwidthdownbytes:2}  {signalstrength}%   ",
+	"interface": "enp5s0",
+	"format-wifi" : "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2} 󰖩 {signalStrength}% ",
+        "format-ethernet": "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2} 󰈀  ",
+	"tooltip-format": "{ifname}:{ipaddr} / {cidr} | 󰖩 {essid} ({signalStrength}%) ",
+        "format-linked": "󱘖 {ifname}:{ipaddr} 󰕒 {bandwidthupbytes:2} 󰇚 {bandwidthdownbytes:2} {signalstrength}% ",
 	"format-disconnected" : "󰯡  no network ",
         "interval": 1,
         "tooltip": true,
@@ -174,9 +179,32 @@
 	"orientation": "horizontal",
 	"modules": [
 		"pulseaudio"
-		// no panel backlight on this host
 	]
     },
+
+    // screen brightness over DDC/CI: this host has an empty
+    // /sys/class/backlight, so waybar's own backlight module has no device.
+    // The icon ramp is md-brightness_1 to md-brightness_7; the text layout
+    // matches the laptop's backlight module.
+    //
+    // No interval: one DDC round trip takes 0.25-0.55s and holds the lock that
+    // F5/F6 and the scroll binds below also take, and polling it every second
+    // kept the GPU pinned at pstate P0 (about 48W above idle). With "signal"
+    // set, waybar runs the script once at startup and then only on
+    // SIGRTMIN+8, which hypr/scripts/brightness.sh sends after each step. The
+    // scroll binds refresh it on their own, because exec-on-event defaults to
+    // true for custom modules.
+    //
+    // shortcut: a change made on the monitor's own OSD buttons is not shown,
+    // because nothing signals waybar. Add a poll back if that starts to matter.
+    //"custom/backlight": {
+    //	"exec": "bash $HOME/.config/waybar/waybar-backlight.sh",
+    //	"return-type": "json",
+    //	"signal": 8,
+    //	// 10% steps, same script as the F5/F6 keys
+    //	"on-scroll-up": "bash $HOME/.config/hypr/scripts/brightness.sh up",
+    //	"on-scroll-down": "bash $HOME/.config/hypr/scripts/brightness.sh down"
+    //},
 
     // vpn state is event-driven from NetworkManager: the script sleeps on
     // `nmcli monitor`, so there is no interval and no polling cost

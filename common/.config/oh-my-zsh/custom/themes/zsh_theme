@@ -112,7 +112,7 @@ git_group_close() {
 
 # Main prompt
 PROMPT='  
-  %{$fg[green]%}           
+  %{$fg[green]%}            
    %F{magenta}%n%f @ %F{magenta}%m%f ${$(git_prompt_info)//$ZSH_GIT_DIRTY_GLYPH/}$(git_group_open)$(git_prompt_status)$(git_group_close)$(virtualenv_prompt_info) %{$fg[green]%}%~  %{$fg[red]%}
  %{$fg[blue]%}   %{$fg[yellow]%}%1~  %{$fg[magenta]%}%(!..$) %{$reset_color%}'
 

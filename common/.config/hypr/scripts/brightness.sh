@@ -28,5 +28,12 @@ if [ -n "$(ls -A /sys/class/backlight 2>/dev/null)" ]; then
   exec brightnessctl -c backlight s "$backlight_step"
 fi
 
-exec flock -n "${XDG_RUNTIME_DIR:-/tmp}/brightness.lock" \
+flock -n "${XDG_RUNTIME_DIR:-/tmp}/brightness.lock" \
   ddcutil --bus 8 --noverify setvcp 10 "${ddc_step[@]}"
+
+# The Desktop's custom/backlight module has no interval: it reads the monitor
+# once at startup and then only on SIGRTMIN+8, so the new value has to be
+# announced here. set -e stops the script above this line when flock finds the
+# lock held, so a dropped step sends no signal. pkill reports no match when
+# waybar is not running, which is not an error for this script.
+pkill -RTMIN+8 -x .waybar-wrapped || true

@@ -1,0 +1,85 @@
+# The nansus account btop theme: common/.config/btop/themes/account.theme
+# with purple text, to match this account's foot foreground (9574f6).
+# Picked up by btop.conf's color_theme = "account.theme", which btop resolves
+# in ~/.config/btop/themes.
+# Colors come from common/palettes.nix (palettes.rainbow.foot).
+#
+# Each box gets its own place in the spectrum instead of four identical
+# outlines, and every gradient stop is a palette value, except div_line
+# (a dark tint of the palette background).
+
+# Colors should be in 6 or 2 character hexadecimal or single spaced rgb decimal: "#RRGGBB", "#BW" or "0-255 0-255 0-255"
+
+# Painted behind every box, because btop.conf sets theme_background = true.
+theme[main_bg]="#000000"
+
+# Main text color
+theme[main_fg]="#9574f6"
+
+# Title color for boxes
+theme[title]="#9574f6"
+
+# Highlight color for keyboard shortcuts
+theme[hi_fg]="#ffeb3b"
+
+# Background color of selected item in processes box
+theme[selected_bg]="#9c27b0"
+
+# Foreground color of selected item in processes box
+theme[selected_fg]="#ffffff"
+
+# Color of inactive/disabled text
+theme[inactive_fg]="#607d8b"
+
+# Misc colors for processes box including mini cpu graphs, details memory graph and details status text
+theme[proc_misc]="#00bcd4"
+
+# Box outlines, one accent each rather than four of the same. The gpu box
+# has no color key of its own in btop 1.4 - it follows cpu_box.
+theme[cpu_box]="#ff4081"
+theme[mem_box]="#9c27b0"
+theme[net_box]="#00bcd4"
+theme[proc_box]="#2196f3"
+
+# Box divider line and small boxes line color
+theme[div_line]="#1f2240"
+
+# Temperature graph colors
+theme[temp_start]="#00e676"
+theme[temp_mid]="#ffeb3b"
+theme[temp_end]="#d32f2f"
+
+# CPU graph colors
+theme[cpu_start]="#00bcd4"
+theme[cpu_mid]="#9c27b0"
+theme[cpu_end]="#ff4081"
+
+# Mem/Disk free meter
+theme[free_start]="#00e676"
+theme[free_mid]="#4caf50"
+theme[free_end]="#009688"
+
+# Mem/Disk cached meter
+theme[cached_start]="#9c27b0"
+theme[cached_mid]="#673ab7"
+theme[cached_end]="#3f51b5"
+
+# Mem/Disk available meter
+theme[available_start]="#00bcd4"
+theme[available_mid]="#2196f3"
+theme[available_end]="#3f51b5"
+
+# Mem/Disk used meter
+theme[used_start]="#ffeb3b"
+theme[used_mid]="#ff9800"
+theme[used_end]="#d32f2f"
+
+# Download graph colors
+theme[download_start]="#00bcd4"
+theme[download_mid]="#2196f3"
+theme[download_end]="#9c27b0"
+
+# Upload graph colors
+theme[upload_start]="#00e676"
+theme[upload_mid]="#cddc39"
+theme[upload_end]="#ff5722"

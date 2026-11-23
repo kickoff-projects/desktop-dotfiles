@@ -8,7 +8,7 @@
     "spacing": 8,
     "output": "eDP-1",
     "modules-left": ["clock", "hyprland/workspaces"],
-      "modules-right": ["network", "custom/protonvpn", "group/cpu_info", "custom/nvidia", "memory" ,"disk", "group/system-info", "custom/microphone", "battery", "tray"],
+      "modules-right": ["network#wifi", "network#eth", "custom/protonvpn", "group/cpu_info", "custom/nvidia", "memory" ,"disk", "group/system-info", "custom/microphone", "battery", "tray"],
 
 
 
@@ -104,12 +104,28 @@
         }
     },
 
-    "network": {
+    // one module per physical link, each pinned by interface: the Proton kill
+    // switch adds an IPv6 default route on the dummy device ipv6leakintrf0 with
+    // metric 95, which beats the metric 100 route of a real link, so
+    // route-based interface choice can track the dummy device instead.
+    // Waybar hides a module whose text is empty, so each link shows a line only
+    // while that link is up, and no module carries a "no network" text.
+    "network#wifi": {
+	"interface": "wlp0s20f3",
 	"format-wifi" : "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}  󰖩 {signalStrength}%   ",
-        "format-ethernet": "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}  󰈀   ",
+	"format-linked": "󱘖 {ifname}:{ipaddr} 󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}   ",
+	"format-disconnected": "",
 	"tooltip-format": "{ifname}:{ipaddr} / {cidr} | 󰖩 {essid} ({signalStrength}%)   ",
-        "format-linked": "󱘖 {ifname}:{ipaddr} 󰕒 {bandwidthupbytes:2} 󰇚 {bandwidthdownbytes:2}  {signalstrength}%   ",
-	"format-disconnected" : "󰯡  no network ",
+        "interval": 1,
+        "tooltip": true,
+    },
+
+    "network#eth": {
+	"interface": "enp52s0",
+	"format-ethernet": "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}  󰈀   ",
+	"format-linked": "󱘖 {ifname}:{ipaddr} 󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}   ",
+	"format-disconnected": "",
+	"tooltip-format": "{ifname}:{ipaddr} / {cidr}   ",
         "interval": 1,
         "tooltip": true,
     },

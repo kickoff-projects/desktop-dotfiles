@@ -67,6 +67,8 @@
 	alias ns='nix-shell'
 
 	alias c='claude'
+        alias cad='freecad'
+
 
         # Set-up icons for files/folders in terminal using lsd
         alias ls='lsd'

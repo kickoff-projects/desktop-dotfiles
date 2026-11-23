@@ -65,7 +65,12 @@
         }
     },
 
+    // pinned to the wired link: the Proton kill switch adds an IPv6 default
+    // route on the dummy device ipv6leakintrf0 with metric 95, which beats the
+    // metric 100 route on enp4s0, so route-based interface choice can track the
+    // dummy device instead of the real one.
     "network": {
+        "interface": "enp4s0",
         "format-wifi" : "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}  󰖩 {signalStrength}%   ",
         "format-ethernet": "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}  󰈀   ",
         "tooltip-format": "{ifname}:{ipaddr} / {cidr} | 󰖩 {essid} ({signalStrength}%)   ",

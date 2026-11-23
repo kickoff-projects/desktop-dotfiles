@@ -24,11 +24,16 @@ dark. The entries below say so where it applies.
 
 # Text
 
-`text` and `inverseText` are both `#ffffff`. Message bodies and diff content
-stay white. The named semantic slots keep their pastel hue instead of
-collapsing to white, because they are UI accents rather than prose — losing
-their color would cost the scannability of labels, subagent names and the
-spinner. The literal white-everywhere reading was offered and declined.
+`text` is `#574785`, a deep violet, and `inverseText` is `#ffffff`. Message
+bodies and diff content draw in that violet, which clears about 2.6:1 on the
+account's pure-black terminal. That is below the 4.5:1 body-text threshold:
+the slot is a dim prose color by choice, not a readable one. Kakoune's
+`base05` carries the same value for this account, so prose matches between
+the two. Foot's `foreground` stays `#9574f6`, the lighter violet, so terminal
+output outside kakoune reads brighter than claude-code's prose. The named semantic slots keep their pastel hue instead of
+collapsing to one color, because they are UI accents rather than prose —
+losing their color would cost the scannability of labels, subagent names and
+the spinner.
 
 # Surfaces, in the order they were decided
 
@@ -93,11 +98,10 @@ pastel-cyan fill carries all the color. The diff fills are semantic, not
 free picks: `diffAdded #77dd77`, `diffAddedDimmed #1d2b22`,
 `diffRemoved #ff6961`, `diffRemovedDimmed #2e1f24`. The two active fills
 flipped from near-black tints to full pastels while the dimmed pair stayed
-dark, so a diff now reads as pale blocks against dark context. Warning:
-`text` and `inverseText` are both `#ffffff`, and white on `#77dd77` clears
-about 1.7:1 — diff body text on the added and removed fills is effectively
-unreadable until either those fills go dark again or the text slots stop
-being white.
+dark, so a diff now reads as pale blocks against dark context. `text` is
+`#574785` and `inverseText` is `#ffffff`. That deep violet clears about
+4.7:1 on `#77dd77`, so added-line bodies read. On `#ff6961` it clears about
+2.8:1, so removed-line bodies stay hard to read until that fill goes dark.
 
 Green is now the theme's busiest foreground family, well past the original
 `success #a8e0b8` and `diffAddedWord #2f8f5a`: `claude #50c878` with
@@ -171,7 +175,7 @@ Lives here, not in the `.json`, because the loader parses with a bare
 throws, is caught, logged at `warn`, and the whole theme silently drops out
 of the picker.
 
-`text` `#ffffff` — white
+`text` `#574785` — deep violet
 `inverseText` `#ffffff` — white
 `inactive` `#9a93ad` — muted lavender grey
 `inactiveShimmer` `#c2bcd1` — pale lavender grey
@@ -217,6 +221,7 @@ of the picker.
 `diffAddedDimmed` `#1d2b22` — dark muted green
 `diffAddedWord` `#2f8f5a` — medium green
 `diffRemovedWord` `#9e3047` — medium dark red
+# background of user prompt
 `userMessageBackground` `#5d009b` — deep purple
 `userMessageBackgroundHover` `#4d2d54` — deep magenta, lighter
 `composerSidebarBackground` `#141019` — near-black violet

@@ -2,7 +2,7 @@
   "name": "pastel rainbow",
   "base": "dark",
   "overrides": {
-    "text": "#564285",
+    "text": "#574785",
     "inverseText": "#ffffff",
     "inactive": "#9a93ad",
     "inactiveShimmer": "#c2bcd1",
@@ -43,7 +43,7 @@
     "diffAddedDimmed": "#1d2b22",
     "diffAddedWord": "#2f8f5a",
     "diffRemovedWord": "#9e3047",
-    "userMessageBackground": "#5d009b",
+    "userMessageBackground": "#000000",
     "userMessageBackgroundHover": "#4d2d54",
     "composerSidebarBackground": "#141019",
     "selectionBg": "#661bfd",

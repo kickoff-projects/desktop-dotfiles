@@ -1,15 +1,13 @@
-# nansus-work: black/rainbow variant of
-# common/.config/btop/themes/account.theme (which was Adapta, all cyan).
-# Picked up by btop.conf's color_theme = "~/.config/btop/themes/account.theme".
+# nansus-work: neon variant of common/.config/btop/themes/account.theme.
+# Picked up by btop.conf's color_theme = "account.theme", which btop resolves
+# in ~/.config/btop/themes.
 #
 # Each box gets its own place in the spectrum instead of four identical
-# cyan outlines, and the meters run rainbow gradients on black.
+# outlines, and the meters run rainbow gradients on black.
 
 # Colors should be in 6 or 2 character hexadecimal or single spaced rgb decimal: "#RRGGBB", "#BW" or "0-255 0-255 0-255"
 
-# Empty keeps the terminal background, which on this account is foot's
-# true black. The value below is only used if theme_background is turned
-# back on in btop.conf.
+# Painted behind every box, because btop.conf sets theme_background = true.
 theme[main_bg]="#000000"
 
 # Main text color
