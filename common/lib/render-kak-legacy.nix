@@ -1,23 +1,15 @@
-# Frozen copy of common/lib/render-kak.nix as of commit 58aac84
-# (2026-11-18), kept for the themes that were authored against this
-# set-face body: palettes.red (hosts/live-usb) and palettes.neon_rainbow
-# (users/nansus-work). The live render-kak.nix was retuned for rainbow in
-# 7273a17 and 9686c1f - it rewrote the kakoune UI faces and started
-# requiring baseAD06-baseAD15, which neither of those two palettes
-# declares. Do not "sync" this file with render-kak.nix: its whole purpose
-# is to stay at the 11-18 body so red and neon_rainbow keep rendering as
-# they did then. A theme that wants the new faces should move to
-# render-kak.nix and gain the ten missing baseADxx values instead.
+# This is a frozen copy of common/lib/render-kak.nix at commit 58aac84.
+# Two themes need this set-face body: palettes.red for hosts/live-usb and
+# palettes.neon_rainbow for users/nansus-work.
+# The live render-kak.nix holds different kakoune UI faces, and it needs the
+# values baseAD06 to baseAD15. Neither of those two palettes declares them.
+#
+# Do not sync this file with render-kak.nix. This file must keep its body,
+# or the output of red and neon_rainbow changes. A theme that needs the new
+# faces moves to render-kak.nix and adds the 10 missing baseADxx values.
 { p }:
 ''
 # ${p.title}
-#
-# Commentary:
-# Tinted Theming: (https://github.com/tinted-theming)
-#
-# Authors:
-# Scheme: gidsi
-# Template: Jamy Golden (https://github.com/JamyGolden)
 
 ### Human readable colors for the scheme ###
 #base00 = rgb:${p.base00}   (background - very dark purple)

@@ -1,8 +1,8 @@
 { config, lib, pkgs, inputs, hostDir, expectedHostName, ... }:
 
-# Home-manager settings shared by every account. flake.nix's homeFor helper
-# combines this with users/<name>/home.nix (the account's own packages) and
-# sets the username/homeDirectory.
+# Home-manager settings that every account shares. The homeFor helper in
+# flake.nix joins this file with users/<name>/home.nix, which holds the
+# packages of the account. The helper also sets username and homeDirectory.
 let
   configFilesOf = import ./config-files.nix { inherit lib; };
   claudeFilesOf = import ./claude-files.nix { inherit lib; };
@@ -10,8 +10,8 @@ let
   renderKak = import ./lib/render-kak.nix;
   renderFootColors = import ./lib/render-foot-colors.nix;
 
-  # Written to both qt5ct.conf and qt6ct.conf below, so Qt5 and Qt6 apps
-  # always get the same style.
+  # Nix writes this text to both qt5ct.conf and qt6ct.conf below. Qt5
+  # applications and Qt6 applications therefore always get the same style.
   qtctConf = ''
     [Appearance]
     style=adwaita-dark
@@ -21,9 +21,9 @@ let
   '';
 in
 {
-  # One file per app, shared by every account - see system/app/. Apps that
-  # should stay per-account (prismlauncher, today) are imported from that
-  # account's own home.nix instead.
+  # One file per application, shared by every account. See system/app/.
+  # An application that must stay with one account comes from the home.nix
+  # file of that account. prismlauncher is the only one today.
   imports = [
     ../system/app/dolphin.nix
     ../system/app/discord.nix
@@ -34,13 +34,16 @@ in
 
   home.stateVersion = "24.11"; # Please read the comment before changing.
 
-  # hosts/desktop and hosts/laptop share the same usernames, so
-  # running e.g. "home-manager switch --flake .#nansus@laptop" on the
-  # desktop would otherwise silently deploy the laptop's waybar/monitor
-  # config onto this machine. The real /etc/hostname can only be read at
-  # activation time, not at eval time (that would need --impure), so this
-  # is a plain activation script, hooked before writeBoundary - the point
-  # up to which nothing has been changed yet - rather than an assertion.
+  # hosts/desktop and hosts/laptop use the same usernames. This test stops
+  # a command such as "home-manager switch --flake .#nansus@laptop" on the
+  # desktop. Without the test, that command writes the waybar config and
+  # the monitor config of the laptop onto this machine. It prints no
+  # warning.
+  #
+  # Nix can read the real /etc/hostname at activation time only. A read at
+  # evaluation time needs --impure. This test is therefore an activation
+  # script, and not an assertion. It runs before writeBoundary, which is
+  # the point up to which nothing has changed.
   home.activation.checkHostName =
     lib.hm.dag.entryBefore [ "writeBoundary" ] ''
       actualHostName=$(cat /etc/hostname 2>/dev/null || true)
@@ -50,29 +53,32 @@ in
       fi
     '';
 
-  # Packages the shared Keybinds.conf shells out to, so every account that
-  # inherits those binds can actually run them: playerctl for the four
-  # XF86Audio binds, zen for $mainMod+F and CTRL+SHIFT+F.
+  # The shared Keybinds.conf runs these packages. Every account that takes
+  # those binds therefore needs them. playerctl serves the 4 XF86Audio
+  # binds. zen serves $mainMod+F and CTRL+SHIFT+F.
   home.packages = [
     pkgs.playerctl
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     pkgs.gh
     pkgs.librespeed-cli
-    # cudaSupport only adds nixpkgs' autoAddDriverRunpath hook, no CUDA
-    # package: it puts /run/opengl-driver/lib on btop's runpath so btop can
-    # dlopen libnvidia-ml.so.1 and fill the gpu0 box.
+    # cudaSupport adds only the autoAddDriverRunpath hook of nixpkgs. It
+    # adds no CUDA package. The hook puts /run/opengl-driver/lib on the
+    # runpath of btop. btop can then open libnvidia-ml.so.1 and fill the
+    # gpu0 box.
     (pkgs.btop.override { cudaSupport = true; })
     pkgs.libreoffice-qt
 
-    # qt.style.package below only covers the Qt5 plugin; Qt6 apps need the
-    # Qt6 build of the same style or they fall back to light Fusion.
+    # The option qt.style.package below covers the Qt5 plugin only. Qt6
+    # applications need the Qt6 build of the same style. Without it, they
+    # use the light Fusion style.
     pkgs.adwaita-qt6
   ];
 
-  # Dark GTK/Qt so the apps that draw their own chrome (file dialogs,
-  # libreoffice, thunar/dolphin, firefox) stay dark instead of flashing a
-  # light-themed dialog over a dark desktop.
+  # A dark GTK theme and Qt theme. Some applications draw their own window
+  # parts: file dialogs, libreoffice, thunar, dolphin and firefox. These
+  # options keep them dark. Without the options, they show a light dialog
+  # over a dark desktop.
   gtk = {
     enable = true;
     theme = {
@@ -83,24 +89,28 @@ in
       name = "Papirus-Dark";
       package = pkgs.papirus-icon-theme;
     };
-    # Apps that ask the toolkit for a preference rather than reading the
-    # theme name (most GTK3/GTK4 apps do) need this as well.
+    # Some applications ask the toolkit for a preference, and do not read
+    # the theme name. Most GTK3 and GTK4 applications do this. They need
+    # this setting too.
     gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
     gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
-    # GTK4/libadwaita apps ignore a theme *name* - they take the dark
-    # preference from the setting above and from the portal (dconf below),
-    # so there is nothing to point gtk4.theme at. Set explicitly because
-    # home-manager warns about the default changing in 26.05 otherwise.
+    # GTK4 applications and libadwaita applications ignore a theme name.
+    # They read the dark preference from the setting above and from the
+    # portal, which is dconf below. There is therefore no theme for
+    # gtk4.theme.
+    # This line sets the value, because home-manager prints a warning about
+    # a new default in 26.05.
     gtk4.theme = null;
   };
 
-  # Same preference over dbus, for anything that asks the xdg settings
-  # portal instead (firefox's "follow system theme", electron apps).
+  # The same preference over DBus. Some programs ask the xdg settings
+  # portal instead: the "follow system theme" option of firefox, and
+  # electron applications.
   dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
 
-  # platformTheme "qtct" rather than "gtk3" on purpose: the hosts' hypr
-  # ENV-Variables.conf already exports QT_QPA_PLATFORMTHEME=qt6ct for every
-  # account, and a hyprland env line wins over the one home-manager sets.
+  # platformTheme is "qtct", and not "gtk3". The file ENV-Variables.conf of
+  # each host already exports QT_QPA_PLATFORMTHEME=qt6ct for every account.
+  # An env line in hyprland wins over the line that home-manager sets.
   qt = {
     enable = true;
     platformTheme.name = "qtct";
@@ -121,13 +131,13 @@ in
       "!gh auth git-credential";
   };
 
-  # btop rewrites its own config when it exits, so it cannot live in the
-  # read only /nix/store copy of .config. Seed it from btop.conf.in on first
-  # run, and reseed if the existing btop.conf names a color_theme that no
-  # longer exists - a scheme this refactor renamed or deleted would
-  # otherwise leave btop silently on its built-in default forever.
-  # A bare theme name is the name btop itself resolves in
-  # ~/.config/btop/themes, so the check looks for it there.
+  # btop writes its own config file at exit, so that file cannot live in
+  # the read-only /nix/store copy of .config. This script copies
+  # btop.conf.in on the first run. It copies the file again when the
+  # current btop.conf names a color_theme that does not exist. Without the
+  # second copy, btop keeps its built-in default theme and prints nothing.
+  # A bare theme name is a name that btop finds in ~/.config/btop/themes,
+  # so this script looks there.
   # shortcut: only the theme triggers a reseed, upgrade if btop.conf.in gains
   # settings that must reach accounts which already have a btop.conf.
   home.activation.seedBtopConfig =
@@ -148,28 +158,33 @@ in
       fi
     '';
 
-  # The generated files below come first, then the three file layers:
-  # everything under common/.config is symlinked into every account's
-  # ~/.config, hostDir/.config overrides it per-machine (waybar's
-  # config.jsonc, monitor lines, ...), and users/<name>/.config overrides
-  # both (palette files). Same-path wins right-to-left, so a real file in
-  # any layer also replaces a generated entry of the same name.
+  # The generated files below come first. The three file layers follow:
+  #  - common/.config: Nix links every file into the ~/.config directory of
+  #    every account.
+  #  - hostDir/.config: this layer replaces files per machine, such as the
+  #    waybar config.jsonc and the monitor lines.
+  #  - users/<name>/.config: this layer replaces files of both layers above,
+  #    such as the palette files.
+  # For the same path, the layer on the right wins. A real file in any layer
+  # also replaces a generated entry of the same name.
   xdg.configFile =
     {
-      # Generated from common/palettes.nix rather than a plain file, so a
-      # new theme is sixteen-ish hex values instead of a hand-copied file.
-      # mkDefault so a host/user layer (nansus-work's kak, hosts/Server's
-      # theme.nix) can override with mkForce.
+      # Nix generates this file from common/palettes.nix. It is not a plain
+      # file. A new theme is therefore a set of hex values, and not a copy
+      # of a file.
+      # This line uses mkDefault, so a host layer or user layer can replace
+      # it with mkForce. The kak file of nansus-work does this.
       "kak/colors/account.kak".text = lib.mkDefault (renderKak { p = palettes.rainbow.kak; });
       "foot/colors.ini".text = lib.mkDefault (renderFootColors { p = palettes.rainbow.foot; });
 
-      # home-manager's qt module with platformTheme "qtct" installs qt5ct/qt6ct
-      # and exports the env vars, but writes no config, so Qt apps would still
-      # start on qt6ct's light default. These two files are what actually makes
-      # them dark, and both hold the same qtctConf text so Qt5 and Qt6 apps
-      # cannot drift apart. Declared read-only from the store rather than
-      # seeded like btop.conf: the only writer is the qt6ct settings GUI, and
-      # the point of putting the style here is that it is not hand-edited.
+      # The qt module of home-manager with platformTheme "qtct" installs
+      # qt5ct and qt6ct, and it exports the env vars. It writes no config
+      # file, so Qt applications start on the light default of qt6ct.
+      # These two files make those applications dark. Both files hold the
+      # same qtctConf text, so Qt5 and Qt6 applications keep the same style.
+      # These files are read-only from the store. They are not copies like
+      # btop.conf, because the only writer is the settings GUI of qt6ct.
+      # The style lives here so that nobody edits it by hand.
       "qt5ct/qt5ct.conf".text = qtctConf;
       "qt6ct/qt6ct.conf".text = qtctConf;
     }
@@ -177,15 +192,16 @@ in
     // configFilesOf (hostDir + "/.config")
     // configFilesOf (../users + "/${config.home.username}/.config");
 
-  # Same idea one directory up, for claude-code: common/.claude is symlinked
-  # into every account's ~/.claude, and users/<name>/.claude overrides it.
-  # Both CLAUDE.md and the neon theme live in the common layer - every
-  # account gets them, and choosing the theme is a settings.json line rather
-  # than a layer. No host layer either: nothing here is machine-specific.
+  # The same method one directory up, for claude-code. Nix links
+  # common/.claude into the ~/.claude directory of every account, and
+  # users/<name>/.claude replaces files in it.
+  # The common layer holds CLAUDE.md and the neon theme, so every account
+  # gets them. A settings.json line picks the theme, and not a layer.
+  # There is no host layer, because nothing here belongs to one machine.
   #
-  # ~/.claude/settings.json is deliberately absent from both layers: claude
-  # writes it itself, so it stays an ordinary file. Selecting a theme shipped
-  # here is therefore one manual line per machine, e.g.
+  # Neither layer holds ~/.claude/settings.json. Claude writes that file
+  # itself, so it stays an ordinary file. Each machine therefore needs one
+  # manual line to pick a theme from this layer. Example:
   #   "theme": "custom:neon-theme"
   home.file =
        claudeFilesOf ./.claude

@@ -122,7 +122,7 @@ Seven pastel hues in order, each shimmer a lighter twin: red `#ffadb0` /
 The eight subagent slots spread the same pastels wider apart, so two
 concurrent agents stay tellable at a glance: red `#ff9fa4`, orange
 `#ffbe8c`, yellow `#f2e39a`, green `#a8e0b8`, cyan `#e3b8ea`, blue
-`#cfe89a`, purple `#c3b9f2`, pink `#f5b6d8`. Two of those slots no longer
+`#cfe89a`, purple `#c3b9f2`, pink `#f5b6d8`. Two of those slots do not
 hold the hue they are named for: the `cyan` slot is pale violet and the
 `blue` slot is pale yellow-green. The key names come from the binary and
 are not renameable; only the colors moved.

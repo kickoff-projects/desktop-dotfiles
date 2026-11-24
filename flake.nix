@@ -42,15 +42,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # not in use at the moment, could be just
-    # removed from this file entirely,
-    # will be here just temporarily (clueless)
-    #hyprlang = {
-    #  url = "github:hyprwm/hyprlang";
-      #inputs.system.follows = "system";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
-
     # VSCode server for running e.g jupyter server for
     # machine learning purposes
     vscode-server.url = "github:nix-community/nixos-vscode-server";
@@ -94,23 +85,25 @@
   	   config.allowUnfree = true;
 	};
 
-      # networking.hostName of each host's configuration.nix, duplicated here
-      # because home-manager is built standalone (homeFor below) and so has
-      # no access to the matching nixosConfiguration to read it back out of.
-      # common/home.nix asserts this against the real /etc/hostname so that
-      # switching the wrong "<user>@<host>" target on a machine fails loudly
-      # instead of silently overwriting that machine's .config with another
-      # host's files.
+      # The networking.hostName value of each host configuration.nix. This
+      # set repeats those values, because Nix builds home-manager on its own
+      # through homeFor below. That build cannot read the matching
+      # nixosConfiguration.
+      # common/home.nix tests these names against the real /etc/hostname. A
+      # switch to the wrong "<user>@<host>" target then fails with a
+      # message. Without the test, it replaces the .config files of that
+      # machine with the files of another host.
       hostNames = {
         desktop = "NanSuS-Desktop";
         laptop = "NanSuS-Laptop";
         server = "NixOS-Server";
       };
 
-      # Builds "nansus@<host>" / "nansus-work@<host>" from common/home.nix +
-      # users/<user>/home.nix + that host's .config overrides. host is the
-      # directory name under hosts/, which is also the nixosConfigurations
-      # attribute - see hosts/<host>/configuration.nix.
+      # This helper builds "nansus@<host>" and "nansus-work@<host>". It
+      # joins common/home.nix, users/<user>/home.nix and the .config files
+      # of that host.
+      # host is the directory name under hosts/. It is also the
+      # nixosConfigurations attribute. See hosts/<host>/configuration.nix.
       homeFor = user: host:
         let
           hostDir = ./hosts + "/${host}";
@@ -143,9 +136,10 @@
           modules = [
              "${self}/hosts/desktop/configuration.nix"
 
-	     # This profile owns the nvidia setup for this host. It imports
-	     # common/gpu/nvidia (videoDrivers = ["nvidia"]) and sets
-	     # hardware.nvidia.open = true, which is right for the RTX 3070.
+	     # This profile holds the nvidia setup for this host. It imports
+	     # common/gpu/nvidia, which sets videoDrivers to ["nvidia"]. It
+	     # also sets hardware.nvidia.open to true. That value is correct
+	     # for the RTX 3070.
              nixos-hardware.nixosModules.lenovo-legion-t526amr5
 	     #nix-index-database.nixosModules.default
           ];

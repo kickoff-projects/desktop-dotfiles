@@ -46,9 +46,11 @@
 	done
 	unset _zsh_theme
 
-	# NixOS aliases. Functions rather than aliases because the target has to
-	# land inside "--flake <path>#<target>", not after it. Both accept
-	# "desktop" and "nansus@desktop": hms adds the missing user, nrs drops it.
+	# NixOS aliases. These are functions, and not aliases, because the
+	# target must go inside "--flake <path>#<target>". It cannot go after
+	# that argument.
+	# Both functions accept "desktop" and "nansus@desktop". hms adds the
+	# missing user name, and nrs removes it.
 	hms() {
 	  local t=$1
 	  if [[ -z $t ]]; then print -u2 "usage: hms <host|user@host>"; return 1; fi
@@ -77,8 +79,8 @@
         alias lla='ls -la'
         alias lt='ls --tree'
 
-	alias pws='wpctl status'
-	alias pwds='wpctl set-default'
+	alias audio='wpctl status'
+	alias set-audio='wpctl set-default'
 
 	# Kill aliases
 	alias pkd='pkill -i discord'
@@ -129,7 +131,8 @@
 	alias nmap_web_safe_osscan="sudo nmap -p 80,443 -O -v --osscan-guess --fuzzy "
 	alias nmap_ping_scan="nmap -n -sP"
 
-	alias speed='librespeed-cli --no-icmp --server 51'
+	#alias speed='librespeed-cli --no-icmp --server 51'
+	alias speed='librespeed-cli'
 
 	# Python / jupyter aliases
 	alias lab="uv run --with jupyter jupyter lab"

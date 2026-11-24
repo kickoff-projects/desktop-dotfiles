@@ -1,19 +1,18 @@
 { lib }:
 
-# Turn every regular file under a directory into an xdg.configFile entry,
-# keyed by its path relative to that directory - so ./.config/waybar/style.css
-# becomes the xdg.configFile key "waybar/style.css", symlinked from the nix
-# store at ~/.config/waybar/style.css.
+# This turns every regular file under a directory into one xdg.configFile
+# entry. Each key is the path of the file relative to that directory. Example:
+# ./.config/waybar/style.css becomes the xdg.configFile key
+# "waybar/style.css". Nix links it from the store to
+# ~/.config/waybar/style.css.
 #
-# Each file gets its own symlink (rather than symlinking whole directories
-# wholesale) so that apps which write runtime state next to their config
-# (btop's log, etc.) still get a normal, writable directory to do that in.
-# Per-file keys are also what lets a host or user layer's own file replace
-# the shared one of the same name (see common/home.nix).
+# Each file gets its own symlink. This file does not link whole directories.
+# Some applications write runtime state next to their config, such as the
+# btop log. Those applications need a normal writable directory. Keys per
+# file also let a host layer or user layer replace a shared file of the same
+# name. See common/home.nix.
 #
-# A missing layer (e.g. a user with no .config overrides at all) yields {},
-# ported from /srv/nixos-vm-config/common/config-files.nix with that guard
-# added since this repo has three layers instead of two.
+# A missing layer gives {}. Example: a user with no .config files.
 dir:
 if !(builtins.pathExists dir) then {} else
 lib.listToAttrs (map

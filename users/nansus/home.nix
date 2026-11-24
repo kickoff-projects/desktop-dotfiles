@@ -1,19 +1,22 @@
 { lib, pkgs, ... }:
 
-# The leisure account: common/home.nix plus these. Runs a black/rainbow
-# variant of the shared theme - every surface goes pure black and the color
-# is carried by text, borders and graphs instead of by backgrounds. The
-# per-surface files live in ./.config (waybar, hypr), layered on top of
-# hostDir/.config and common/.config. Foot keeps the rainbow sixteen ANSI
-# colors verbatim - only its background is pulled to true black, below.
+# The leisure account. It takes common/home.nix and the options below.
+# It uses a black and rainbow variant of the shared theme. Every surface is
+# pure black. The text, the borders and the graphs carry the colour, and the
+# backgrounds do not.
+# The files per surface live in ./.config, for waybar and hypr. They go on
+# top of hostDir/.config and common/.config.
+# Foot keeps the 16 rainbow ANSI colours without a change. Only its
+# background goes to true black, below.
 let
   palettes = import ../../common/palettes.nix;
   renderFootColors = import ../../common/lib/render-foot-colors.nix;
   renderKak = import ../../common/lib/render-kak.nix;
 in
 {
-  # prismlauncher stays per-account rather than moving to common/home.nix -
-  # see common/home.nix for the apps shared by every account.
+  # prismlauncher stays with this account. It does not move to
+  # common/home.nix. Read common/home.nix for the applications that every
+  # account shares.
   imports = [ ../../system/app/prismlauncher.nix ];
 
   home.packages = with pkgs; [

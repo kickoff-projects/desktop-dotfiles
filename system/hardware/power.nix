@@ -6,10 +6,10 @@
     settings = {
       CPU_SCALING_GOVERNOR_ON_AC = "performance";
       CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-      # intel_pstate's energy_performance_preference accepts only
-      # performance / balance_performance / default / balance_power / power.
-      # This was "balance", which is not in that set. Check what actually
-      # landed with "tlp-stat -p".
+      # intel_pstate reads energy_performance_preference. It accepts only
+      # these values: performance, balance_performance, default,
+      # balance_power, power.
+      # Run "tlp-stat -p" to see the value in use.
       CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_power";
       CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
       CPU_DRIVER_OPMODE_ON_AC = "active";
@@ -44,43 +44,41 @@
     };
   };
 
-  # TLP manages power, but nothing was watching the charge level: waybar's
-  # battery module reads sysfs directly and hypridle has no battery logic,
-  # so a critical battery just ended in a hard cut. upower is the daemon
-  # that exposes the level over dbus and runs the critical action.
+  # upower sends the battery level over DBus and runs the critical action.
+  # TLP controls power, but it does not watch the charge level. Waybar reads
+  # sysfs directly, and hypridle has no battery logic.
   services.upower.enable = true;
 
-  # upower's default criticalPowerAction is HybridSleep, which needs working
-  # hibernate - and hibernate is not set up on this host (boot.resumeDevice
-  # is empty even though swapDevices has a partition). A critical battery
-  # would therefore hit an action that cannot complete, which is the exact
-  # failure upower was enabled to prevent. PowerOff always works; switch
-  # this to "HybridSleep" if resumeDevice is ever configured and
-  # "systemctl hibernate" is confirmed to come back.
+  # The default criticalPowerAction is HybridSleep. HybridSleep needs
+  # hibernate, and this host has no hibernate: boot.resumeDevice is empty.
+  # PowerOff always works.
+  # Change this to "HybridSleep" after you set boot.resumeDevice. First
+  # confirm that "systemctl hibernate" resumes correctly.
   services.upower.criticalPowerAction = "PowerOff";
 
-  # Percentage based rather than upower's time estimates
-  # (usePercentageForPolicy is already true by default). Only percentageAction
-  # does anything on its own - it is what fires criticalPowerAction above. Low
-  # and critical are the levels the session is expected to react to, which is
-  # what the battery-alarm user service in common/home.nix and waybar's
-  # #battery.warning rule read.
+  # These levels are percentages, not time estimates. usePercentageForPolicy
+  # is true by default.
+  # Only percentageAction acts on its own. It starts criticalPowerAction
+  # above.
+  # The session reacts to percentageLow and percentageCritical. The
+  # battery-alarm service below and the #battery.warning rule in
+  # users/nansus/.config/waybar/style.css read these two levels.
   services.upower.percentageLow = 25;
   services.upower.percentageCritical = 10;
   services.upower.percentageAction = 2;
 
-  # Low battery alarm. upower runs percentageAction at 2%, but nothing was
-  # telling the session before that: there is no notification daemon in this
-  # configuration at all, so notify-send would write into the void, and
-  # waybar's battery module is invisible under a fullscreen window.
-  # "hyprctl notify" is drawn by the compositor itself, so it paints over
-  # fullscreen clients without a daemon, and the sound carries when the
-  # screen is not being watched.
+  # Low battery alarm. upower runs percentageAction at 2%. This service warns
+  # the user before that level.
+  # This configuration has no notification daemon, so notify-send does
+  # nothing. A fullscreen window hides the waybar battery module.
+  # The compositor shows "hyprctl notify" itself. It shows over fullscreen
+  # clients, and it needs no daemon. The sound warns a user who does not
+  # watch the screen.
   #
-  # A systemd *user* unit rather than a system one: hyprctl needs the session
-  # it belongs to. This file is imported by hosts/laptop only, so it reaches
-  # every account on this machine and no account on the Desktop - the BAT0
-  # guard in the script is belt and braces for that.
+  # This is a systemd user unit, not a system unit, because hyprctl needs its
+  # own session. Only hosts/laptop imports this file. The unit therefore
+  # reaches every account on this machine and no account on the desktop. The
+  # BAT0 test in the script gives extra safety.
   systemd.user.services.battery-alarm = {
     description = "Warn on low battery, on screen and audibly";
     serviceConfig = {
@@ -94,10 +92,10 @@
         cap=$(cat "$bat/capacity" 2>/dev/null) || exit 0
         [ "$(cat "$bat/status" 2>/dev/null)" = Discharging ] || exit 0
 
-        # hyprctl notify <icon> <ms> <colour> <message>: icon 3 is the error
-        # glyph, 0 the warning one. Levels follow percentageLow /
-        # percentageCritical above, with 5 as the last call before 2% cuts
-        # the machine off.
+        # hyprctl notify <icon> <ms> <colour> <message>. Icon 3 is the error
+        # glyph. Icon 0 is the warning glyph.
+        # These levels follow percentageLow and percentageCritical above.
+        # Level 5 is the last warning before 2% stops the machine.
         if [ "$cap" -le 5 ]; then
           icon=3; colour="rgb(ff2447)"; beeps=3
           msg="BATTERY $cap% - powering off at 2%"
@@ -126,8 +124,8 @@
     };
   };
 
-  # Every five minutes, not every minute: between 25% and 10% the 25% tier
-  # would otherwise repeat fifteen-odd times before the red one starts.
+  # The timer runs every 5 minutes, not every minute. At 1 minute, the 25%
+  # warning repeats approximately 15 times before the 10% warning starts.
   systemd.user.timers.battery-alarm = {
     description = "Low battery check";
     wantedBy = [ "timers.target" ];

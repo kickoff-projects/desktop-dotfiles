@@ -1,18 +1,9 @@
-# Renders a common/palettes.nix "kak" sub-palette into a full kakoune
-# colorscheme. The set-face body below is identical across every theme
-# today (verified by diffing the set-face lines between the rainbow and
-# red account.kak files before this was templated) - only the title and
-# the sixteen-ish hex values differ.
+# This makes a full kakoune colorscheme from a "kak" sub-palette in
+# common/palettes.nix. The set-face body below is the same for every theme.
+# Only the title and the hex values change.
 { p }:
 ''
 # ${p.title}
-#
-# Commentary:
-# Tinted Theming: (https://github.com/tinted-theming)
-#
-# Authors:
-# Scheme: gidsi
-# Template: Jamy Golden (https://github.com/JamyGolden)
 
 ### Human readable colors for the scheme ###
 #base00 = rgb:${p.base00}   (background - very dark purple)

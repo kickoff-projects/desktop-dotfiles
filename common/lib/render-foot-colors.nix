@@ -1,10 +1,11 @@
-# Renders a common/palettes.nix "foot" sub-palette into foot's colors.ini.
+# This makes the colors.ini file of foot from a "foot" sub-palette in
+# common/palettes.nix.
 { p }:
 ''
 # -*- conf -*-
-# Terminal colors, generated from common/palettes.nix - see
-# common/lib/render-foot-colors.nix. Included from each host's own
-# .config/foot/foot.ini (hosts/desktop, hosts/laptop, hosts/server).
+# Terminal colors. common/lib/render-foot-colors.nix makes this file from
+# common/palettes.nix. The file .config/foot/foot.ini of each host includes
+# it. Those hosts are hosts/desktop, hosts/laptop and hosts/server.
 
 [colors-dark]
 cursor=${p.cursor}

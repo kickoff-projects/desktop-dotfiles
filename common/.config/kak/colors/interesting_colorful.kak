@@ -1,11 +1,4 @@
 # base16-mellow-purple 
-#
-# Commentary:
-# Tinted Theming: (https://github.com/tinted-theming)
-#
-# Authors:
-# Scheme: gidsi
-# Template: Jamy Golden (https://github.com/JamyGolden)
 
 # palette
 

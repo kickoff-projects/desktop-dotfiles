@@ -225,7 +225,7 @@ window#waybar {
  * missing selector does not read as an oversight next to the shared file. */
 
 /* "custom/protonvpn" module - sits right of the #network modules, so it
- * carries the gap to the CPU group that #network used to hold.
+ * carries the gap to the CPU group.
  * No per-state colors: the module runs the same animation as #clock and
  * #network, so it keeps that color scheme whether the tunnel is up or
  * down. */

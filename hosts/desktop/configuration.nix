@@ -2,14 +2,17 @@
 
 {
 
-# Same module set as hosts/laptop/configuration.nix, in the same order.
-# The deliberate differences are called out in comments below. All but one
-# are hardware: no TLP (nothing to save battery on), no Intel microcode
-# (Ryzen 7 3700X). The GPU side is not handled here at all - nixos-hardware's
-# lenovo-legion-t526amr5 module, wired up in flake.nix, owns the nvidia
-# driver for this host the same way lenovo-legion-16ithg6 does for the
-# Laptop. The one non-hardware difference is graceful_boot.nix, which has
-# never been enabled on the Laptop in any commit, so it stays desktop only.
+# The same module set as hosts/laptop/configuration.nix, in the same order.
+# The comments below name each difference.
+#
+# Nearly every difference is hardware. This host has no TLP, because it has
+# no battery. It has no Intel microcode, because it has a Ryzen 7 3700X CPU.
+# This file does not set up the GPU. The lenovo-legion-t526amr5 module of
+# nixos-hardware holds the nvidia driver for this host. flake.nix imports
+# that module. The laptop uses lenovo-legion-16ithg6 in the same way.
+#
+# One difference is not hardware: graceful_boot.nix. The laptop does not
+# use it, so it stays on the desktop only.
 # Commented are usually convenient to have in some situations
 imports =
     [
@@ -28,16 +31,19 @@ imports =
       #../../system/base/terminator.nix
 
       # ---- hardware (this host only) ----
-      # power.nix is Laptop only on purpose: it is TLP with battery charge
-      # thresholds, AC/BAT governors and Intel GPU frequencies, none of which
-      # apply to a desktop on mains with an AMD CPU and an nvidia GPU.
+      # power.nix serves the laptop only. It holds TLP with battery charge
+      # thresholds, AC and BAT governors, and Intel GPU frequencies. None of
+      # those apply to a desktop on mains power with an AMD CPU and an
+      # nvidia GPU.
       #../../system/hardware/power.nix
       #../../system/hardware/roccat.nix
-      # The AX200 card in this box brings bluetooth (hci0) just like the
-      # Laptop's, so blueman from StartPrograms.conf has something to talk to
+      # The AX200 card in this machine gives bluetooth on hci0, like the
+      # card of the laptop. blueman from StartPrograms.conf can therefore
+      # reach a device.
       ../../system/hardware/bluetooth.nix
-      # DDC/CI brightness over DP-3, see the comment in the module. Desktop only:
-      # the Laptop drives its panel through /sys/class/backlight instead.
+      # DDC/CI brightness over DP-3. Read the comment in the module. This
+      # module serves the desktop only. The laptop controls its panel
+      # through /sys/class/backlight.
       ../../system/hardware/ddc.nix
 
       # ---- games ----

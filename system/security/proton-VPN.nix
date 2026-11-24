@@ -3,7 +3,7 @@
 {
   environment.systemPackages = [
       pkgs.proton-vpn-cli
-      pkgs.proton-vpn
+      #pkgs.proton-vpn
   ];
 
   # proton-vpn-cli stores its session in the Secret Service keyring.

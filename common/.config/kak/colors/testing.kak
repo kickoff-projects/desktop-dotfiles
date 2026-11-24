@@ -1,6 +1,5 @@
 ##
 ## reeder theme
-## a light theme inspired after https://github.com/hyspace/st2-reeder-theme
 ##
 
 evaluate-commands %sh{

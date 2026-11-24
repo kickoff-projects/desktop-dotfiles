@@ -2,9 +2,10 @@
 
 {
 
-# Hardware notes, open on-device checks and the hibernate/HybridSleep plan for
-# this host live in ./HARDWARE-NOTES.md - read it before changing anything here,
-# in system/hardware/power.nix or in system/hardware/nvidia_prime_power.nix.
+# ./HARDWARE-NOTES.md holds the hardware notes for this host. It also holds
+# the open on-device checks and the plan for hibernate and HybridSleep.
+# Read that file before you change this file, system/hardware/power.nix or
+# system/hardware/nvidia_prime_power.nix.
 
 # Commented are usually convenient to have in some situations
 imports =
@@ -44,28 +45,34 @@ imports =
     fastfetch
   '';
 
-  # Lenovo's own BIOS/EC firmware updates reach this machine through fwupd
-  # and nowhere else - the Desktop gets them from its motherboard vendor's
-  # own tooling, so this stays per host rather than in common/system.nix.
+  # fwupd is the only route for the Lenovo BIOS updates and EC firmware
+  # updates on this machine. The desktop gets its updates from the tools of
+  # its motherboard vendor. This option therefore stays in the host file, and
+  # not in common/system.nix.
   services.fwupd.enable = true;
 
-  # legion-laptop is the out-of-tree driver for the parts of this chassis
-  # the mainline kernel does not touch: fan curves, the power/performance
-  # profile the Fn+Q key switches, keyboard backlight and the battery
-  # conservation mode. Whether it is also what provides
-  # /sys/firmware/acpi/platform_profile - the node TLP's
-  # PLATFORM_PROFILE_ON_AC/BAT in system/hardware/power.nix write to - is
-  # worth checking rather than assuming: in-tree ideapad_laptop provides it
-  # on some Legions. Compare "cat /sys/firmware/acpi/platform_profile_choices"
-  # with the module loaded and with these lines commented out.
+  # legion-laptop is the external driver for the parts of this chassis that
+  # the mainline kernel does not control:
+  #  - the fan curves
+  #  - the power profile and performance profile of the Fn+Q key
+  #  - the keyboard backlight
+  #  - the battery conservation mode
   #
-  # Being out-of-tree, it is the one thing here that can fail to build on a
-  # kernel bump. It compiles against this host's 6.18.62; if a later kernel
-  # breaks it, comment both lines out and rebuild rather than pinning the
-  # kernel. legion_cli / legion_gui from the app package are the userspace
-  # side and need the module loaded to do anything. On the first boot after
-  # this, "dmesg | grep -i legion" is the signal: the module refuses to load
-  # on a chassis it does not recognise.
+  # This module possibly also gives /sys/firmware/acpi/platform_profile. That
+  # node is the target of PLATFORM_PROFILE_ON_AC and PLATFORM_PROFILE_ON_BAT
+  # in system/hardware/power.nix. The in-tree ideapad_laptop module gives the
+  # same node on some Legion models, so test this instead of an assumption.
+  # Run "cat /sys/firmware/acpi/platform_profile_choices" two times: first
+  # with the module loaded, then with these lines commented out.
+  #
+  # The module is external to the kernel tree. It is therefore the one part
+  # of this file that can fail to build after a kernel change. If a later
+  # kernel breaks it, comment both lines out and rebuild. Do not pin the
+  # kernel.
+  # legion_cli and legion_gui come from the application package. They are the
+  # user space side, and they need the loaded module.
+  # Run "dmesg | grep -i legion" on the first boot after a change. The module
+  # refuses to load on a chassis that it does not recognise.
   boot.extraModulePackages = [ config.boot.kernelPackages.lenovo-legion-module ];
   boot.kernelModules = [ "legion_laptop" ];
   environment.systemPackages = [ pkgs.lenovo-legion ];

@@ -5,8 +5,8 @@
 # Binds below are translated from common/.config/hypr/UserConfigs/Keybinds.conf,
 # same mod key and letters where sway has an equivalent. Hyprland-only binds
 # (layoutmsg layout tricks, the Vim submap) have no sway equivalent and are
-# dropped here. Screenshot binds keep their keys but swap hyprshot for
-# grim+slurp - see hosts/Server/configuration.nix for why.
+# absent here. Screenshot binds keep their keys and run grim+slurp instead
+# of hyprshot - see hosts/Server/configuration.nix for why.
 
 # -------- Variables -------------------------
 set $terminal foot

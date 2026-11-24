@@ -14,7 +14,7 @@ emit() {
 		awk -F: '$1 ~ /^ProtonVPN / {print $1 "\t" $2 "\t" $3; exit}')
 
 	if [[ -z $line ]]; then
-		printf '{"text":"off 󰦝","class":"disconnected","tooltip":"Proton VPN disconnected"}\n'
+		printf '{"text":"off 󰦝  ","class":"disconnected","tooltip":"Proton VPN disconnected"}\n'
 		return
 	fi
 
@@ -32,7 +32,7 @@ emit() {
 	endpoint=${endpoint%]}
 	[[ -n $endpoint ]] && prefix="$endpoint  "
 
-	printf '{"text":"%s%s 󰦝","class":"connected","tooltip":"Proton VPN | %s | %s | %s"}\n' \
+	printf '{"text":"%s%s 󰦝  ","class":"connected","tooltip":"Proton VPN | %s | %s | %s"}\n' \
 		"$prefix" "$server" "$server" "$dev" "$type"
 }
 

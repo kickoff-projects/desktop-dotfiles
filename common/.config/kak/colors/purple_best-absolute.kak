@@ -1,11 +1,4 @@
 # base16-mellow-purple 
-#
-# Commentary:
-# Tinted Theming: (https://github.com/tinted-theming)
-#
-# Authors:
-# Scheme: gidsi
-# Template: Jamy Golden (https://github.com/JamyGolden)
 
 ### Human readable colors for the scheme ###
 #base00 = rgb:1e0528   (background - very dark purple)

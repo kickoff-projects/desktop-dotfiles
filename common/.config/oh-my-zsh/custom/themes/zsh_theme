@@ -19,10 +19,9 @@ ZSH_THEME_GIT_PROMPT_DIRTY="$ZSH_GIT_DIRTY_GLYPH"
 # unmerged, stashed, deleted, renamed, modified, added, untracked.
 # Every one of the ten must be set or it renders as nothing.
 # Glyphs are Font Awesome codepoints inside the f000-f381 range that FiraCode
-# Nerd Font Mono covers. Coverage was verified with fc-query and every shape
-# below was checked in the terminal on 2026-11-20, so swap only by taste. The
-# one exception is DIRTY above at U+E4D0: outside that range, outside FiraCode,
-# drawn only because fontconfig falls back to Font Awesome 7.
+# Nerd Font Mono covers. Coverage was verified with fc-query, so swap only by
+# taste. The one exception is DIRTY above at U+E4D0: outside that range,
+# outside FiraCode, drawn only because fontconfig falls back to Font Awesome 7.
 # Colors are one hue per state, so no two symbols share one: red is reserved
 # for conflict and deletion, the orange family for "dirty" and "behind", the
 # green family for "added" and "ahead". $fg names cover 0-7; %F{8}-%F{10} are
@@ -85,8 +84,7 @@ ZSH_THEME_VIRTUALENV_SUFFIX=" ⎦%{$reset_color%}"
 # end in a bare "echo" (lib/git.zsh:38, :139) and the callback stores their
 # output with "read -d ''", which keeps the trailing newline
 # (lib/async_prompt.zsh:124), so a clean repo's status entry is "\n", not empty.
-# %$'\n' strips that, which is what the $(...) around these calls used to do for
-# free. Without it a clean repo draws an empty ⎣ ⎤ pair.
+# %$'\n' strips that. Without it a clean repo draws an empty ⎣ ⎤ pair.
 git_group_dirty() { [[ "$1" == *$ZSH_GIT_DIRTY_GLYPH* ]] }
 git_group_open() {
   local info="${_OMZ_ASYNC_OUTPUT[_omz_git_prompt_info]%$'\n'}"
