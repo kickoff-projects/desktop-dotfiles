@@ -131,7 +131,7 @@
     },
 
     "cpu": {
-        "format": "CPU: 󰍛 {usage}%",
+        "format": "CPU: 󰍛 {usage}%/{load} {avg_frequency:.2f}/{max_frequency:.2f} GHz",
         "tooltip": true,
         "interval": 1
     },

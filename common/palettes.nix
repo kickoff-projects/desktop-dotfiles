@@ -1,13 +1,23 @@
-# Color data per theme for the two surfaces that use a pure 16-slot
-# palette: kakoune, which already has a base16 shape, and foot.
-# common/lib/render-kak.nix and common/lib/render-foot-colors.nix make the
-# real files from this data. common/home.nix picks the theme of each
-# account.
+# Color data per theme, one sub-palette per surface. The files in common/lib
+# make the real config files from this data, and common/home.nix picks the
+# theme of each account:
+#  - kak: a base16 shape, rendered by render-kak.nix and render-kak-legacy.nix
+#  - foot: the 16 terminal slots, rendered by render-foot-colors.nix
+#  - rofi: the account.rasi theme, rendered by render-rofi.nix
+#  - dolphin: the kdeglobals colour scheme, rendered by render-kdeglobals.nix
 #
-# Each theme holds two separate color choices, one for kak and one for foot.
-# They are not one shared set. The rainbow kak scheme is mellow-purple and
-# the rainbow foot scheme is "space rainbow". Each one belongs to its own
-# tool. One shared set changes the rendered output of both.
+# The sub-palettes are separate color choices, and not one shared set. The
+# rainbow kak scheme is mellow-purple, the rainbow foot scheme is "space
+# rainbow", and the rainbow rofi and dolphin schemes are the pastel rainbow
+# of common/.claude/themes/pastel-rainbow-theme.json. One shared set changes
+# the rendered output of every tool at once.
+#
+# Every value is a bare hex string without the "#" prefix. A 6 digit value is
+# opaque. The dolphin "highlight" key holds the one 8 digit value, and every
+# other value is 6 digits. The two 8 digit forms disagree on the position of
+# the alpha byte: rofi reads RRGGBBAA, and dolphin reads AARRGGBB because Qt
+# reads it that way. An 8 digit value therefore belongs to one sub-palette
+# only.
 {
   rainbow = {
     kak = {
@@ -34,6 +44,96 @@
       regular4 = "2196f3"; regular5 = "9c27b0"; regular6 = "00bcd4"; regular7 = "607d8b";
       bright0 = "ff5722"; bright1 = "ff9800"; bright2 = "00e676"; bright3 = "cddc39";
       bright4 = "009688"; bright5 = "673ab7"; bright6 = "3f51b5"; bright7 = "ffffff";
+    };
+    # The two sub-palettes below come from the pastel rainbow claude theme in
+    # common/.claude/themes/pastel-rainbow-theme.json. The name of the source
+    # key of that theme follows each value.
+    #
+    # Both backgrounds are solid black.
+    #
+    # rofi draws its text and its prompt in one emerald. The current row
+    # carries no fill, so a 3px emerald outline is the only mark of it. The
+    # inverse text inside that outline and the window outline hold the one
+    # other colour, promptBorder.
+    rofi = {
+      background = "000000";      # solid black
+      backgroundAlt = "000000";   # the inputbar, also solid black
+      foreground = "50c878";      # claude
+      selected = "000000";        # black, so the current row carries no fill
+      selectedText = "d900ff";    # promptBorder, the inverse text of that row
+      emerald = "50c878";         # claude, the outline of the current row
+      windowBorder = "d900ff";    # promptBorder, the outline of the window
+      prompt = "50c878";          # claude
+      # The two states below keep their own colours. A red error and a green
+      # success carry meaning that one shared colour removes.
+      urgent = "ff5c70";          # error
+      active = "a8e0b8";          # success
+    };
+    dolphin = {
+      window = "000000";          # solid black
+      base = "000000";            # the file view, also solid black
+      altBase = "141019";         # composerSidebarBackground, a faint row stripe
+      button = "141019";          # composerSidebarBackground
+
+      mid = "50c878";             # claude
+      # One emerald paints every selection of dolphin, because
+      # KColorScheme::createApplicationPalette copies this key to both
+      # QPalette::Highlight and QPalette::Accent. One shared key means the
+      # fill and the ring of the file view cannot hold separate colours, so
+      # the rofi shape of a clear row inside an emerald outline is out of
+      # reach here.
+      #
+      # This value is 8 digits, so it carries the alpha byte 52, which is
+      # 32%. The two painters read that byte differently:
+      #  - the file view and the Folders panel discard it. Their
+      #    KItemListWidget::drawItemStyleOption calls setAlphaF with its own
+      #    numbers: 32% for a selected row, 40% for a selected and hovered
+      #    row, 100% for the ring of the current row and for a press
+      #  - the Places sidebar and the kio file dialogs keep it.
+      #    Breeze::Helper::renderSelection fills with the brush as it stands
+      # The selected rows of both panes therefore hold one 32% emerald wash,
+      # and the black base reads through each of them. A lower alpha byte
+      # here makes the sidebar wash fainter, and leaves the file view as it
+      # is.
+      highlight = "5250c878";     # claude at 32% alpha
+      # The DecorationFocus and DecorationHover keys of every colour group,
+      # which Breeze reads through KStatefulBrush as the focus outline and
+      # the hover outline of its own widgets: buttons, line edits, the filter
+      # bar, the Places sidebar. The file view draws its own hover wash from
+      # "text" below at 6% alpha, and reaches no decoration key.
+      emerald = "50c878";         # claude, the focus and hover outlines
+      tooltipBase = "141019";     # composerSidebarBackground
+      # The general text of dolphin: the file view labels, the Places sidebar
+      # labels, the toolbar, the menus, the breadcrumb and the tooltips. One
+      # emerald holds all of them, and it matches the selection fill and the
+      # outlines above. It reaches about 8 contrast against the black base.
+      #
+      # This emerald is also the label of a selected file view row, because
+      # KStandardItemListWidget::normalTextColorRole returns QPalette::Text
+      # there unless the row holds the click highlight of a press. A selected
+      # file view row therefore reads as emerald text on the 32% alpha
+      # emerald wash, and the wash alone marks the selection.
+      #
+      # The hover wash of the file view is this same colour at 6% alpha, so
+      # hover and selection hold one hue at two strengths.
+      text = "50c878";            # claude
+      windowText = "50c878";      # claude
+      buttonText = "50c878";      # claude
+      # ForegroundInactive of every colour group, which is the disabled and
+      # inactive cue. It stays grey, so a disabled label reads as disabled.
+      disabledText = "9a93ad";    # inactive
+      tooltipText = "50c878";     # claude
+      # The label of a selected Places sidebar row and of a selected kio file
+      # dialog row. This is the same value that the rofi sub-palette above
+      # uses for its own inverse text. A selected label of the file view
+      # keeps "text" above, because dolphin reads this colour there only
+      # while a row holds the click highlight of a press.
+      highlightText = "d900ff";   # promptBorder
+      link = "1bb2fd";            # suggestion
+      linkVisited = "661bfd";     # permission
+      negative = "ff5c70";        # error
+      neutral = "ffd23f";         # warning
+      positive = "a8e0b8";        # success
     };
   };
 

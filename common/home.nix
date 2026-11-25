@@ -9,6 +9,8 @@ let
   palettes = import ./palettes.nix;
   renderKak = import ./lib/render-kak.nix;
   renderFootColors = import ./lib/render-foot-colors.nix;
+  renderRofi = import ./lib/render-rofi.nix;
+  renderKdeglobals = import ./lib/render-kdeglobals.nix;
 
   # Nix writes this text to both qt5ct.conf and qt6ct.conf below. Qt5
   # applications and Qt6 applications therefore always get the same style.
@@ -176,6 +178,18 @@ in
       # it with mkForce. The kak file of nansus-work does this.
       "kak/colors/account.kak".text = lib.mkDefault (renderKak { p = palettes.rainbow.kak; });
       "foot/colors.ini".text = lib.mkDefault (renderFootColors { p = palettes.rainbow.foot; });
+
+      # The rofi theme and the colour scheme of dolphin, both with a black
+      # background.
+      # A host layer or user layer that keeps its own real rofi/account.rasi
+      # replaces this generated entry, because the three configFilesOf layers
+      # below come after it. hosts/server and users/nansus-work both do that.
+      "rofi/account.rasi".text = lib.mkDefault (renderRofi { p = palettes.rainbow.rofi; });
+      # The KDE platform theme builds the whole Qt palette of dolphin from
+      # the [Colors:*] groups of this file. system/app/dolphin.nix starts
+      # dolphin with QT_QPA_PLATFORMTHEME=kde so that it loads.
+      "kdeglobals".text =
+        lib.mkDefault (renderKdeglobals { p = palettes.rainbow.dolphin; });
 
       # The qt module of home-manager with platformTheme "qtct" installs
       # qt5ct and qt6ct, and it exports the env vars. It writes no config
