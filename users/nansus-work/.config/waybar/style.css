@@ -1,15 +1,17 @@
 /* nansus-work: copy of common/.config/waybar/style.css. Byte-identical to
- * the shared file except for the two microphone blocks near the bottom -
+ * the shared file except for the microphone blocks near the bottom -
  * search "nansus-work:" to find them. Forked rather than overridden because
  * waybar loads exactly one stylesheet and style.css is what does the
  * @import below, so there is nowhere else for a rule to live.
  *
  * The microphone states are inverted relative to the shared file: muted is
  * the quiet resting state and borrows #pulseaudio's green, while an open
- * mic is red on both the underline and the glyph. The third state (no
- * capture device) is not styled here at all - this account's own
- * ../hypr/scripts/waybar-microphone.sh emits empty text for it, and waybar
- * hides a custom module whose text is empty.
+ * mic is red on both the underline and the glyph. Two module types carry
+ * those states. custom/microphone runs on desktop and server, where this
+ * account's own ../hypr/scripts/waybar-microphone.sh emits empty text for
+ * a missing capture device, and waybar hides a custom module whose text is
+ * empty. pulseaudio#microphone runs on the laptop. It has no state for a
+ * missing capture device, so an absent mic reads as an open mic there.
  *
  * Palette and animations are not here - see colors.css and effects.css,
  * which a host or user layer replaces to switch the theme. No font-family
@@ -89,6 +91,7 @@ window#waybar {
 /* ------------- General ------------- */
 
 #battery,
+#custom-battery-min,
 #cpu,
 #custom-nvidia,
 #memory,
@@ -128,6 +131,43 @@ window#waybar {
     background-color: alpha(@color1, 0.15);
     color: @color1;
     border-radius: 10px;
+    animation: blink 1s ease infinite;
+}
+
+/* custom/battery-min prints the minute count, which the battery module
+ * cannot: its format-time splits hours from minutes. Both modules sit in
+ * group/battery_info, and a group has no spacing, so the two facing margins
+ * are zeroed and the two facing corners kept square. The underline then
+ * runs unbroken from the glyph to the minute count.
+ * A custom module never gets the battery module's state classes. The
+ * battery module mirrors each state onto the bar window as
+ * window#waybar.battery-<state>, so the critical rule below tracks
+ * #battery above with no second threshold set in the awk file. This file
+ * has no #battery.warning rule, so it has no warning rule here either, and
+ * the pair stays one colour at the warning level. The charging and plugged
+ * statuses are not mirrored onto the window, so this module keeps the
+ * @color3 resting colour while charging. */
+#battery {
+    margin-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#custom-battery-min {
+    margin-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-color: @color3;
+    font-weight: bold;
+    color: @color3;
+}
+
+window#waybar.battery-critical #custom-battery-min {
+    background-color: alpha(@color1, 0.15);
+    color: @color1;
+    border-radius: 10px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
     animation: blink 1s ease infinite;
 }
 
@@ -257,4 +297,25 @@ window#waybar {
 
 #system-info {
     color: @color7;
+}
+
+/* nansus-work: "pulseaudio#microphone" module (laptop). Waybar gives a second
+ * pulseaudio instance the id #pulseaudio and the class microphone, so the
+ * green #pulseaudio rule above already paints the muted mic. The two rules
+ * below add the red open mic, and keep the green when the speakers are
+ * muted at the same time. The last rule drops the grey pill of
+ * #pulseaudio.muted, whose class tracks the speakers and not the mic. */
+#pulseaudio.microphone {
+    border-bottom-color: @color1;
+    color: @color1;
+}
+
+#pulseaudio.microphone.source-muted {
+    border-bottom-color: @color2;
+    color: @color2;
+}
+
+#pulseaudio.microphone.muted {
+    background-color: transparent;
+    border-radius: 0;
 }

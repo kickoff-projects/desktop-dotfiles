@@ -112,10 +112,10 @@
     // dummy device instead of the real one.
     "network": {
 	"interface": "enp5s0",
-	"format-wifi" : "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2} 󰖩 {signalStrength}% ",
-        "format-ethernet": "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2} 󰈀  ",
-	"tooltip-format": "{ifname}:{ipaddr} / {cidr} | 󰖩 {essid} ({signalStrength}%) ",
-        "format-linked": "󱘖 {ifname}:{ipaddr} 󰕒 {bandwidthupbytes:2} 󰇚 {bandwidthdownbytes:2} {signalstrength}% ",
+	"format-wifi" : "󰕒 {bandwidthUpBytes} 󰇚 {bandwidthDownBytes} 󰖩 {signalStrength}% ",
+        "format-ethernet": "󰕒 {bandwidthUpBytes} 󰇚 {bandwidthDownBytes} 󰈀  ",
+	"tooltip-format": "{ifname} | 󰖩 {essid} ({signalStrength}%) ",
+        "format-linked": "󱘖 {ifname} 󰕒 {bandwidthUpBytes} 󰇚 {bandwidthDownBytes} ",
 	"format-disconnected" : "󰯡  no network ",
         "interval": 1,
         "tooltip": true,

@@ -3,12 +3,12 @@
     "position": "top",
     "height": 30,
     "margin-bottom": 2,
-    "margin-left": 12,
-    "margin-right": 12,
-    "spacing": 8,
+    "margin-left": 5,
+    "margin-right": 10,
+    "spacing": 5,
     "output": "eDP-1",
     "modules-left": ["clock", "hyprland/workspaces"],
-      "modules-right": ["network#wifi", "network#eth", "custom/protonvpn", "group/cpu_info", "custom/nvidia", "memory" ,"disk", "group/system-info", "custom/microphone", "battery", "tray"],
+      "modules-right": ["network#wifi", "network#eth", "custom/protonvpn", "group/cpu_info", "custom/nvidia", "memory" ,"disk", "group/system-info", "group/battery_info", "tray"],
 
 
 
@@ -32,7 +32,7 @@
         "10": " 10 ",
         "urgent": " Well Fuck \n  (⊙﹏⊙;) ",
 	"active": "  ",
-	"default": ""
+	"default": " "
         }
     },
 
@@ -112,20 +112,20 @@
     // while that link is up, and no module carries a "no network" text.
     "network#wifi": {
 	"interface": "wlp0s20f3",
-	"format-wifi" : "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}  󰖩 {signalStrength}%   ",
-	"format-linked": "󱘖 {ifname}:{ipaddr} 󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}   ",
+	"format-wifi" : "󰕒 {bandwidthUpBytes} 󰇚 {bandwidthDownBytes} 󰖩 {signalStrength}% ",
+	"format-linked": "󱘖 {ifname} 󰕒 {bandwidthUpBytes} 󰇚 {bandwidthDownBytes} ",
 	"format-disconnected": "",
-	"tooltip-format": "{ifname}:{ipaddr} / {cidr} | 󰖩 {essid} ({signalStrength}%)   ",
+	"tooltip-format": "{ifname} | 󰖩 {essid} ({signalStrength}%)   ",
         "interval": 1,
         "tooltip": true,
     },
 
     "network#eth": {
 	"interface": "enp52s0",
-	"format-ethernet": "󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}  󰈀   ",
-	"format-linked": "󱘖 {ifname}:{ipaddr} 󰕒 {bandwidthUpBytes:2} 󰇚 {bandwidthDownBytes:2}   ",
+	"format-ethernet": "󰕒 {bandwidthUpBytes} 󰇚 {bandwidthDownBytes} 󰈀  ",
+	"format-linked": "󱘖 {ifname} 󰕒 {bandwidthUpBytes} 󰇚 {bandwidthDownBytes} ",
 	"format-disconnected": "",
-	"tooltip-format": "{ifname}:{ipaddr} / {cidr}   ",
+	"tooltip-format": "{ifname} ",
         "interval": 1,
         "tooltip": true,
     },
@@ -164,7 +164,7 @@
      // line it prints is identical; the Desktop keeps the continuous poll,
      // which costs it nothing.
      // Bus id is the nvidiaBusId nixos-hardware sets for this host.
-     "exec": "if [ \"$(cat /sys/bus/pci/devices/0000:01:00.0/power/runtime_status 2>/dev/null)\" = active ]; then nvidia-smi --id=0 --query-gpu=pstate,utilization.memory,utilization.gpu,temperature.gpu --format=csv,noheader,nounits | awk -F', ' '{t=$4+0; i=(t<50?\"󱃃\":(t<75?\"󰔏\":(t<85?\"󱃂\":\"󰸁\"))); printf \"GPU: 󰉁 %s  󰘚 %s%%  󰓅 %s%%  %s %s°C\\n\", $1, $2, $3, i, t; fflush()}'; else echo \"GPU: 󰿘 rtd3\"; fi",
+     "exec": "if [ \"$(cat /sys/bus/pci/devices/0000:01:00.0/power/runtime_status 2>/dev/null)\" = active ]; then nvidia-smi --id=0 --query-gpu=pstate,utilization.memory,utilization.gpu,temperature.gpu --format=csv,noheader,nounits | awk -F', ' '{t=$4+0; i=(t<50?\"󱃃\":(t<75?\"󰔏\":(t<85?\"󱃂\":\"󰸁\"))); printf \"GPU: 󰉁 %s 󰘚 %s%% 󰓅 %s%% %s %s°C\\n\", $1, $2, $3, i, t; fflush()}'; else echo \"GPU: 󰿘 rtd3\"; fi",
      // 10s, not 5: a poll that lands while the device is still "active"
      // resets its autosuspend timer, so an interval at or below the delay
      // (power/autosuspend_delay_ms, 5000 by default) can hold the dGPU awake
@@ -175,7 +175,7 @@
     },
 
     "memory": {
-        "format": "󰘚 {percentage}%   {swapPercentage}%",
+        "format": "󰘚 {percentage}%  {swapPercentage}%",
         "tooltip-format": "{used:0.1f}GB / {total:0.1f}GB  {swapUsed}GB / {swapTotal}GB",
         "interval": 1
     },
@@ -219,8 +219,10 @@
     "group/system-info": {
 	"orientation": "horizontal",
 	"modules": [
+                "backlight",
 		"pulseaudio",
-		"backlight"
+                "pulseaudio#microphone"
+		
 	]
     },
 
@@ -232,12 +234,19 @@
 	"restart-interval": 5
     },
 
-    // mic state comes from a script so a missing device is a state of its own
-    "custom/microphone": {
-	"exec": "bash $HOME/.config/hypr/scripts/waybar-microphone.sh",
-	"return-type": "json",
-	"interval": 1,
-	// click mutes the mic, scroll changes its volume
+    // mic state comes from the source fields of the native pulseaudio
+    // module, which sets the "source-muted" class itself, so both colors
+    // live in style.css. This is a second pulseaudio instance: its CSS id
+    // stays #pulseaudio and "microphone" is a class on it. A machine with
+    // no capture device keeps the open-mic style, because waybar has no
+    // class for a missing source.
+    "pulseaudio#microphone": {
+	"format": "{format_source}",
+	"format-source": "  ",
+	"format-source-muted": "  ",
+	"tooltip-format": "Microphone | {source_volume}%",
+	// click mutes the mic, scroll changes its volume. Native scroll moves
+	// the sink volume, so these two keys are what reach the source.
 	"on-click": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle",
 	"on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SOURCE@ 5%+",
 	"on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-"
@@ -249,11 +258,40 @@
             "warning": 35,
             "critical": 20
         },
-        "format": "{icon} {capacity}%",
-        "format-charging": " 󰂄{capacity}%  ",
+        "format": "{icon} {capacity}% ",
+        "format-charging": "󰂄 {capacity}% ",
         "format-plugged": "󰚥 {capacity}% ",
-        "format-alt": "{icon} {time}",
-        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+        "format-alt": "{icon} {time} \n {health} {cycles}",
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        // custom/battery-min below has no interval. It updates only on
+        // SIGRTMIN+9, and this line sends that signal on every update of
+        // this module. The percentage and the minute count therefore always
+        // come from the same reading, and the pair needs no second timer.
+        // The rate follows this module's own interval, 60 by default.
+        "on-update": "pkill -RTMIN+9 waybar"
+    },
+
+    // The minute count, which the battery module cannot print: its
+    // format-time splits hours from minutes and has no total-minutes
+    // argument, so {M} is the 0-59 remainder.
+    // The dash lives in this module's format. The module hides itself when
+    // the awk file prints nothing, which is every case without an estimate,
+    // and the dash then goes with it.
+    "custom/battery-min": {
+        "exec": "awk -f $HOME/.config/hypr/scripts/battery-minutes.awk /sys/class/power_supply/BAT0/uevent",
+        "signal": 9,
+        "format": "- {}"
+    },
+
+    // One box for the pair. A group has no spacing, so the two modules
+    // touch, and the facing margins and corners in style.css then join
+    // their underlines into one line.
+    "group/battery_info": {
+        "orientation": "horizontal",
+        "modules": [
+            "battery",
+            "custom/battery-min"
+        ]
     }
 
 }

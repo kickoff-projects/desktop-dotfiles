@@ -4,7 +4,7 @@
 # `protonvpn status`, which parses the 25 MB server-list cache on every call.
 
 emit() {
-	local line server type dev endpoint prefix
+	local line server type dev
 
 	# proton-vpn-api-core names the tunnel "ProtonVPN <server>" and names every
 	# kill-switch connection "pvpn-...", so the name prefix alone identifies it.
@@ -14,26 +14,15 @@ emit() {
 		awk -F: '$1 ~ /^ProtonVPN / {print $1 "\t" $2 "\t" $3; exit}')
 
 	if [[ -z $line ]]; then
-		printf '{"text":"off 󰦝  ","class":"disconnected","tooltip":"Proton VPN disconnected"}\n'
+		printf '{"text":"off 󰦝   ","class":"disconnected","tooltip":"Proton VPN disconnected"}\n'
 		return
 	fi
 
 	IFS=$'\t' read -r server type dev <<<"$line"
 	server=${server#ProtonVPN }
 
-	# The wireguard peer endpoint is the IP of the Proton server the tunnel runs
-	# to, and NetworkManager holds it locally, so no address lookup service is
-	# called. A connection of type "vpn" holds no wireguard.peers value, and the
-	# text then shows the server name alone.
-	endpoint=$(nmcli -t -f wireguard.peers connection show "ProtonVPN $server" 2>/dev/null |
-		sed -n 's/.*endpoint=\(.*\):[0-9]*$/\1/p' | head -n 1)
-	endpoint=${endpoint%\\}
-	endpoint=${endpoint#[}
-	endpoint=${endpoint%]}
-	[[ -n $endpoint ]] && prefix="$endpoint  "
-
-	printf '{"text":"%s%s 󰦝  ","class":"connected","tooltip":"Proton VPN | %s | %s | %s"}\n' \
-		"$prefix" "$server" "$server" "$dev" "$type"
+	printf '{"text":"%s 󰦝   ","class":"connected","tooltip":"Proton VPN | %s | %s | %s"}\n' \
+		"$server" "$server" "$dev" "$type"
 }
 
 emit
