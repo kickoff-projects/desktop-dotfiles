@@ -103,6 +103,8 @@
 	alias .f='cd ; cd school_stuff/Fontys_2026/MA-CSE_2026'
 	alias .t='cd ; cd school_stuff/Thesis'
 	alias .r='cd ; cd rust_projects'
+        alias .g='cd ; cd General'
+
 
 	# And here just to ease my workflow,
 	# some aliases to jump to computer configs

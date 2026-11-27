@@ -85,8 +85,12 @@ set-face global bracket "%opt{base05}+b"
 set-face global arguement "%opt{base09}"
 set-face global comma "%opt{baseAD06}"    #"%opt{base05}"
 set-face global constant "%opt{base09}+b"
+# python.kak and prql.kak put '##' in a 'documentation' region and '#' in
+# a 'comment' region, and c-family, rust, java, zig and nim map their '///'
+# and '/**' doc comments to 'documentation' too. Both faces use base04 so
+# every comment form renders in one color.
 set-face global comment "%opt{base04}+i"
-set-face global documentation "%opt{base03}+i"
+set-face global documentation "%opt{base04}+i"
 set-face global docstring "%opt{base03}+i"
 set-face global docstring "%opt{base0A}"
 set-face global meta "%opt{baseAD15}"
