@@ -148,7 +148,7 @@
     },
 
     "custom/nvidia": {
-     "exec": "nvidia-smi --id=0 --query-gpu=pstate,utilization.memory,utilization.gpu,temperature.gpu --format=csv,noheader,nounits -lms 1000 | awk -F', ' '{t=$4+0; i=(t<50?\"󱃃\":(t<75?\"󰔏\":(t<85?\"󱃂\":\"󰸁\"))); printf \"GPU: 󰉁 %s 󰘚 %s%% 󰓅 %s%% %s %s°C\\n\", $1, $2, $3, i, t; fflush()}'",
+     "exec": "nvidia-smi --id=0 --query-gpu=pstate,utilization.memory,utilization.gpu,temperature.gpu,power.draw --format=csv,noheader,nounits -lms 1000 | awk -F', ' '{t=$4+0; i=(t<50?\"󱃃\":(t<75?\"󰔏\":(t<85?\"󱃂\":\"󰸁\"))); printf \"GPU: 󰉁 %s 󰘚 %s%% 󰓅 %s%% %s %s°C 󱐋 %.0fW\\n\", $1, $2, $3, i, t, $5+0; fflush()}'",
 
      "restart-interval": 5
     },

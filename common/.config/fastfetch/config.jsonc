@@ -6,6 +6,8 @@
 "logo": {
     /*"source": "~/.config/fastfetch/Mad_Hatter.txt",*/
     "source": "~/.config/fastfetch/moved_chesire_cat_with_text",
+    /*Same cat, the row between the two sets of teeth stays clear.*/
+    /*"source": "~/.config/fastfetch/moved_chesire_cat_sharp_teeth_a",*/
     /*"source": "~/.config/fastfetch/testing_no_room_v4",*/
 
   "color": {
